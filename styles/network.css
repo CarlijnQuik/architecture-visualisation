@@ -1,0 +1,30 @@
+.link {
+    stroke: #5f575a;
+    stroke-width: 0.1;
+}
+
+.node {
+    stroke: #fff;
+    stroke-width: 1px;
+}
+
+/* Treemap template boxes */
+rect.cell {
+    fill: none;
+    stroke: #ddd;
+    stroke-width: 1px;
+}
+
+/* Force template circles */
+circle.cell {
+    fill: none;
+    stroke: #050405;
+    stroke-width: 2px;
+}
+
+text {
+    fill: black;
+    font: 10px sans-serif;
+    text-anchor: start;
+}
+
