@@ -7,7 +7,7 @@ function networkInit() {
 
     // Set the dimensions and margins of the chart
     let width = 1000;
-    let height = 750;
+    let height = 800;
     let color = d3.scaleOrdinal(d3.schemeCategory20);
 
     // Define the standard node radius and link width
@@ -19,7 +19,6 @@ function networkInit() {
         .on('start', dragStart)
         .on('drag', dragging)
         .on('end', dragEnd);
-
 
     // Define the template in use
     let useGroupInABox = true,
@@ -46,37 +45,22 @@ function networkInit() {
         .template(template) // Either treemap or force
         .groupBy('package') // Setting package as the attribute to group by
         .enableGrouping(useGroupInABox)
-        .forceCharge(-50*15) // Separation between nodes on the force template
-        .nodeSize(10) // Used to compute the size of the template nodes, think of it as the radius the node uses, including its padding
+        .forceCharge(-75) // Separation between nodes on the force template
+        .nodeSize(5) // Used to compute the size of the template nodes, think of it as the radius the node uses, including its padding
         .size([width, height]); // Size of the chart
 
     // Adjust the position and velocity of elements
     const forceSim = d3.forceSimulation()
-        .force('link', d3.forceLink()
+        .force('link', d3.forceLink() // creating a fixed distance between connected elements
             .id(function(d) { return d.id; })
-            .distance(50)
+            //.distance(50)
             .strength(groupingForce.getLinkStrength)
         )
-        .force("collide", d3.forceCollide(5));
-
-
-      //   .force('link', d3.forceLink()
-      //     .id(function (d) {
-      //       return d.id;
-      //     })
-      //     .distance(50)
-      //     .strength(groupingForce.getLinkStrength)
-      // )
-      // // forceCenter (for setting the center of gravity of the system)
-      // // forceManyBody (for making elements attract or repel one another)
-      // // forceCollide (for preventing elements overlapping) .force('collision', d3.forceCollide().radius(function(d)
-      // // forceX and forceY (for attracting elements to a given point)
-      // // forceLink (for creating a fixed distance between connected elements)
-      // .force('group', groupingForce)
-      // .force('charge', d3.forceManyBody()) // making elements repel one another
-      // .force('center', d3.forceCenter(width / 2, height / 2)) // setting the center of gravity of the system
-      // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
-      // .force('y', d3.forceY(height / 2).strength(0.04)); // attracting elements to a given point
+        .force("collide", d3.forceCollide(5)) // preventing elements overlapping
+        .force('center', d3.forceCenter(width / 2, height / 2)); // setting the center of gravity of the system;
+        // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
+        // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
+        // .force('y', d3.forceY(height / 2).strength(0.04)); // attracting elements to a given point
 
     // ----------------------------
     // Draw network idiom
@@ -184,7 +168,11 @@ function networkInit() {
             forceSim.stop();
             forceSim.force("package").template(template);
             forceSim.alphaTarget(0.5).restart();
-            forceSim.force("package").drawTemplate(networkSVG);
+            if (drawTemplate) {
+                forceSim.force("package").drawTemplate(networkSVG);
+            } else {
+                forceSim.force("package").deleteTemplate(networkSVG);
+            }
         });
 
         d3.select("#checkShowTemplate").on("change", function() {
