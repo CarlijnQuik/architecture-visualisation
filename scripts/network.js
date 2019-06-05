@@ -6,16 +6,16 @@
 function networkInit() {
 
     // Set the dimensions and margins of the chart
-    const width = 1500;
-    const height = 750;
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
+    let width = 1000;
+    let height = 750;
+    let color = d3.scaleOrdinal(d3.schemeCategory20);
 
     // Define the standard node radius and link width
-    const nodeRadius = d3.scaleSqrt().range([4, 10]);
-    const linkWidth = d3.scaleLinear().range([1, 2 * nodeRadius.range()[0]]);
+    let nodeRadius = d3.scaleSqrt().range([4, 10]);
+    let linkWidth = d3.scaleLinear().range([1, 2 * nodeRadius.range()[0]]);
 
     // Define dragging behaviour
-    var drag = d3.drag()
+    let drag = d3.drag()
         .on('start', dragStart)
         .on('drag', dragging)
         .on('end', dragEnd);
@@ -23,12 +23,12 @@ function networkInit() {
 
     // Define the template in use
     let useGroupInABox = true,
-      drawTemplate = true,
-      template = "treemap";
+      drawTemplate = false,
+      template = "force";
 
     // Check which view the user has selected
     d3.select("#checkGroupInABox").property("checked", useGroupInABox);
-    d3.select("#checkShowTreemap").property("checked", drawTemplate);
+    d3.select("#checkShowTemplate").property("checked", drawTemplate);
     d3.select("#selectTemplate").property("value", template);
 
     // Define the svg and connect it to the html/css id "nodelink"
@@ -179,14 +179,16 @@ function networkInit() {
         });
 
         d3.select("#selectTemplate").on("change", function() {
+            forceSim.force("package").deleteTemplate(networkSVG);
             template = d3.select("#selectTemplate").property("value");
             forceSim.stop();
             forceSim.force("package").template(template);
             forceSim.alphaTarget(0.5).restart();
+            forceSim.force("package").drawTemplate(networkSVG);
         });
 
-        d3.select("#checkShowTreemap").on("change", function() {
-            drawTemplate = d3.select("#checkShowTreemap").property("checked");
+        d3.select("#checkShowTemplate").on("change", function() {
+            drawTemplate = d3.select("#checkShowTemplate").property("checked");
             if (drawTemplate) {
                 forceSim.force("package").drawTemplate(networkSVG);
             } else {

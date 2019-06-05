@@ -1,3 +1,9 @@
+/* Network diagram styles */
+
+#network{
+    padding-top:10px
+}
+
 .link {
     stroke: #5f575a;
     stroke-width: 0.1;
@@ -26,5 +32,28 @@ text {
     fill: black;
     font: 10px sans-serif;
     text-anchor: start;
+}
+
+/* Checkbox and drop down */
+input[type=checkbox]
+{
+    /* Triple-sized Checkboxes */
+    -ms-transform: scale(1.5); /* IE */
+    -moz-transform: scale(1.5); /* FF */
+    -webkit-transform: scale(1.5); /* Safari and Chrome */
+    -o-transform: scale(1.5); /* Opera */
+    padding: 5px;
+}
+
+.checkboxtext
+{
+    /* Checkbox text */
+    font-family: sans-serif;
+    font-size: 110%;
+    display: inline;
+}
+
+.options {
+    margin-left: 20px;
 }
 
