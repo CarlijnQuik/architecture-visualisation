@@ -1,0 +1,86 @@
+<html>
+<meta charset="utf-8">
+
+<head>
+
+    <!--CSS -->
+    <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/stylesheet.css">
+    <link rel="stylesheet" href="styles/fonts.css" >
+    <link rel="stylesheet" href="styles/network.css" >
+
+    <!--JS plugins    -->
+    <script type="text/javascript" src="plugins/d3.v4.js" charset="utf-8"></script>
+    <script type="text/javascript" src="plugins/d3-scale-chromatic.js" charset="utf-8"></script>
+    <script type="text/javascript" src="plugins/forceInABox.js" charset="utf-8"></script>
+
+    <!--JS scripts-->
+    <script type="text/javascript" src="scripts/network.js"></script>
+    <script type="text/javascript" src="scripts/barchart.js"></script>
+    <script type="text/javascript" src="scripts/main.js"></script>
+
+</head>
+
+<body>
+
+    <!-- HIDDEN - tooltips  -->
+    <div id="tooltip" class="hidden">
+    </div>
+
+    <div class='main-container'>
+
+        <!-- Slider + title -->
+        <div class='slider-container'>
+
+            <div class='title'>
+                <p>
+                    <!--  -->
+                    ArchVis
+                </p>
+
+            </div>
+            <div id='slider'></div>
+        </div>
+
+        <!-- Main content -->
+        <div class='flex-container'>
+
+            <div class='visualisation'>
+                <div class='visualisation-title'>
+                    <div class='visualisation-title-text'>
+                        Relations between classes in the system
+                    </div>
+                </div>
+                <!-- Selection fields with drop down -->
+                <label><input id="checkGroupInABox" type="checkbox" />Group in a Box</label>
+                <label><input id="checkShowTreemap" type="checkbox" />Show Template</label>
+                <select id="selectTemplate">
+                    <option value="treemap">Treemap</option>
+                    <option value="force">Force</option>
+                </select>
+                <div id='network' class='vis'></div>
+            </div>
+
+<!--            <div class='visualisation'>-->
+<!--                <div class='visualisation-title'>-->
+<!--                    <div class='visualisation-title-text'>-->
+<!--                        Sequence and duration of method execution-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div id='barchart' class='vis'></div>-->
+<!--            </div>-->
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>
+
+
+
+
