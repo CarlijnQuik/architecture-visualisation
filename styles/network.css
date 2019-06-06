@@ -15,23 +15,17 @@
 }
 
 /* Treemap template boxes */
-rect.cell {
+rect {
     fill: none;
-    stroke: #050405;
+    stroke: #363336;
     stroke-width: 1px;
 }
 
 /* Force template circles */
-circle.cell {
+circle {
     fill: none;
-    stroke: #050405;
-    stroke-width: 2px;
-}
-
-text {
-    fill: black;
-    font: 10px sans-serif;
-    text-anchor: start;
+    stroke: #363336;
+    stroke-width: 1px;
 }
 
 /* Checkbox and drop down */

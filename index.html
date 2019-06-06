@@ -6,6 +6,7 @@
     <!--CSS -- git add -- . :! -->
     <link rel="stylesheet" href="styles/network.css" >
     <link rel="stylesheet" href="styles/barchart.css" >
+    <link rel="stylesheet" href="styles/tooltips.css" >
     <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/main.css">
 
@@ -25,6 +26,32 @@
 
     <!-- HIDDEN - tooltips  -->
     <div id="tooltip" class="hidden">
+
+        <div id="networkLinkTooltip" class="hidden">
+            <p> Class: <span class="className" id="sourceClass"> </span> - <span id="linkMethod"></span> -> <span class="className" id="targetClass"></span></p>
+            <p> Count: <span class="count"></span></p>
+            <p> Type: <span id="depType"></span></p>
+            <p> Subtype: <span id="depSubtype"></span></p>
+            <p> Direct/indirect: <span id="isDirect"></span></p>
+            <p> Inheritance related <span id="isInheritance"></span></p>
+            <p> Inner class related: <span id="isInnerClass"></span></p>
+            <p> Source: <span id="linkSource"></span></p>
+            <p> Target: <span id="linkTarget"></span></p>
+            <p> Line: <span id="codeLine"></span></p>
+            <p> Message: <span id="linkMessage"></span></p>
+            <p> Origin: <span class="inputFile"></span></p>
+            <p> Data type: <span class="dataType"></span></p>
+        </div>
+
+        <div id="networkNodeTooltip" class="hidden">
+            <p> Class: <span class="className"></span> </p>
+            <p> Count: <span class="count"></span> </p>
+            <p> Package: <span id="package"></span> </p>
+            <p> Fullname: <span id="nodeName"></span> </p>
+            <p> Origin: <span class="inputFile"></span> </p>
+            <p> Data type: <span class="dataType"></span></p>
+        </div>
+
     </div>
 
     <div class='main-container'>

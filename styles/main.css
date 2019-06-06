@@ -95,6 +95,11 @@ body {
     min-width: 180px;
 }
 
+text {
+    fill: black;
+    font: 10px sans-serif;
+    text-anchor: middle;
+}
 
 h1 {
     font-size: 14pt;
@@ -118,32 +123,7 @@ h3 {
     color: #bfbfbf;
 }
 
-/* Tooltips */
-#tooltip.hidden {
-    display: none;
-}
 
-#tooltip {
-    position: absolute;
-    width: 200px;
-    height: auto;
-    padding: 10px;
-    background-color: #fff;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    -webkit-box-shadow: 2px 2px 5px rgba(131, 131, 131, 0.4);
-    -moz-box-shadow: 2px 2px 5px rgba(131, 131, 131, 0.4);
-    box-shadow: 2px 2px 5px rgba(167, 166, 166, 0.4);
-    pointer-events: none;
-    z-index: 3;
-    /* Makes tooltip box appear above other elements on webpage. */
-}
 
-#tooltip p {
-    margin: 0;
-    /* font-family: sans-serif; */
-    font-size: 16px;
-    line-height: 20px;
-}
+
 

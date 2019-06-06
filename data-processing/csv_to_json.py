@@ -6,7 +6,7 @@
 
 
 # return a list of unique node names
-def get_nodes(dataset, fr, to, data_type):
+def get_nodes(dataset, fr, to, file_name, data_type):
     list_nodes = []
 
     # merge dependency from and to columns to one list
@@ -23,8 +23,10 @@ def get_nodes(dataset, fr, to, data_type):
     for node in unique_nodes:
         node_dict = {'id': '/'.join(node.split('.')),
                      'count': int(nodes.count(node)),
-                     'name': '/'.join(node.split('.')),  # name
-                     'type': data_type,
+                     'name': '/'.join(node.split('.')),  # fullname
+                     'class': ''.join(node.split('.')[-1]),  # classname
+                     'origin': file_name,
+                     'dataType': data_type,
                      'package': '/'.join(node.split('.')[:-1])}
 
         # append the dictionary to the list of node dictionaries
@@ -34,7 +36,7 @@ def get_nodes(dataset, fr, to, data_type):
 
 
 # return a list of links
-def get_static_links(dataset, data_type):
+def get_static_links(dataset, file_name):
     list_links = []
 
     # merge dependency from and to columns to one list
@@ -44,15 +46,19 @@ def get_static_links(dataset, data_type):
     # create a separate dictionary for all unique links
     for index, row in dataset.iterrows():
         link_dict = {'message': '/'.join(row['Used Entity (variable or method)'].split('.')),
+                     'method': ''.join(row['Used Entity (variable or method)'].split('.')[-1]),
                      'source': '/'.join(row['Dependency from'].split('.')),
+                     'sourceClass': ''.join(row['Dependency from'].split('.')[-1]),
                      'target': '/'.join(row['Dependency to'].split('.')),
+                     'targetClass': ''.join(row['Dependency to'].split('.')[-1]),
                      'type': row['Dependency type'],
-                     'subType': row['Sub type'],
+                     'subtype': row['Sub type'],
                      'line': row['Line'],
-                     'isDirect': row['Direct/Indirect'],
-                     'isInheritance': row['Inheritance Related'],
-                     'isInnerClass': row['Inner Class Related'],
-                     'dataType': data_type,
+                     'direct': row['Direct/Indirect'],
+                     'inheritance': row['Inheritance Related'],
+                     'innerclass': row['Inner Class Related'],
+                     'origin': file_name,
+                     'dataType': "Static",
                      'count': int(messages.count(row['Used Entity (variable or method)']))}
 
         # append the dictionary to the list of link dictionaries
@@ -62,7 +68,7 @@ def get_static_links(dataset, data_type):
 
 
 # return a list of links
-def get_dynamic_links(dataset, data_type):
+def get_dynamic_links(dataset, file_name):
     list_links = []
 
     # merge dependency from and to columns to one list
@@ -78,11 +84,14 @@ def get_dynamic_links(dataset, data_type):
                      'thread': row['Thread'],
                      'callerID': row['Caller ID'],
                      'calleeID': row['Callee ID'],
-                     'source': '/'.join(row['Caller'].split('.')),
+                     'source': '/'.join(row['Caller'].split('.')[-1]),
+                     'sourceClass': ''.join(row['Caller'].split('.')[-1]),
                      'target': '/'.join(row['Callee'].split('.')),
+                     'targetClass': ''.join(row['Callee'].split('.')[-1]),
                      'message': '/'.join(row['Message'].split('.')),
-                     'dataType': data_type,
-                     'methodName': '/'.join(row['Message'].split('.')),  # method name if applicable
+                     'origin': file_name,
+                     'method': ''.join(row['Message'].split('.')[-1]),  # method name if applicable
+                     'dataType': "Dynamic",
                      'count': int(messages.count(row['Message']))}
 
         # append the dictionary to the list of link dictionaries

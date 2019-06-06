@@ -330,6 +330,7 @@
                 .attr("height", function(d) {
                     return d.y1 - d.y0;
                 });
+
         }
 
         function drawGraph(container) {

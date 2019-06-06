@@ -32,7 +32,7 @@ if extension == 'csv':
     dataset = tr.filter_static(dataset)
 
     # create a dictionary and put the nodes and links from the dataset in it
-    static_dict = {"nodes": ctj.get_nodes(dataset, 'Dependency from', 'Dependency to', file_name),
+    static_dict = {"nodes": ctj.get_nodes(dataset, 'Dependency from', 'Dependency to', file_name, "Static"),
                    "links": ctj.get_static_links(dataset, file_name)}
 
     # write the dictionary to JSON files
@@ -54,8 +54,8 @@ else:
     dataset = tr.filter_dynamic(dataset)
 
     # create a dictionary and put the nodes and links from the dataset in it
-    dynamic_dict = {"nodes": ctj.get_nodes(dataset, 'Caller', 'Callee', file_name),
-                    "links": ctj.get_dynamic_links(dataset, file_name)}
+    dynamic_dict = {"nodes": ctj.get_nodes(dataset, 'Caller', 'Callee', input_file, "Dynamic"),
+                    "links": ctj.get_dynamic_links(dataset, input_file)}
 
     # write the dictionary to JSON file
     with open(file_name + "-dynamic.json", 'w') as fp:
