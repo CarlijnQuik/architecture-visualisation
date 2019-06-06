@@ -52,9 +52,7 @@ function networkInit() {
     // Adjust the position and velocity of elements
     const forceSim = d3.forceSimulation()
         .force('link', d3.forceLink() // creating a fixed distance between connected elements
-            .id(function (d) {
-                return d.id;
-            })
+            .id(d => d.id)
             //.distance(5)
             .strength(groupingForce.getLinkStrength)
         )
@@ -70,17 +68,15 @@ function networkInit() {
 
     updateNetwork = function(){
 
-        // FISH-dependencies-static
+        // Load json data
         d3.json('datasets/FISH-dependencies-static.json', function (error, data) {
-            // Make sure small nodes are drawn on top of larger nodes
-            data.nodes.sort(function (a, b) {
-                return b.count - a.count;
-            });
 
+            // Make sure small nodes are drawn on top of larger nodes
+            data.nodes.sort((a,b) => b.count - a.count);
+
+            // Define the node radius and link width/stroke range
             nodeRadius.domain([data.nodes[data.nodes.length - 1].count, data.nodes[0].count]);
-            linkWidth.domain(d3.extent(data.links, function (d) {
-                return d.count;
-            }));
+            linkWidth.domain(d3.extent(data.links, d => d.count));
 
             // Update the element positions
             forceSim
@@ -94,13 +90,7 @@ function networkInit() {
                 .data(data.links)
                 .enter()
                 .append("line")
-                .attr("class", "link")
-                //.style("stroke-width", 0.1);
-                .style("stroke-opacity", d => linkWidth(d.count));
-
-            // link.append('title').text(function (d) {
-            //     return d.message;
-            // });
+                .attr("class", "link");
 
             // Define node properties
             let node = networkSVG
@@ -109,75 +99,96 @@ function networkInit() {
                 .enter()
                 .append("circle")
                 .attr("class", "node")
-                // .attr("r", 5)
                 .attr("r", d => nodeRadius(d.count))
-                .style("fill", d => color(d.package))
                 .call(drag);
 
-            // node.append('title').text(function (d) {
-            //     return d.name;
-            // });
+            useDefaultStyle()
+
+            function useDefaultStyle(){
+                link
+                    .style("stroke-opacity", d => linkWidth(d.count))
+                    .style("stroke", "#5f575a")
+                    .style("stroke-width", 0.1);
+
+                node
+                    .style("fill", d => color(d.package))
+                    .style("stroke", "#fff")
+                    .style("stroke-width", "1px");
+
+            }
+
+            // Highlight the links connected to the nodes (instead of using default)
+            function highlightConnected(g) {
+                link.filter(d => d.source === g)
+                    .style("stroke", "red")
+                    .style("stroke-width", 1);
+                // .style("marker-end", function () { return 'url(#arrowHeadInflow)'; })
+                // .style("stroke", OUTFLOW_COLOR)
+                // .style("opacity", OPACITY.LINK_DEFAULT);
+
+                link.filter(d => d.target === g)
+                // .style("marker-end", function () { return 'url(#arrowHeadOutlow)'; })
+                    .style("stroke", "green")
+                    .style("stroke-width", 1);
+                // .style("opacity", OPACITY.LINK_DEFAULT);
+            }
 
             // Joins the nodes array to elements and updates their positions
             forceSim.on("tick", function () {
                 link
-                    .attr('x1', function (d) {
-                        return d.source.x;
-                    })
-                    .attr('x2', function (d) {
-                        return d.target.x;
-                    })
-                    .attr('y1', function (d) {
-                        return d.source.y;
-                    })
-                    .attr('y2', function (d) {
-                        return d.target.y;
-                    });
+                    .attr('x1', d => d.source.x)
+                    .attr('x2', d => d.target.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('y2', d => d.target.y);
 
                 node
-                    .attr('cx', function (d) {
-                        return d.x;
-                    })
-                    .attr('cy', function (d) {
-                        return d.y;
-                    });
+                    .attr('cx', d => d.x)
+                    .attr('cy', d => d.y);
             });
+
+            // Show the tooltip with info about the selected item
+            function tooltipOnOff(tooltip,hidden){
+                // Find mouse position and unhide general tooltip
+                d3.select("#tooltip")
+                    .style("top", (d3.event.pageY) + 20 + "px")
+                    .style("left", (d3.event.pageX) + 20 + "px")
+                    .classed("hidden", hidden);
+
+                // Unhide specific tooltip
+                d3.select(tooltip).classed("hidden", hidden);
+
+            }
 
             // ----------------------------
             // Define node interaction
             //----------------------------
 
             node
-                .on("mouseenter", function(dn) {
+                .on("mouseenter", function(d) {
                     // Make node color red
                     d3.select(this).style("fill", "red");
 
-                    // Find mouse position
-                    d3.select("#tooltip")
-                        .style("top", (d3.event.pageY) + 20 + "px")
-                        .style("left", (d3.event.pageX) + 20 + "px");
-
                     // Edit tooltip values
-                    d3.selectAll(".className").text(dn.class); // class name
-                    d3.select("#nodeName").text(dn.name); // full node name
-                    d3.select("#package").text(dn.package); // package name
-                    d3.selectAll(".count").text(dn.count); // no. of occurrences
-                    d3.selectAll(".inputFile").text(dn.origin); // input file of data
-                    d3.selectAll(".dataType").text(dn.dataType); // static or dynamic
+                    d3.selectAll(".className").text(d.class); // class name
+                    d3.select("#nodeName").text(d.name); // full node name
+                    d3.select("#package").text(d.package); // package name
+                    d3.selectAll(".count").text(d.count); // no. of occurrences
+                    d3.selectAll(".inputFile").text(d.origin); // input file of data
+                    d3.selectAll(".dataType").text(d.dataType); // static or dynamic
 
-                    // Show tooltips
-                    d3.select("#tooltip").classed("hidden", false);
-                    d3.select("#networkNodeTooltip").classed("hidden", false);
+                    // Show tooltip
+                    tooltipOnOff("#networkNodeTooltip",false)
 
+                    // Highlight connected links
+                    highlightConnected(d);
 
                 })
-                .on("mouseout", function(dn) {
-                    // Restore color
-                    d3.select(this).style("fill", dn => color(dn.package));
+                .on("mouseout", function(d) {
+                    // Restore node style
+                    useDefaultStyle();
 
                     // Hide tooltip
-                    d3.select("#tooltip").classed("hidden", true);
-                    d3.select("#networkNodeTooltip").classed("hidden", true);
+                    tooltipOnOff("#networkNodeTooltip",true)
 
                 });
 
@@ -186,53 +197,41 @@ function networkInit() {
             //----------------------------
 
             link
-                .on("mouseenter", function(dl) {
+                .on("mouseenter", function(d) {
                     // Change style
                     d3.select(this)
                         .style("stroke", "red")
                         .style("stroke-width", 2);
 
-                    // Find mouse position
-                    d3.select("#tooltip")
-                        .style("top", (d3.event.pageY) + 20 + "px")
-                        .style("left", (d3.event.pageX) + 20 + "px");
-
                     // Edit tooltip values
-                    d3.select("#sourceClass").text(dl.sourceClass);
-                    d3.select("#targetClass").text(dl.targetClass);
-                    d3.select("#linkMethod").text(dl.method);
-                    d3.select("#depType").text(dl.type);
-                    d3.select("#depSubtype").text(dl.subtype);
-                    d3.select("#codeLine").text(dl.line);
-                    d3.select("#isDirect").text(dl.direct);
-                    d3.select("#isInheritance").text(dl.inheritance);
-                    d3.select("#isInnerClass").text(dl.innerclass);
-                    d3.select("#linkSource").text(dl.source.name);
-                    d3.select("#linkTarget").text(dl.target.name);
-                    d3.selectAll(".count").text(dl.count);
-                    d3.selectAll(".inputFile").text(dl.origin); // input file of data
-                    d3.select("#linkMessage").text(dl.message);
-                    d3.selectAll(".dataType").text(dl.dataType); // static or dynamic
+                    d3.select("#sourceClass").text(d.sourceClass);
+                    d3.select("#targetClass").text(d.targetClass);
+                    d3.select("#linkMethod").text(d.method);
+                    d3.select("#depType").text(d.type);
+                    d3.select("#depSubtype").text(d.subtype);
+                    d3.select("#codeLine").text(d.line);
+                    d3.select("#isDirect").text(d.direct);
+                    d3.select("#isInheritance").text(d.inheritance);
+                    d3.select("#isInnerClass").text(d.innerclass);
+                    d3.select("#linkSource").text(d.source.name);
+                    d3.select("#linkTarget").text(d.target.name);
+                    d3.selectAll(".count").text(d.count);
+                    d3.selectAll(".inputFile").text(d.origin); // input file of data
+                    d3.select("#linkMessage").text(d.message);
+                    d3.selectAll(".dataType").text(d.dataType); // static or dynamic
 
-                    // Show tooltips
-                    d3.select("#tooltip").classed("hidden", false);
-                    d3.select("#networkLinkTooltip").classed("hidden", false);
-
+                    // Show tooltip
+                    tooltipOnOff("#networkLinkTooltip", false);
 
                 })
-                .on("mouseout", function(dl) {
+                .on("mouseout", function(d) {
                     // Restore style
-                    d3.select(this)
-                        .style("stroke", "#5f575a")
-                        .style("stroke-width", 0.1);
+                    useDefaultStyle()
 
                     // Hide tooltip
-                    d3.select("#tooltip").classed("hidden", true);
-                    d3.select("#networkLinkTooltip").classed("hidden", true);
+                    tooltipOnOff("#networkLinkTooltip",true)
 
                 });
-
-
 
             // ----------------------------
             // Define template behaviour
@@ -278,8 +277,6 @@ function networkInit() {
             } else {
                 forceSim.force("package").deleteTemplate(networkSVG);
             }
-
-
 
         });
 
