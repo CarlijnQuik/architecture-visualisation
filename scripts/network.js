@@ -11,6 +11,7 @@ function networkInit() {
         NODE_DEFAULT_FILL: "#fff", // Node color
         NODE_DEFAULT_STROKE: d => color(d.package), // Color of node border
         LINK_DEFAULT_STROKE: "#999", // Color of links
+        LINK_HIGHLIGHT: "#050405",
         INGOING: "#1b9e77",
         OUTGOING: "#D63028",
         TIE: "#d66409",
@@ -25,6 +26,8 @@ function networkInit() {
 
         // d => linkStrength(d.count), width according to count
     };
+
+    const TRANSITION_DURATION = 400;
 
     // Define line width
     const STROKE_WIDTH = {
@@ -132,25 +135,41 @@ function networkInit() {
                 .attr("r", d => nodeRadius(d.count))
                 .call(drag);
 
-            useDefaultStyle()
+            useDefaultStyle();
+
+            function useDefaultStyle(){
+                useDefaultLinkStyle();
+                useDefaultNodeStyle();
+            }
+
+            // Used when temporarily disabling user interractions to allow animations to complete
+           // function  disableUserInterractions(time) {
+           //      isTransitioning = true;
+           //      setTimeout(function(){
+           //          isTransitioning = false;
+           //      }, time);
+           //  };
 
             // Default styling properties
-            function useDefaultStyle(){
+            function useDefaultLinkStyle() {
                 link
                     .style("stroke", COLOR.LINK_DEFAULT_STROKE) // The color of the link
                     .style("stroke-width", STROKE_WIDTH.LINK_DEFAULT)
-                    .style("fill-opacity", OPACITY.LINK_DEFAULT)
-                    .style("visibility", "visible");
+                    .style("stroke-opacity", OPACITY.LINK_DEFAULT)
+                    .style("visibility", "visible")
+                    .transition().duration(TRANSITION_DURATION);
 
                 // d3.scaleOrdinal()
                 //     .range(d3.schemeGreys[7]);
+            }
 
+            function useDefaultNodeStyle(){
                 node
                     .style("stroke", COLOR.NODE_DEFAULT_STROKE) // The border around the node
                     .style("fill", COLOR.NODE_DEFAULT_FILL)
                     .style("stroke-width", STROKE_WIDTH.NODE_DEFAULT)
-                    .style("fill-opacity", OPACITY.NODE_DEFAULT);
-
+                    .style("fill-opacity", OPACITY.NODE_DEFAULT)
+                    .transition().duration(TRANSITION_DURATION);
             }
 
             // Highlight the links connected to the nodes (instead of using default)
@@ -158,20 +177,27 @@ function networkInit() {
                 let outgoingLinks = link.filter(d => d.source === g);
                 outgoingLinks
                     .style("stroke", COLOR.OUTGOING)
-                    //.style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
-                    .style("opacity", OPACITY.LINK_HIGHLIGHT);
-                // .style("marker-end", function () { return 'url(#arrowHeadInflow)'; })
+                    .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
+                    .transition().duration(TRANSITION_DURATION);
 
                 let incomingLinks = link.filter(d => d.target === g);
                 incomingLinks
-                // .style("marker-end", function () { return 'url(#arrowHeadOutlow)'; })
                     .style("stroke", COLOR.INGOING)
-                    //.style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
-                    .style("opacity", OPACITY.LINK_HIGHLIGHT);
+                    .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
+                    .transition().duration(TRANSITION_DURATION);
 
+                // Hide unconnected links
                 let unconnectedLinks = link.filter(d => d.source !== g && d.target !== g);
                 unconnectedLinks
-                    .style("visibility", "hidden");
+                    .style("visibility", "hidden")
+                    .transition().duration(TRANSITION_DURATION);
+
+            }
+
+            function colorNodeInOut(g){
+                // Define incoming and outgoing links
+                let outgoingLinks = link.filter(d => d.source === g);
+                let incomingLinks = link.filter(d => d.target === g);
 
                 // Make node color red or green according to fan in/out ratio
                 if(outgoingLinks._groups[0].length > incomingLinks._groups[0].length){
@@ -205,10 +231,12 @@ function networkInit() {
                 d3.select("#tooltip")
                     .style("top", (d3.event.pageY) + 20 + "px")
                     .style("left", (d3.event.pageX) + 20 + "px")
-                    .classed("hidden", hidden);
+                    .classed("hidden", hidden)
+                    .transition().duration(TRANSITION_DURATION);
 
                 // Unhide specific tooltip
-                d3.select(tooltip).classed("hidden", hidden);
+                d3.select(tooltip).classed("hidden", hidden)
+                    .transition().duration(TRANSITION_DURATION);
 
             }
 
@@ -216,12 +244,15 @@ function networkInit() {
             // Define node interaction
             //----------------------------
 
+            let clicked = false;
+
             node
                 .on("mouseenter", function(d) {
-                    // Highlight connected links and selected node
+                    // Highlight selected node
                     d3.select(this)
-                        .style("fill",  highlightConnected(d))
-                        .style("fill-opacity", OPACITY.NODE_HIGHLIGHT);
+                        .style("fill", colorNodeInOut(d))
+                        .style("fill-opacity", OPACITY.NODE_HIGHLIGHT)
+                        .transition().duration(TRANSITION_DURATION);
 
                     // Edit tooltip values
                     d3.selectAll(".className").text(d.class); // class name
@@ -234,13 +265,20 @@ function networkInit() {
                     // Show tooltip
                     tooltipOnOff("#networkNodeTooltip",false)
 
-                })
-                .on("mouseout", function(d) {
-                    // Restore node style
-                    useDefaultStyle();
+                    // Highlight connected nodes
+                    highlightConnected(d);
 
+                })
+                // .on("click", function(d){
+                //
+                //
+                // })
+                .on("mouseout", function(d) {
                     // Hide tooltip
                     tooltipOnOff("#networkNodeTooltip",true)
+
+                    // Restore styles back to default
+                    useDefaultStyle();
 
                 });
 
@@ -253,7 +291,9 @@ function networkInit() {
                     // Change style
                     d3.select(this)
                         .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
-                        .style("opacity", OPACITY.LINK_HIGHLIGHT);
+                        .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
+                        .style("stroke", COLOR.LINK_HIGHLIGHT)
+                        .transition().duration(TRANSITION_DURATION);
 
                     // Edit tooltip values
                     d3.select("#sourceClass").text(d.sourceClass);
