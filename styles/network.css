@@ -5,26 +5,28 @@
 }
 
 .link {
-    stroke: #5f575a;
+    stroke: #999;
+    stroke-opacity: 0.7;
     stroke-width: 0.1;
 }
 
 .node {
     stroke: #fff;
     stroke-width: 1px;
+    cursor: move;
 }
 
 /* Treemap template boxes */
-rect {
+rect.cell {
     fill: none;
-    stroke: #363336;
+    stroke: #3b353b;
     stroke-width: 1px;
 }
 
 /* Force template circles */
 circle {
     fill: none;
-    stroke: #363336;
+    stroke: #484548;
     stroke-width: 1px;
 }
 

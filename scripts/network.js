@@ -5,14 +5,42 @@
 
 function networkInit() {
 
+    // Define the colors for the vis
+    let color = d3.scaleOrdinal(d3.schemeCategory20);
+    const COLOR = {
+        NODE_DEFAULT_FILL: "#fff", // Node color
+        NODE_DEFAULT_STROKE: d => color(d.package), // Color of node border
+        LINK_DEFAULT_STROKE: "#999", // Color of links
+        INGOING: "#1b9e77",
+        OUTGOING: "#D63028",
+        TIE: "#d66409",
+    };
+
+    // Define opacity
+    const OPACITY = {
+        NODE_DEFAULT: 0.9,
+        LINK_DEFAULT: 0.7,
+        NODE_HIGHLIGHT: 0.8,
+        LINK_HIGHLIGHT: 0.9
+
+        // d => linkStrength(d.count), width according to count
+    };
+
+    // Define line width
+    const STROKE_WIDTH = {
+        NODE_DEFAULT: "1px",    // Stroke width
+        LINK_DEFAULT: 0.1,      // Line width
+        LINK_HIGHLIGHT: 0.8,
+
+    };
+
     // Set the dimensions and margins of the chart
     let width = 1000;
     let height = 750;
-    let color = d3.scaleOrdinal(d3.schemeCategory20);
 
     // Define the standard node radius and link width
     let nodeRadius = d3.scaleSqrt().range([4, 10]);
-    let linkWidth = d3.scaleLinear().range([1, 2 * nodeRadius.range()[0]]);
+    let linkStrength = d3.scaleLinear().range([1, 2 * nodeRadius.range()[0]]);
 
     // Define dragging behaviour
     let drag = d3.drag()
@@ -22,7 +50,7 @@ function networkInit() {
 
     // Define the template in use
     let useGroupInABox = true,
-        drawTemplate = true,
+        drawTemplate = false,
         template = "treemap";
 
     // Check which view the user has selected
@@ -56,7 +84,7 @@ function networkInit() {
             //.distance(5)
             .strength(groupingForce.getLinkStrength)
         )
-        .force("collide", d3.forceCollide(5)) // preventing elements overlapping
+        .force("collide", d3.forceCollide(7)) // preventing elements overlapping
         .force('center', d3.forceCenter(width / 2, height / 2)); // setting the center of gravity of the system;
     // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
     // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
@@ -74,9 +102,11 @@ function networkInit() {
             // Make sure small nodes are drawn on top of larger nodes
             data.nodes.sort((a,b) => b.count - a.count);
 
-            // Define the node radius and link width/stroke range
+            // Define the node radius and link strength/color range
             nodeRadius.domain([data.nodes[data.nodes.length - 1].count, data.nodes[0].count]);
-            linkWidth.domain(d3.extent(data.links, d => d.count));
+            linkStrength.domain(d3.extent(data.links, d => d.count));
+
+            //let greyScale = d3.scaleOrdinal(d3.schemeGreys[d => linkStrength(d.count)]);
 
             // Update the element positions
             forceSim
@@ -104,33 +134,56 @@ function networkInit() {
 
             useDefaultStyle()
 
+            // Default styling properties
             function useDefaultStyle(){
                 link
-                    .style("stroke-opacity", d => linkWidth(d.count))
-                    .style("stroke", "#5f575a")
-                    .style("stroke-width", 0.1);
+                    .style("stroke", COLOR.LINK_DEFAULT_STROKE) // The color of the link
+                    .style("stroke-width", STROKE_WIDTH.LINK_DEFAULT)
+                    .style("fill-opacity", OPACITY.LINK_DEFAULT)
+                    .style("visibility", "visible");
+
+                // d3.scaleOrdinal()
+                //     .range(d3.schemeGreys[7]);
 
                 node
-                    .style("fill", d => color(d.package))
-                    .style("stroke", "#fff")
-                    .style("stroke-width", "1px");
+                    .style("stroke", COLOR.NODE_DEFAULT_STROKE) // The border around the node
+                    .style("fill", COLOR.NODE_DEFAULT_FILL)
+                    .style("stroke-width", STROKE_WIDTH.NODE_DEFAULT)
+                    .style("fill-opacity", OPACITY.NODE_DEFAULT);
 
             }
 
             // Highlight the links connected to the nodes (instead of using default)
             function highlightConnected(g) {
-                link.filter(d => d.source === g)
-                    .style("stroke", "red")
-                    .style("stroke-width", 1);
+                let outgoingLinks = link.filter(d => d.source === g);
+                outgoingLinks
+                    .style("stroke", COLOR.OUTGOING)
+                    //.style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
+                    .style("opacity", OPACITY.LINK_HIGHLIGHT);
                 // .style("marker-end", function () { return 'url(#arrowHeadInflow)'; })
-                // .style("stroke", OUTFLOW_COLOR)
-                // .style("opacity", OPACITY.LINK_DEFAULT);
 
-                link.filter(d => d.target === g)
+                let incomingLinks = link.filter(d => d.target === g);
+                incomingLinks
                 // .style("marker-end", function () { return 'url(#arrowHeadOutlow)'; })
-                    .style("stroke", "green")
-                    .style("stroke-width", 1);
-                // .style("opacity", OPACITY.LINK_DEFAULT);
+                    .style("stroke", COLOR.INGOING)
+                    //.style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
+                    .style("opacity", OPACITY.LINK_HIGHLIGHT);
+
+                let unconnectedLinks = link.filter(d => d.source !== g && d.target !== g);
+                unconnectedLinks
+                    .style("visibility", "hidden");
+
+                // Make node color red or green according to fan in/out ratio
+                if(outgoingLinks._groups[0].length > incomingLinks._groups[0].length){
+                    return COLOR.OUTGOING;
+                }
+                else if(incomingLinks._groups[0].length > outgoingLinks._groups[0].length){
+                    return COLOR.INGOING;
+                }
+                else {
+                    return COLOR.TIE;
+                }
+
             }
 
             // Joins the nodes array to elements and updates their positions
@@ -165,8 +218,10 @@ function networkInit() {
 
             node
                 .on("mouseenter", function(d) {
-                    // Make node color red
-                    d3.select(this).style("fill", "red");
+                    // Highlight connected links and selected node
+                    d3.select(this)
+                        .style("fill",  highlightConnected(d))
+                        .style("fill-opacity", OPACITY.NODE_HIGHLIGHT);
 
                     // Edit tooltip values
                     d3.selectAll(".className").text(d.class); // class name
@@ -178,9 +233,6 @@ function networkInit() {
 
                     // Show tooltip
                     tooltipOnOff("#networkNodeTooltip",false)
-
-                    // Highlight connected links
-                    highlightConnected(d);
 
                 })
                 .on("mouseout", function(d) {
@@ -200,8 +252,8 @@ function networkInit() {
                 .on("mouseenter", function(d) {
                     // Change style
                     d3.select(this)
-                        .style("stroke", "red")
-                        .style("stroke-width", 2);
+                        .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
+                        .style("opacity", OPACITY.LINK_HIGHLIGHT);
 
                     // Edit tooltip values
                     d3.select("#sourceClass").text(d.sourceClass);
