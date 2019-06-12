@@ -5,7 +5,6 @@ import sys
 import csv_to_json as ctj
 import log_to_csv as ltc
 import pandas as pd
-import transform as tr
 
 # get input files from command prompt
 if len(sys.argv) > 1:
@@ -24,8 +23,8 @@ if extension == 'csv':
     # read input file as pandas data frames
     dataset = pd.read_csv(input_file, sep=';')
 
-    # filter out unnecessary data
-    dataset = tr.filter_static(dataset)
+    # remove NaN from fields
+    dataset.fillna("Is.Empty", inplace=True)
 
     # create a dictionary and put the nodes and links from the dataset in it
     static_dict = {"nodes": ctj.get_nodes(dataset, 'Dependency from', 'Dependency to', file_name, "Static"),
@@ -40,8 +39,8 @@ else:
     dynamic_csv = ltc.get_csv(input_file, file_name + "-dynamic.csv")
     dataset = pd.read_csv(dynamic_csv, sep=';')
 
-    # filter out unnecessary data
-    dataset = tr.filter_dynamic(dataset)
+    # remove NaN from fields
+    dataset.fillna("Is.Empty", inplace=True)
 
     # create a dictionary and put the nodes and links from the dataset in it
     dynamic_dict = {"nodes": ctj.get_nodes(dataset, 'Caller', 'Callee', input_file, "Dynamic"),

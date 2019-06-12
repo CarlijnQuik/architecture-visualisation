@@ -19,6 +19,7 @@
 
     <!--JS scripts-->
     <script type="text/javascript" src="scripts/network.js"></script>
+    <script type="text/javascript" src="scripts/data_helper.js"></script>
     <script type="text/javascript" src="scripts/barchart.js"></script>
     <script type="text/javascript" src="scripts/main.js"></script>
 
@@ -88,27 +89,24 @@
                     <option value="force">Force</option>
                 </select>
 
-                <!-- Select abstraction level drop down -->
-<!--                <select id="selectAbstraction">-->
-<!--                    <option value="packageLevel3">Package level 3</option>-->
-<!--                    <option value="packageLevel2">Package level 2</option>-->
-<!--                    <option value="packageLevel1">Package level 1</option>-->
-<!--                    <option value="classLevel">Class level</option>-->
-<!--                </select>-->
-
-<!--                &lt;!&ndash; Filter data drop down &ndash;&gt;-->
-<!--                <div id="nodeNames" class="dropdown-check-list" tabindex="100">-->
-<!--                    <span class="anchor">Filter data</span>-->
-<!--                    <ul class="items">-->
-<!--                        <li><input type="checkbox" />Apple </li>-->
-<!--                        <li><input type="checkbox" />Orange</li>-->
-<!--                        <li><input type="checkbox" />Grapes </li>-->
-<!--                        <li><input type="checkbox" />Berry </li>-->
-<!--                        <li><input type="checkbox" />Mango </li>-->
-<!--                        <li><input type="checkbox" />Banana </li>-->
-<!--                        <li><input type="checkbox" />Tomato</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
+                <!-- Filter drop down -->
+                <dl class="dropdown">
+                    <dt>
+                        <a href="#">
+                            <span class="hida">Select</span>
+                            <p class="multiSel"></p>
+                        </a>
+                    </dt>
+                    <dd>
+                        <div class="mutliSelect">
+                            <ul>
+                                <li><input type="checkbox" value="Java" checked="checked"/>Java</li>
+                                <li><input type="checkbox" value="xLibraries" checked="checked" />xLibraries</li>
+                            </ul>
+                        </div>
+                    </dd>
+                    <button>Filter</button>
+                </dl>
 
                 <div id='network' class='vis'></div>
             </div>

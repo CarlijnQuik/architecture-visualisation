@@ -60,19 +60,24 @@ function networkInit() {
     d3.select("#checkGroupInABox").property("checked", useGroupInABox);
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
     d3.select("#selectTemplate").property("value", template);
+    //d3.select("#filterData").property("value", template);
     //d3.select("#selectAbstraction").property("value", abstraction);
 
-    // let checkList = document.getElementById('nodeNames');
-    // checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
-    //     if (checkList.classList.contains('visible'))
-    //         checkList.classList.remove('visible');
-    //     else
-    //         checkList.classList.add('visible');
-    // }
-    //
-    // checkList.onblur = function(evt) {
-    //     checkList.classList.remove('visible');
-    // }
+    //----------------------------
+    // Dropdown filter behaviour
+    //----------------------------
+
+    $(".dropdown dt a").on('click', function () {
+        $(".dropdown dd ul").slideToggle('fast');
+    });
+
+    $(".dropdown dd ul li a").on('click', function () {
+        $(".dropdown dd ul").hide();
+    });
+
+    //----------------------------
+    // Define SVG and force simulation
+    //----------------------------
 
     // Define the svg and connect it to the html/css id "nodelink"
     const networkSVG = d3
@@ -116,8 +121,29 @@ function networkInit() {
     // });
 
     // ----------------------------
-    // Draw network idiom
-    //-----------------------------
+    // Define dragging behaviour
+    //----------------------------
+
+    function dragStart(d) {
+        if (!d3.event.active) forceSim.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragging(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragEnd(d) {
+        if (!d3.event.active) forceSim.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    //----------------------------
+    // Update network with data
+    //----------------------------
 
     // Load json data
     d3.json('datasets/FISH-dependencies-static.json', function (error, data) {
@@ -128,77 +154,13 @@ function networkInit() {
 
         let clicked = false;
 
-        const packageData = getSelectedData("packageLevel", "all");
+        const packageData = getPackageData(allNodes, allLinks, -1);
 
-        //----------------------------
-        // Get the needed data
-        //----------------------------
+        function updateNetwork(selectedData) {
 
-        function getSelectedData(abstraction, selectedPackage) {
-
-            if (abstraction === "classLevel") {
-                let classNodes = Object.create(allNodes);
-                let classLinks = Object.create(allLinks);
-                console.log("no. of class nodes and links:", classNodes.length, classLinks.length)
-
-                // Define node parent
-                classNodes.map(function (node) {
-                    node.parent = node.name.split('/').slice(0, -1).join('/');
-                })
-
-                // Filter only nodes and links from selected package
-                classNodes = classNodes.filter((node) => (node.parent === selectedPackage));
-                classLinks = classLinks.filter((link) => (link.source.name.split('/').slice(0, -1).join('/') === selectedPackage && link.target.name.split('/').slice(0, -1).join('/') === selectedPackage));
-
-                return [getUniqueNodes(classNodes), classLinks];
-
-            }
-            else if (abstraction === "packageLevel") {
-                let packageNodes = Object.create(allNodes);
-                let packageLinks = Object.create(allLinks);
-                console.log("no. of package nodes and links:", packageNodes.length, packageLinks.length)
-
-                // Rename name and parent to one abstraction level higher
-                packageNodes.map(function (node) {
-                    node.parent = node.name.split('/').slice(0, -2).join('/');
-                    node.name = node.name.split('/').slice(0, -1).join('/');
-
-                });
-
-                // Rename source and target to one abstraction level higher
-                packageLinks.map(function (link) {
-                    link.source = link.source.toString().split('/').slice(0, -1).join('/');
-                    link.target = link.target.toString().split('/').slice(0, -1).join('/');
-                });
-
-                // Set node and link count to the count of the node in the original dataset (not to 1 because the node is unique)
-                packageNodes.map(function (node) {
-                    node.count = packageNodes.filter((v) => (v.name === node.name)).length;
-                });
-                // packageLinks.map(function (link) {
-                //     link.count = packageLinks.filter((v) => (v.message === link.message)).length;
-                // });
-
-                return [getUniqueNodes(packageNodes), packageLinks];
-
-            }
-
-            function getUniqueNodes(inputNodes) {
-                let seen = new Set();
-                let uniqueNodes = inputNodes.filter(node => {
-                    const duplicate = seen.has(node.name);
-                    seen.add(node.name);
-                    return !duplicate;
-                });
-                return uniqueNodes;
-            }
-        }
-
-        //----------------------------
-        // Update network with new data
-        //----------------------------
-
-        function updateNetwork (selectedData) {
+            data.nodes = selectedData[0];
+            data.links = selectedData[1];
+            console.log("start update with:", data.links.length, data.nodes.length, data);
 
             //----------------------------
             // Refresh view
@@ -216,12 +178,41 @@ function networkInit() {
             // Update data properties
             //----------------------------
 
-            data.nodes = selectedData[0];
-            data.links = selectedData[1];
-            console.log("start update with:", data.links.length, data.nodes.length);
+
+            // Get an array of selected values in filter
+            // function getSelectedValues(){
+            //     let selected = [];
+            //     $('.mutliSelect input[type="checkbox"]').each(function() {
+            //
+            //         selected.push($(this).attr('value'));
+            //
+            //     });
+            //
+            //     return selected;
+            // }
+
+            // $(document).bind('click', function(e) {
+            //     var $clicked = $(e.target);
+            //     if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
+            //
+            // });
+
+            // Filter data
+            //let filteredData = getSelectedValues();
+            //console.log(filteredData);
+            //filteredData.map(filter => filterData(filter));
+
+
+            function filterData(filterValue) {
+                console.log(filterValue);
+                data.nodes = data.nodes.filter((node) => !node.name.startsWith(filterValue));
+                data.links = data.links.filter((link) => !link.source.toString().startsWith(filterValue) || !link.target.toString().startsWith(filterValue));
+                updateNetwork([data.nodes, data.links]);
+
+            }
 
             // Make sure small nodes are drawn on top of larger nodes
-            data.nodes.sort((a,b) => b.count - a.count);
+            data.nodes.sort((a, b) => b.count - a.count);
 
             // Define the node radius and link strength/color range
             nodeRadius.domain([data.nodes[data.nodes.length - 1].count, data.nodes[0].count]);
@@ -260,7 +251,7 @@ function networkInit() {
             // Style network
             useDefaultStyle();
 
-            function useDefaultStyle(){
+            function useDefaultStyle() {
                 useDefaultLinkStyle();
                 useDefaultNodeStyle();
             }
@@ -271,19 +262,19 @@ function networkInit() {
                     .style("stroke", COLOR.LINK_DEFAULT_STROKE) // The color of the link
                     .style("stroke-width", STROKE_WIDTH.LINK_DEFAULT)
                     .style("stroke-opacity", OPACITY.LINK_DEFAULT);
-                    //.transition().duration(TRANSITION_DURATION);
+                //.transition().duration(TRANSITION_DURATION);
 
                 // d3.scaleOrdinal()
                 //     .range(d3.schemeGreys[7]);
             }
 
-            function useDefaultNodeStyle(){
+            function useDefaultNodeStyle() {
                 node
                     .style("stroke", COLOR.NODE_DEFAULT_STROKE) // The border around the node
                     .style("fill", COLOR.NODE_DEFAULT_FILL)
                     .style("stroke-width", STROKE_WIDTH.NODE_DEFAULT)
                     .style("fill-opacity", OPACITY.NODE_DEFAULT);
-                    //.transition().duration(TRANSITION_DURATION)
+                //.transition().duration(TRANSITION_DURATION)
             }
 
             // Highlight the links connected to the nodes (instead of using default)
@@ -293,36 +284,34 @@ function networkInit() {
                     .style("stroke", COLOR.OUTGOING)
                     .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
                     .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT);
-                    //.transition().duration(TRANSITION_DURATION)
+                //.transition().duration(TRANSITION_DURATION)
 
                 let incomingLinks = link.filter(d => d.target === g);
                 incomingLinks
                     .style("stroke", COLOR.INGOING)
                     .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
                     .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT);
-                    //.transition().duration(TRANSITION_DURATION);
+                //.transition().duration(TRANSITION_DURATION);
 
                 // Hide unconnected links
                 let unconnectedLinks = link.filter(d => d.source !== g && d.target !== g);
                 unconnectedLinks
                     .style("stroke-opacity", OPACITY.LINK_HIDDEN);
-                    //.transition().duration(TRANSITION_DURATION);
+                //.transition().duration(TRANSITION_DURATION);
 
             }
 
-            function colorNodeInOut(g){
+            function colorNodeInOut(g) {
                 // Define incoming and outgoing links
                 let outgoingLinks = link.filter(d => d.source === g);
                 let incomingLinks = link.filter(d => d.target === g);
 
                 // Make node color red or green according to fan in/out ratio
-                if(outgoingLinks._groups[0].length > incomingLinks._groups[0].length){
+                if (outgoingLinks._groups[0].length > incomingLinks._groups[0].length) {
                     return COLOR.OUTGOING;
-                }
-                else if(incomingLinks._groups[0].length > outgoingLinks._groups[0].length){
+                } else if (incomingLinks._groups[0].length > outgoingLinks._groups[0].length) {
                     return COLOR.INGOING;
-                }
-                else {
+                } else {
                     return COLOR.TIE;
                 }
 
@@ -342,17 +331,17 @@ function networkInit() {
             });
 
             // Show the tooltip with info about the selected item
-            function tooltipOnOff(tooltip,hidden){
+            function tooltipOnOff(tooltip, hidden) {
                 // Find mouse position and unhide general tooltip
                 d3.select("#tooltip")
                     .style("top", (d3.event.pageY) + 20 + "px")
                     .style("left", (d3.event.pageX) + 20 + "px")
                     .classed("hidden", hidden);
-                    //.transition().duration(TRANSITION_DURATION);
+                //.transition().duration(TRANSITION_DURATION);
 
                 // Unhide specific tooltip
                 d3.select(tooltip).classed("hidden", hidden);
-                    //.transition().duration(TRANSITION_DURATION);
+                //.transition().duration(TRANSITION_DURATION);
 
             }
 
@@ -361,12 +350,12 @@ function networkInit() {
             //----------------------------
 
             node
-                .on("mouseenter", function(d) {
+                .on("mouseenter", function (d) {
                     // Highlight selected node
                     d3.select(this)
                         .style("fill", colorNodeInOut(d))
                         .style("fill-opacity", OPACITY.NODE_HIGHLIGHT);
-                        //.transition().duration(TRANSITION_DURATION);
+                    //.transition().duration(TRANSITION_DURATION);
 
                     // Edit tooltip values
                     d3.selectAll(".name").text(d.name); // full node name
@@ -376,23 +365,22 @@ function networkInit() {
                     d3.selectAll(".dataType").text(d.dataType); // static or dynamic
 
                     // Show tooltip
-                    tooltipOnOff("#networkNodeTooltip",false)
+                    tooltipOnOff("#networkNodeTooltip", false)
 
                     // Highlight connected nodes
                     highlightConnected(d);
 
                 })
-                .on("click", function(d){
+                .on("click", function (d) {
                     // Hide tooltip
-                    tooltipOnOff("#networkNodeTooltip",true)
+                    tooltipOnOff("#networkNodeTooltip", true)
 
                     // Check if clicked before
-                    if(clicked === false){
+                    if (clicked === false) {
                         clicked = true;
                         console.log("selected package:", d.parent);
-                        updateNetwork(getSelectedData("classLevel", d.parent));
-                    }
-                    else if(clicked === true){
+                        updateNetwork(getClassData(allNodes, allLinks, d.parent));
+                    } else if (clicked === true) {
                         console.log(clicked)
                         clicked = false;
                         updateNetwork(packageData);
@@ -400,9 +388,9 @@ function networkInit() {
                     }
 
                 })
-                .on("mouseout", function(d) {
+                .on("mouseout", function (d) {
                     // Hide tooltip
-                    tooltipOnOff("#networkNodeTooltip",true)
+                    tooltipOnOff("#networkNodeTooltip", true)
 
                     // Restore styles back to default
                     useDefaultStyle();
@@ -414,13 +402,13 @@ function networkInit() {
             //----------------------------
 
             link
-                .on("mouseenter", function(d) {
+                .on("mouseenter", function (d) {
                     // Change style
                     d3.select(this)
                         .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
                         .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
                         .style("stroke", COLOR.LINK_HIGHLIGHT);
-                        //.transition().duration(TRANSITION_DURATION);
+                    //.transition().duration(TRANSITION_DURATION);
 
                     // Edit tooltip values
                     d3.select("#linkMessage").text(d.message);
@@ -441,12 +429,12 @@ function networkInit() {
                     tooltipOnOff("#networkLinkTooltip", false);
 
                 })
-                .on("mouseout", function(d) {
+                .on("mouseout", function (d) {
                     // Restore style
                     useDefaultStyle()
 
                     // Hide tooltip
-                    tooltipOnOff("#networkLinkTooltip",true)
+                    tooltipOnOff("#networkLinkTooltip", true)
 
                 });
 
@@ -502,28 +490,14 @@ function networkInit() {
 
     });
 
-    // ----------------------------
-    // Define dragging behaviour
-    //----------------------------
-
-    function dragStart(d) {
-        if (!d3.event.active) forceSim.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-    }
-
-    function dragging(d) {
-        d.fx = d3.event.x;
-        d.fy = d3.event.y;
-    }
-
-    function dragEnd(d) {
-        if (!d3.event.active) forceSim.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-    }
-
-
-
 }
+
+
+
+
+
+
+
+
+
 

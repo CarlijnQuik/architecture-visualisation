@@ -20,6 +20,7 @@ def get_nodes(dataset, fr, to, file_name, data_type):
         node_dict = {'name': '/'.join(node.split('.')),  # fullname
                      'origin': file_name,
                      'dataType': data_type,
+                     'parent': '/'.join(node.split('.'))[:-1],
                      'count': int(nodes.count(node))}
 
         # # if the node is not already present in the db
@@ -42,7 +43,6 @@ def get_static_links(dataset, file_name):
     # merge dependency from and to columns to one list
     messages = dataset['Used Entity (variable or method)'].tolist()
     messages = [x for x in messages if x != "Is.Empty"]
-    print(messages)
 
     # create a separate dictionary for all unique links
     for index, row in dataset.iterrows():
