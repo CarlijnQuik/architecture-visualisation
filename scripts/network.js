@@ -26,20 +26,20 @@ function networkInit() {
         LINK_HIDDEN: 0.2,
     };
 
-    // Transition from one state to the other
-    const TRANSITION_DURATION = 400;
-
     // Define line width
-    const STROKE_WIDTH = {
+    let STROKE_WIDTH = {
         NODE_DEFAULT: "1px",    // Stroke width
         LINK_DEFAULT: 0.1,      // Line width
         LINK_HIGHLIGHT: d => linkStrength(d.count), // width according to count
 
     };
 
+    // Transition from one state to the other
+    //const TRANSITION_DURATION = 400;
+
     // Set the dimensions and margins of the chart
     let width = 1000;
-    let height = 750;
+    let height = 650;
 
     // Define the standard node radius and link width
     let nodeRadius = d3.scaleSqrt().range([4, 10]);
@@ -54,14 +54,13 @@ function networkInit() {
     // Define the template in use
     let useGroupInABox = true,
         drawTemplate = false,
-        template = "treemap",
-        abstraction = "packageLevel";
+        template = "treemap";
 
     // Check which view the user has selected
     d3.select("#checkGroupInABox").property("checked", useGroupInABox);
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
     d3.select("#selectTemplate").property("value", template);
-    d3.select("#selectAbstraction").property("value", abstraction);
+    //d3.select("#selectAbstraction").property("value", abstraction);
 
     // let checkList = document.getElementById('nodeNames');
     // checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
@@ -107,47 +106,119 @@ function networkInit() {
     // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
     // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
 
+    // // ----------------------------
+    // // Define abstraction level
+    // //----------------------------
+    //
+    // d3.select("#selectAbstraction").on("change", function () {
+    //     abstraction = d3.select("#selectAbstraction").property("value");
+    //     updateNetwork();
+    // });
+
     // ----------------------------
     // Draw network idiom
-    //--------------------
+    //-----------------------------
 
-    updateNetwork = function(){
+    // Load json data
+    d3.json('datasets/FISH-dependencies-static.json', function (error, data) {
 
-        // Load json data
-        d3.json('datasets/FISH-dependencies-static.json', function (error, data) {
+        // Make a copy of data.nodes
+        const allNodes = Object.create(data.nodes);
+        const allLinks = Object.create(data.links);
 
-            if (abstraction === "packageLevel") {
+        let clicked = false;
 
-                // Make a copy of data.nodes
-                const allNodes = Object.create(data.nodes);
+        const packageData = getSelectedData("packageLevel", "all");
+
+        //----------------------------
+        // Get the needed data
+        //----------------------------
+
+        function getSelectedData(abstraction, selectedPackage) {
+
+            if (abstraction === "classLevel") {
+                let classNodes = Object.create(allNodes);
+                let classLinks = Object.create(allLinks);
+                console.log("no. of class nodes and links:", classNodes.length, classLinks.length)
+
+                // Define node parent
+                classNodes.map(function (node) {
+                    node.parent = node.name.split('/').slice(0, -1).join('/');
+                })
+
+                // Filter only nodes and links from selected package
+                classNodes = classNodes.filter((node) => (node.parent === selectedPackage));
+                classLinks = classLinks.filter((link) => (link.source.name.split('/').slice(0, -1).join('/') === selectedPackage && link.target.name.split('/').slice(0, -1).join('/') === selectedPackage));
+
+                return [getUniqueNodes(classNodes), classLinks];
+
+            }
+            else if (abstraction === "packageLevel") {
+                let packageNodes = Object.create(allNodes);
+                let packageLinks = Object.create(allLinks);
+                console.log("no. of package nodes and links:", packageNodes.length, packageLinks.length)
 
                 // Rename name and parent to one abstraction level higher
-                allNodes.map(function (node) {
-                    node.parent = node.name.split('.').slice(0, -2).join('/');
-                    node.name = node.name.split('.').slice(0, -1).join('/');
+                packageNodes.map(function (node) {
+                    node.parent = node.name.split('/').slice(0, -2).join('/');
+                    node.name = node.name.split('/').slice(0, -1).join('/');
 
                 });
 
-                // Filter out unique nodes
-                const seen = new Set();
-                data.nodes = allNodes.filter(node => {
+                // Rename source and target to one abstraction level higher
+                packageLinks.map(function (link) {
+                    link.source = link.source.toString().split('/').slice(0, -1).join('/');
+                    link.target = link.target.toString().split('/').slice(0, -1).join('/');
+                });
+
+                // Set node and link count to the count of the node in the original dataset (not to 1 because the node is unique)
+                packageNodes.map(function (node) {
+                    node.count = packageNodes.filter((v) => (v.name === node.name)).length;
+                });
+                // packageLinks.map(function (link) {
+                //     link.count = packageLinks.filter((v) => (v.message === link.message)).length;
+                // });
+
+                return [getUniqueNodes(packageNodes), packageLinks];
+
+            }
+
+            function getUniqueNodes(inputNodes) {
+                let seen = new Set();
+                let uniqueNodes = inputNodes.filter(node => {
                     const duplicate = seen.has(node.name);
                     seen.add(node.name);
                     return !duplicate;
                 });
-
-                // Set node count to the count of the node in the original dataset (not to 1 because the node is unique)
-                data.nodes.map(function (node) {
-                    node.count = allNodes.filter((v) => (v.name === node.name)).length;
-                });
-
-                data.links.map(function (link) {
-                    link.source = link.source.split('.').slice(0, -1).join('/');
-                    link.target = link.target.split('.').slice(0, -1).join('/');
-                    link.count = data.links.filter((v) => (v.source === link.source && v.target === link.target)).length;
-                });
-
+                return uniqueNodes;
             }
+        }
+
+        //----------------------------
+        // Update network with new data
+        //----------------------------
+
+        function updateNetwork (selectedData) {
+
+            //----------------------------
+            // Refresh view
+            //----------------------------
+
+            networkSVG
+                .selectAll('.link')
+                .remove()
+
+            networkSVG
+                .selectAll('.node')
+                .remove()
+
+            //----------------------------
+            // Update data properties
+            //----------------------------
+
+            data.nodes = selectedData[0];
+            data.links = selectedData[1];
+            console.log("start update with:", data.links.length, data.nodes.length);
 
             // Make sure small nodes are drawn on top of larger nodes
             data.nodes.sort((a,b) => b.count - a.count);
@@ -157,6 +228,10 @@ function networkInit() {
             linkStrength.domain(d3.extent(data.links, d => d.count));
 
             //let greyScale = d3.scaleOrdinal(d3.schemeGreys[d => linkStrength(d.count)]);
+
+            //----------------------------
+            // Draw network
+            //----------------------------
 
             // Update the element positions
             forceSim
@@ -182,6 +257,7 @@ function networkInit() {
                 .attr("r", d => nodeRadius(d.count))
                 .call(drag);
 
+            // Style network
             useDefaultStyle();
 
             function useDefaultStyle(){
@@ -189,21 +265,13 @@ function networkInit() {
                 useDefaultNodeStyle();
             }
 
-            // Used when temporarily disabling user interractions to allow animations to complete
-           // function  disableUserInterractions(time) {
-           //      isTransitioning = true;
-           //      setTimeout(function(){
-           //          isTransitioning = false;
-           //      }, time);
-           //  };
-
             // Default styling properties
             function useDefaultLinkStyle() {
                 link
                     .style("stroke", COLOR.LINK_DEFAULT_STROKE) // The color of the link
                     .style("stroke-width", STROKE_WIDTH.LINK_DEFAULT)
-                    .style("stroke-opacity", OPACITY.LINK_DEFAULT)
-                    .transition().duration(TRANSITION_DURATION);
+                    .style("stroke-opacity", OPACITY.LINK_DEFAULT);
+                    //.transition().duration(TRANSITION_DURATION);
 
                 // d3.scaleOrdinal()
                 //     .range(d3.schemeGreys[7]);
@@ -214,8 +282,8 @@ function networkInit() {
                     .style("stroke", COLOR.NODE_DEFAULT_STROKE) // The border around the node
                     .style("fill", COLOR.NODE_DEFAULT_FILL)
                     .style("stroke-width", STROKE_WIDTH.NODE_DEFAULT)
-                    .style("fill-opacity", OPACITY.NODE_DEFAULT)
-                    .transition().duration(TRANSITION_DURATION);
+                    .style("fill-opacity", OPACITY.NODE_DEFAULT);
+                    //.transition().duration(TRANSITION_DURATION)
             }
 
             // Highlight the links connected to the nodes (instead of using default)
@@ -224,21 +292,21 @@ function networkInit() {
                 outgoingLinks
                     .style("stroke", COLOR.OUTGOING)
                     .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
-                    .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
-                    .transition().duration(TRANSITION_DURATION);
+                    .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT);
+                    //.transition().duration(TRANSITION_DURATION)
 
                 let incomingLinks = link.filter(d => d.target === g);
                 incomingLinks
                     .style("stroke", COLOR.INGOING)
                     .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
-                    .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
-                    .transition().duration(TRANSITION_DURATION);
+                    .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT);
+                    //.transition().duration(TRANSITION_DURATION);
 
                 // Hide unconnected links
                 let unconnectedLinks = link.filter(d => d.source !== g && d.target !== g);
                 unconnectedLinks
-                    .style("stroke-opacity", OPACITY.LINK_HIDDEN)
-                    .transition().duration(TRANSITION_DURATION);
+                    .style("stroke-opacity", OPACITY.LINK_HIDDEN);
+                    //.transition().duration(TRANSITION_DURATION);
 
             }
 
@@ -279,12 +347,12 @@ function networkInit() {
                 d3.select("#tooltip")
                     .style("top", (d3.event.pageY) + 20 + "px")
                     .style("left", (d3.event.pageX) + 20 + "px")
-                    .classed("hidden", hidden)
-                    .transition().duration(TRANSITION_DURATION);
+                    .classed("hidden", hidden);
+                    //.transition().duration(TRANSITION_DURATION);
 
                 // Unhide specific tooltip
-                d3.select(tooltip).classed("hidden", hidden)
-                    .transition().duration(TRANSITION_DURATION);
+                d3.select(tooltip).classed("hidden", hidden);
+                    //.transition().duration(TRANSITION_DURATION);
 
             }
 
@@ -292,15 +360,13 @@ function networkInit() {
             // Define node interaction
             //----------------------------
 
-            let clicked = false;
-
             node
                 .on("mouseenter", function(d) {
                     // Highlight selected node
                     d3.select(this)
                         .style("fill", colorNodeInOut(d))
-                        .style("fill-opacity", OPACITY.NODE_HIGHLIGHT)
-                        .transition().duration(TRANSITION_DURATION);
+                        .style("fill-opacity", OPACITY.NODE_HIGHLIGHT);
+                        //.transition().duration(TRANSITION_DURATION);
 
                     // Edit tooltip values
                     d3.selectAll(".name").text(d.name); // full node name
@@ -316,10 +382,24 @@ function networkInit() {
                     highlightConnected(d);
 
                 })
-                // .on("click", function(d){
-                //
-                //
-                // })
+                .on("click", function(d){
+                    // Hide tooltip
+                    tooltipOnOff("#networkNodeTooltip",true)
+
+                    // Check if clicked before
+                    if(clicked === false){
+                        clicked = true;
+                        console.log("selected package:", d.parent);
+                        updateNetwork(getSelectedData("classLevel", d.parent));
+                    }
+                    else if(clicked === true){
+                        console.log(clicked)
+                        clicked = false;
+                        updateNetwork(packageData);
+
+                    }
+
+                })
                 .on("mouseout", function(d) {
                     // Hide tooltip
                     tooltipOnOff("#networkNodeTooltip",true)
@@ -339,8 +419,8 @@ function networkInit() {
                     d3.select(this)
                         .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
                         .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
-                        .style("stroke", COLOR.LINK_HIGHLIGHT)
-                        .transition().duration(TRANSITION_DURATION);
+                        .style("stroke", COLOR.LINK_HIGHLIGHT);
+                        //.transition().duration(TRANSITION_DURATION);
 
                     // Edit tooltip values
                     d3.select("#linkMessage").text(d.message);
@@ -415,9 +495,12 @@ function networkInit() {
                 forceSim.force("parent").deleteTemplate(networkSVG);
             }
 
-        });
 
-    }
+        }
+
+        updateNetwork(packageData);
+
+    });
 
     // ----------------------------
     // Define dragging behaviour
@@ -440,7 +523,7 @@ function networkInit() {
         d.fy = null;
     }
 
-    updateNetwork()
+
 
 }
 

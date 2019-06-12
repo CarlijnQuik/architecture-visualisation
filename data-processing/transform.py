@@ -14,10 +14,10 @@ def filter_dynamic(dataset):
     dataset.fillna("Is.Empty", inplace=True)
 
     # filter dataset nodes
-    delete_rows(dataset, 'Caller', 'java')
-    delete_rows(dataset, 'Callee', 'java')
-    delete_rows(dataset, 'Caller', 'xLibraries')
-    delete_rows(dataset, 'Callee', 'xLibraries')
+    # delete_rows(dataset, 'Caller', 'java')
+    # delete_rows(dataset, 'Callee', 'java')
+    # delete_rows(dataset, 'Caller', 'xLibraries')
+    # delete_rows(dataset, 'Callee', 'xLibraries')
 
     return dataset
 
@@ -27,10 +27,10 @@ def filter_static(dataset):
     dataset.fillna("Is.Empty", inplace=True)
 
     # # filter dataset nodes
-    delete_rows(dataset, 'Dependency from', 'java')
-    delete_rows(dataset, 'Dependency to', 'java')
-    delete_rows(dataset, 'Dependency from', 'xLibraries')
-    delete_rows(dataset, 'Dependency to', 'xLibraries')
+    # delete_rows(dataset, 'Dependency from', 'java')
+    # delete_rows(dataset, 'Dependency to', 'java')
+    # delete_rows(dataset, 'Dependency from', 'xLibraries')
+    # delete_rows(dataset, 'Dependency to', 'xLibraries')
 
     # filter out dependencies of type call
     to_delete = dataset[dataset['Dependency type'] != 'Call'].index

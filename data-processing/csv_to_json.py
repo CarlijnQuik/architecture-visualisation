@@ -17,10 +17,10 @@ def get_nodes(dataset, fr, to, file_name, data_type):
 
     # create a separate dictionary for all unique nodes
     for node in unique_nodes:
-        node_dict = {'name': node,  # fullname
+        node_dict = {'name': '/'.join(node.split('.')),  # fullname
                      'origin': file_name,
                      'dataType': data_type,
-                     'origin': file_name}
+                     'count': int(nodes.count(node))}
 
         # # if the node is not already present in the db
         # if not nodes_db.find_one({"name": '/'.join(node.split('.'))}):
@@ -41,13 +41,14 @@ def get_static_links(dataset, file_name):
 
     # merge dependency from and to columns to one list
     messages = dataset['Used Entity (variable or method)'].tolist()
-    # unique_messages = list(dict.fromkeys(messages))
+    messages = [x for x in messages if x != "Is.Empty"]
+    print(messages)
 
     # create a separate dictionary for all unique links
     for index, row in dataset.iterrows():
-        link_dict = {'message': row['Used Entity (variable or method)'],
-                     'source': row['Dependency from'],
-                     'target': row['Dependency to'],
+        link_dict = {'message': '/'.join(row['Used Entity (variable or method)'].split('.')),
+                     'source':  '/'.join(row['Dependency from'].split('.')),
+                     'target': '/'.join(row['Dependency to'].split('.')),
                      'type': row['Dependency type'],
                      'subtype': row['Sub type'],
                      'line': row['Line'],
@@ -55,8 +56,8 @@ def get_static_links(dataset, file_name):
                      'inheritance': row['Inheritance Related'],
                      'innerclass': row['Inner Class Related'],
                      'origin': file_name,
-                     'count': "DUMMY",
-                     'dataType': "Static"}
+                     'dataType': "Static",
+                     'count': int(messages.count(row['Used Entity (variable or method)']))}
 
         # append the dictionary to the list of link dictionaries
         list_links.append(link_dict)
@@ -72,7 +73,7 @@ def get_dynamic_links(dataset, file_name):
 
     # merge dependency from and to columns to one list
     messages = dataset['Message'].tolist()
-    # unique_messages = list(dict.fromkeys(messages))
+    messages = [x for x in messages if x != "Is.Empty"]
 
     # create a separate dictionary for all unique links
     for index, row in dataset.iterrows():
@@ -83,11 +84,12 @@ def get_dynamic_links(dataset, file_name):
                      'thread': row['Thread'],
                      'callerID': row['Caller ID'],
                      'calleeID': row['Callee ID'],
-                     'source': row['Caller'],
-                     'target': row['Callee'],
-                     'message': row['Message'],
+                     'source': '/'.join(row['Caller'].split('.')),
+                     'target': '/'.join(row['Callee'].split('.')),
+                     'message': '/'.join(row['Message'].split('.')),
                      'origin': file_name,
-                     'dataType': "Dynamic"}
+                     'dataType': "Dynamic",
+                     'count': int(messages.count(row['Message']))}
 
         # append the dictionary to the list of link dictionaries
         list_links.append(link_dict)
