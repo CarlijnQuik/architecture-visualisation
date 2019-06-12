@@ -5,11 +5,11 @@
 
 function networkInit() {
 
-    // Define the colors for the vis
+    // Define the colors of the vis
     let color = d3.scaleOrdinal(d3.schemeCategory20);
     const COLOR = {
         NODE_DEFAULT_FILL: "#fff", // Node color
-        NODE_DEFAULT_STROKE: d => color(d.package), // Color of node border
+        NODE_DEFAULT_STROKE: d => color(d.parent), // Color of node border
         LINK_DEFAULT_STROKE: "#999", // Color of links
         LINK_HIGHLIGHT: "#050405",
         INGOING: "#1b9e77",
@@ -22,18 +22,18 @@ function networkInit() {
         NODE_DEFAULT: 0.9,
         LINK_DEFAULT: 0.7,
         NODE_HIGHLIGHT: 0.8,
-        LINK_HIGHLIGHT: 0.9
-
-        // d => linkStrength(d.count), width according to count
+        LINK_HIGHLIGHT: 0.9,
+        LINK_HIDDEN: 0.2,
     };
 
+    // Transition from one state to the other
     const TRANSITION_DURATION = 400;
 
     // Define line width
     const STROKE_WIDTH = {
         NODE_DEFAULT: "1px",    // Stroke width
         LINK_DEFAULT: 0.1,      // Line width
-        LINK_HIGHLIGHT: 0.8,
+        LINK_HIGHLIGHT: d => linkStrength(d.count), // width according to count
 
     };
 
@@ -54,12 +54,26 @@ function networkInit() {
     // Define the template in use
     let useGroupInABox = true,
         drawTemplate = false,
-        template = "treemap";
+        template = "treemap",
+        abstraction = "packageLevel";
 
     // Check which view the user has selected
     d3.select("#checkGroupInABox").property("checked", useGroupInABox);
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
     d3.select("#selectTemplate").property("value", template);
+    d3.select("#selectAbstraction").property("value", abstraction);
+
+    // let checkList = document.getElementById('nodeNames');
+    // checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
+    //     if (checkList.classList.contains('visible'))
+    //         checkList.classList.remove('visible');
+    //     else
+    //         checkList.classList.add('visible');
+    // }
+    //
+    // checkList.onblur = function(evt) {
+    //     checkList.classList.remove('visible');
+    // }
 
     // Define the svg and connect it to the html/css id "nodelink"
     const networkSVG = d3
@@ -74,7 +88,7 @@ function networkInit() {
     const groupingForce = forceInABox()
         .strength(0.1) // Strength to foci
         .template(template) // Either treemap or force
-        .groupBy('package') // Setting package as the attribute to group by
+        .groupBy('parent') // Setting package as the attribute to group by
         .enableGrouping(useGroupInABox)
         .forceCharge(-60) // Separation between nodes on the force template
         .nodeSize(4) // Used to compute the size of the template nodes, think of it as the radius the node uses, including its padding
@@ -83,7 +97,7 @@ function networkInit() {
     // Adjust the position and velocity of elements
     const forceSim = d3.forceSimulation()
         .force('link', d3.forceLink() // creating a fixed distance between connected elements
-            .id(d => d.id)
+            .id(d => d.name)
             //.distance(5)
             .strength(groupingForce.getLinkStrength)
         )
@@ -102,6 +116,39 @@ function networkInit() {
         // Load json data
         d3.json('datasets/FISH-dependencies-static.json', function (error, data) {
 
+            if (abstraction === "packageLevel") {
+
+                // Make a copy of data.nodes
+                const allNodes = Object.create(data.nodes);
+
+                // Rename name and parent to one abstraction level higher
+                allNodes.map(function (node) {
+                    node.parent = node.name.split('.').slice(0, -2).join('/');
+                    node.name = node.name.split('.').slice(0, -1).join('/');
+
+                });
+
+                // Filter out unique nodes
+                const seen = new Set();
+                data.nodes = allNodes.filter(node => {
+                    const duplicate = seen.has(node.name);
+                    seen.add(node.name);
+                    return !duplicate;
+                });
+
+                // Set node count to the count of the node in the original dataset (not to 1 because the node is unique)
+                data.nodes.map(function (node) {
+                    node.count = allNodes.filter((v) => (v.name === node.name)).length;
+                });
+
+                data.links.map(function (link) {
+                    link.source = link.source.split('.').slice(0, -1).join('/');
+                    link.target = link.target.split('.').slice(0, -1).join('/');
+                    link.count = data.links.filter((v) => (v.source === link.source && v.target === link.target)).length;
+                });
+
+            }
+
             // Make sure small nodes are drawn on top of larger nodes
             data.nodes.sort((a,b) => b.count - a.count);
 
@@ -114,7 +161,7 @@ function networkInit() {
             // Update the element positions
             forceSim
                 .nodes(data.nodes)
-                .force('package', groupingForce)
+                .force('parent', groupingForce)
                 .force('link').links(data.links);
 
             // Define link properties
@@ -156,7 +203,6 @@ function networkInit() {
                     .style("stroke", COLOR.LINK_DEFAULT_STROKE) // The color of the link
                     .style("stroke-width", STROKE_WIDTH.LINK_DEFAULT)
                     .style("stroke-opacity", OPACITY.LINK_DEFAULT)
-                    .style("visibility", "visible")
                     .transition().duration(TRANSITION_DURATION);
 
                 // d3.scaleOrdinal()
@@ -178,18 +224,20 @@ function networkInit() {
                 outgoingLinks
                     .style("stroke", COLOR.OUTGOING)
                     .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
+                    .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
                     .transition().duration(TRANSITION_DURATION);
 
                 let incomingLinks = link.filter(d => d.target === g);
                 incomingLinks
                     .style("stroke", COLOR.INGOING)
                     .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
+                    .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
                     .transition().duration(TRANSITION_DURATION);
 
                 // Hide unconnected links
                 let unconnectedLinks = link.filter(d => d.source !== g && d.target !== g);
                 unconnectedLinks
-                    .style("visibility", "hidden")
+                    .style("stroke-opacity", OPACITY.LINK_HIDDEN)
                     .transition().duration(TRANSITION_DURATION);
 
             }
@@ -255,9 +303,8 @@ function networkInit() {
                         .transition().duration(TRANSITION_DURATION);
 
                     // Edit tooltip values
-                    d3.selectAll(".className").text(d.class); // class name
-                    d3.select("#nodeName").text(d.name); // full node name
-                    d3.select("#package").text(d.package); // package name
+                    d3.selectAll(".name").text(d.name); // full node name
+                    d3.select("#parent").text(d.parent); // package name
                     d3.selectAll(".count").text(d.count); // no. of occurrences
                     d3.selectAll(".inputFile").text(d.origin); // input file of data
                     d3.selectAll(".dataType").text(d.dataType); // static or dynamic
@@ -296,9 +343,7 @@ function networkInit() {
                         .transition().duration(TRANSITION_DURATION);
 
                     // Edit tooltip values
-                    d3.select("#sourceClass").text(d.sourceClass);
-                    d3.select("#targetClass").text(d.targetClass);
-                    d3.select("#linkMethod").text(d.method);
+                    d3.select("#linkMessage").text(d.message);
                     d3.select("#depType").text(d.type);
                     d3.select("#depSubtype").text(d.subtype);
                     d3.select("#codeLine").text(d.line);
@@ -337,37 +382,37 @@ function networkInit() {
                 // function (l) { return !useGroupInABox? 0.7 :
                 //     l.source.group!==l.target.group ? 0 : 0.1;
                 // }))
-                    .force("package")
+                    .force("parent")
                     .enableGrouping(useGroupInABox);
                 forceSim.alphaTarget(0.5).restart();
             });
 
             d3.select("#selectTemplate").on("change", function () {
-                forceSim.force("package").deleteTemplate(networkSVG);
+                forceSim.force("parent").deleteTemplate(networkSVG);
                 template = d3.select("#selectTemplate").property("value");
                 forceSim.stop();
-                forceSim.force("package").template(template);
+                forceSim.force("parent").template(template);
                 forceSim.alphaTarget(0.5).restart();
                 if (drawTemplate) {
-                    forceSim.force("package").drawTemplate(networkSVG);
+                    forceSim.force("parent").drawTemplate(networkSVG);
                 } else {
-                    forceSim.force("package").deleteTemplate(networkSVG);
+                    forceSim.force("parent").deleteTemplate(networkSVG);
                 }
             });
 
             d3.select("#checkShowTemplate").on("change", function () {
                 drawTemplate = d3.select("#checkShowTemplate").property("checked");
                 if (drawTemplate) {
-                    forceSim.force("package").drawTemplate(networkSVG);
+                    forceSim.force("parent").drawTemplate(networkSVG);
                 } else {
-                    forceSim.force("package").deleteTemplate(networkSVG);
+                    forceSim.force("parent").deleteTemplate(networkSVG);
                 }
             });
 
             if (drawTemplate) {
-                forceSim.force("package").drawTemplate(networkSVG);
+                forceSim.force("parent").drawTemplate(networkSVG);
             } else {
-                forceSim.force("package").deleteTemplate(networkSVG);
+                forceSim.force("parent").deleteTemplate(networkSVG);
             }
 
         });

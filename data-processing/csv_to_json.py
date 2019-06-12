@@ -1,8 +1,10 @@
-# example: org/architecturemining/program/example/band/BandMember
-# class_name = '/'.join(node_name.split('.')[:-1]) org/architecturemining/program/example/band
-# package_1 = '/'.join(node_name.split('.')[:-2]) org/architecturemining/program/example
-# package_2 = '/'.join(node_name.split('.')[:-3]) org/architecturemining/program
-# package_2 = '/'.join(node_name.split('.')[:-4]) org/architecturemining
+import pymongo
+
+# client = pymongo.MongoClient('mongodb://localhost:27017/')
+# db = client["archvis"]
+# nodes_db = db['nodes']
+# static_links_db = db['static_links']
+# dynamic_links_db = db['dynamic_links']
 
 
 # return a list of unique node names
@@ -13,25 +15,23 @@ def get_nodes(dataset, fr, to, file_name, data_type):
     nodes = dataset[fr].tolist() + dataset[to].tolist()
     unique_nodes = list(dict.fromkeys(nodes))
 
-    # for node in unique_nodes:
-    #     package_name = '/'.join(node.split('.')[3])
-    #     packages.append(package_name)
-    #
-    # unique_packages = list(dict.fromkeys(packages))
-
     # create a separate dictionary for all unique nodes
     for node in unique_nodes:
-        node_dict = {'id': '/'.join(node.split('.')),
-                     'count': int(nodes.count(node)),
-                     'name': '/'.join(node.split('.')),  # fullname
-                     'class': ''.join(node.split('.')[-1]),  # classname
+        node_dict = {'name': node,  # fullname
                      'origin': file_name,
                      'dataType': data_type,
-                     'package': '/'.join(node.split('.')[:-1])}
+                     'origin': file_name}
+
+        # # if the node is not already present in the db
+        # if not nodes_db.find_one({"name": '/'.join(node.split('.'))}):
+        # # insert in mongodb
+        # nodes_db.insert_one(node_dict)
 
         # append the dictionary to the list of node dictionaries
         list_nodes.append(node_dict)
 
+    # insert in mongodb
+    # nodes_db.insert_many(list_nodes)
     return list_nodes
 
 
@@ -45,12 +45,9 @@ def get_static_links(dataset, file_name):
 
     # create a separate dictionary for all unique links
     for index, row in dataset.iterrows():
-        link_dict = {'message': '/'.join(row['Used Entity (variable or method)'].split('.')),
-                     'method': ''.join(row['Used Entity (variable or method)'].split('.')[-1]),
-                     'source': '/'.join(row['Dependency from'].split('.')),
-                     'sourceClass': ''.join(row['Dependency from'].split('.')[-1]),
-                     'target': '/'.join(row['Dependency to'].split('.')),
-                     'targetClass': ''.join(row['Dependency to'].split('.')[-1]),
+        link_dict = {'message': row['Used Entity (variable or method)'],
+                     'source': row['Dependency from'],
+                     'target': row['Dependency to'],
                      'type': row['Dependency type'],
                      'subtype': row['Sub type'],
                      'line': row['Line'],
@@ -58,12 +55,14 @@ def get_static_links(dataset, file_name):
                      'inheritance': row['Inheritance Related'],
                      'innerclass': row['Inner Class Related'],
                      'origin': file_name,
-                     'dataType': "Static",
-                     'count': int(messages.count(row['Used Entity (variable or method)']))}
+                     'count': "DUMMY",
+                     'dataType': "Static"}
 
         # append the dictionary to the list of link dictionaries
         list_links.append(link_dict)
 
+    # insert in mongodb
+    # static_links_db.insert_many(list_links)
     return list_links
 
 
@@ -84,17 +83,15 @@ def get_dynamic_links(dataset, file_name):
                      'thread': row['Thread'],
                      'callerID': row['Caller ID'],
                      'calleeID': row['Callee ID'],
-                     'source': '/'.join(row['Caller'].split('.')[-1]),
-                     'sourceClass': ''.join(row['Caller'].split('.')[-1]),
-                     'target': '/'.join(row['Callee'].split('.')),
-                     'targetClass': ''.join(row['Callee'].split('.')[-1]),
-                     'message': '/'.join(row['Message'].split('.')),
+                     'source': row['Caller'],
+                     'target': row['Callee'],
+                     'message': row['Message'],
                      'origin': file_name,
-                     'method': ''.join(row['Message'].split('.')[-1]),  # method name if applicable
-                     'dataType': "Dynamic",
-                     'count': int(messages.count(row['Message']))}
+                     'dataType': "Dynamic"}
 
         # append the dictionary to the list of link dictionaries
         list_links.append(link_dict)
 
+    # insert in mongodb
+    # dynamic_links_db.insert_many(list_links)
     return list_links

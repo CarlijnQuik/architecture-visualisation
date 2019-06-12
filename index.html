@@ -12,7 +12,9 @@
 
     <!--JS plugins    -->
     <script type="text/javascript" src="plugins/d3.v4.js" charset="utf-8"></script>
+    <script type="text/javascript" src="plugins/underscore.js" charset="utf-8"></script>
     <script type="text/javascript" src="plugins/d3-scale-chromatic.js" charset="utf-8"></script>
+    <script type="text/javascript" src="plugins/jquery.3.3.1.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="plugins/forceInABox.js" charset="utf-8"></script>
 
     <!--JS scripts-->
@@ -28,26 +30,22 @@
     <div id="tooltip" class="hidden">
 
         <div id="networkLinkTooltip" class="hidden">
-            <p> Class: <span class="className" id="sourceClass"> </span> - <span id="linkMethod"></span> -> <span class="className" id="targetClass"></span></p>
+            <p> Name: <span class="bold" id="linkSource"> </span> - <span id="linkMessage"></span> -> <span class="bold" id="linkTarget"></span></p>
             <p> Count: <span class="count"></span></p>
             <p> Type: <span id="depType"></span></p>
             <p> Subtype: <span id="depSubtype"></span></p>
             <p> Direct/indirect: <span id="isDirect"></span></p>
             <p> Inheritance related <span id="isInheritance"></span></p>
             <p> Inner class related: <span id="isInnerClass"></span></p>
-            <p> Source: <span id="linkSource"></span></p>
-            <p> Target: <span id="linkTarget"></span></p>
             <p> Line: <span id="codeLine"></span></p>
-            <p> Message: <span id="linkMessage"></span></p>
             <p> Origin: <span class="inputFile"></span></p>
             <p> Data type: <span class="dataType"></span></p>
         </div>
 
         <div id="networkNodeTooltip" class="hidden">
-            <p> Class: <span class="className"></span> </p>
+            <p> Name: <span class="name"></span> </p>
             <p> Count: <span class="count"></span> </p>
-            <p> Package: <span id="package"></span> </p>
-            <p> Fullname: <span id="nodeName"></span> </p>
+            <p> Parent: <span id="parent"></span> </p>
             <p> Origin: <span class="inputFile"></span> </p>
             <p> Data type: <span class="dataType"></span></p>
         </div>
@@ -79,13 +77,37 @@
                         Relations between classes in the system
                     </div>
                 </div>
+
                 <!-- Selection fields with drop down -->
                 <label><input id="checkGroupInABox" type="checkbox" />Group in a Box</label>
                 <label><input id="checkShowTemplate" type="checkbox" />Show Template</label>
+
+                <!-- Select algorithm drop down -->
                 <select id="selectTemplate">
                     <option value="treemap">Treemap</option>
                     <option value="force">Force</option>
                 </select>
+
+                <!-- Select abstraction level drop down -->
+                <select id="selectAbstraction">
+                    <option value="packageLevel">Package level</option>
+                    <option value="classLevel">Class level</option>
+                </select>
+
+<!--                &lt;!&ndash; Filter data drop down &ndash;&gt;-->
+<!--                <div id="nodeNames" class="dropdown-check-list" tabindex="100">-->
+<!--                    <span class="anchor">Filter data</span>-->
+<!--                    <ul class="items">-->
+<!--                        <li><input type="checkbox" />Apple </li>-->
+<!--                        <li><input type="checkbox" />Orange</li>-->
+<!--                        <li><input type="checkbox" />Grapes </li>-->
+<!--                        <li><input type="checkbox" />Berry </li>-->
+<!--                        <li><input type="checkbox" />Mango </li>-->
+<!--                        <li><input type="checkbox" />Banana </li>-->
+<!--                        <li><input type="checkbox" />Tomato</li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+
                 <div id='network' class='vis'></div>
             </div>
 

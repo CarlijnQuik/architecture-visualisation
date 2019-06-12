@@ -26,7 +26,7 @@ def filter_static(dataset):
     # remove NaN from fields
     dataset.fillna("Is.Empty", inplace=True)
 
-    # filter dataset nodes
+    # # filter dataset nodes
     delete_rows(dataset, 'Dependency from', 'java')
     delete_rows(dataset, 'Dependency to', 'java')
     delete_rows(dataset, 'Dependency from', 'xLibraries')
