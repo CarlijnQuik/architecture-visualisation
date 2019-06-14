@@ -3,48 +3,41 @@
 //----------------------------
 
 function getClassData(nodes, links, selectedPackage) {
-    let classNodes = Object.create(nodes);
-    let classLinks = Object.create(links);
-
     // Filter only nodes and links from selected package
-    classNodes = classNodes.filter((node) => (node.parent === selectedPackage));
-    classLinks = classLinks.filter((link) => (link.source.name.split('/').slice(0, -1).join('/') === selectedPackage && link.target.name.split('/').slice(0, -1).join('/') === selectedPackage));
-    classNodes = getUniqueNodes(classNodes);
+    nodes = nodes.filter((node) => (node.parent === selectedPackage));
+    links = links.filter((link) => (link.source.toString().split('/').slice(0, -1).join('/') === selectedPackage && link.target.toString().split('/').slice(0, -1).join('/') === selectedPackage));
+    nodes = getUniqueNodes(nodes);
 
-    return [classNodes, classLinks];
+    return [nodes, links];
 }
 
 function getPackageData(nodes, links, depth) {
-    let packageNodes = Object.create(nodes);
-    let packageLinks = Object.create(links);
 
     // Rename name and parent to one abstraction level higher
-    packageNodes.map(function (node) {
-        node.parent = node.name.split('/').slice(0, depth-1).join('/');
-        node.name = node.name.split('/').slice(0, depth).join('/');
-
+    nodes.map(function (node) {
+        node.fullname = node.name;
+        node.parent = node.name.split('/').slice(0, Number(depth)-1).join('/');
+        node.name = node.name.split('/').slice(0, Number(depth)).join('/');
     });
 
     // Rename source and target to one abstraction level higher
-    packageLinks.map(function (link) {
-        link.source = link.source.toString().split('/').slice(0, depth).join('/');
-        link.target = link.target.toString().split('/').slice(0, depth).join('/');
+    links.map(function (link) {
+        link.source = link.source.toString().split('/').slice(0, Number(depth)).join('/');
+        link.target = link.target.toString().split('/').slice(0, Number(depth)).join('/');
     });
 
     //let packageNodes = Object.create(packageNodes);
     // let packageLinks = Object.create(data.links);
 
     // Set node and link count
-    packageNodes.map(function (node) {
-        node.count = packageNodes.filter((v) => (v.name === node.name)).length;
+    nodes.map(function (node) {
+        node.count = nodes.filter((v) => (v.name === node.name)).length;
     });
     // packageLinks.map(function (link) {
     //     link.count = packageLinks.filter((v) => (v.message === link.message)).length;
     // });
 
-    packageNodes = getUniqueNodes(packageNodes);
-
-    return [packageNodes, packageLinks];
+    return [getUniqueNodes(nodes), links];
 }
 
 function getUniqueNodes(inputNodes) {

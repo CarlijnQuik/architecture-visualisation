@@ -74,7 +74,7 @@ a {
 
 /*Inside the dropdown menu where the checkboxes are*/
 .dropdown dd ul {
-    background-color: #4F6877;
+    background-color: #484848; /*#4F6877*/
     border: 0;
     color: #ddd;
     display: none;

@@ -20,7 +20,7 @@ def get_nodes(dataset, fr, to, file_name, data_type):
         node_dict = {'name': '/'.join(node.split('.')),  # fullname
                      'origin': file_name,
                      'dataType': data_type,
-                     'parent': '/'.join(node.split('.'))[:-1],
+                     'parent': '/'.join(node.split('.')[:-1]),
                      'count': int(nodes.count(node))}
 
         # # if the node is not already present in the db

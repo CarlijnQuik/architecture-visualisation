@@ -13,7 +13,7 @@ function networkInit() {
     const COLOR = {
         NODE_DEFAULT_FILL: d => color(d.parent), // Node color
         NODE_DEFAULT_STROKE: "#fff", // Color of node border
-        NODE_HIGHLIGHT_STROKE: d => color(d.parent),
+        NODE_HIGHLIGHT_STROKE: "#fff",
         LINK_DEFAULT_STROKE: "#6d6c6d", // Color of links  #525B56"#b8c4bf" b3b3b3
         LINK_HIGHLIGHT: "#000000",
         INGOING: "#2ca02c", // "#1b9e77"
@@ -58,14 +58,14 @@ function networkInit() {
     // Define the template in use
     let useGroupInABox = true,
         drawTemplate = false,
-        template = "treemap";
+        template = "treemap",
+        abstraction = "packageLevelOne";
 
     // Check which view the user has selected
     d3.select("#checkGroupInABox").property("checked", useGroupInABox);
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
     d3.select("#selectTemplate").property("value", template);
-    //d3.select("#filterData").property("value", template);
-    //d3.select("#selectAbstraction").property("value", abstraction);
+    d3.select("#selectAbstraction").property("value", abstraction);
 
     //----------------------------
     // Dropdown filter behaviour
@@ -87,8 +87,11 @@ function networkInit() {
     const networkSVG = d3
         .select("#network")
         .append('svg')
-        .attr('width', width)
+        .attr('width',  width)
         .attr('height', height)
+        .call(d3.zoom().on("zoom", function () {
+            networkSVG.attr("transform", d3.event.transform)
+        }))
         .append('g')
         .attr('transform', 'translate(1,1)');
 
@@ -114,15 +117,6 @@ function networkInit() {
     // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
     // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
     // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
-
-    // // ----------------------------
-    // // Define abstraction level
-    // //----------------------------
-    //
-    // d3.select("#selectAbstraction").on("change", function () {
-    //     abstraction = d3.select("#selectAbstraction").property("value");
-    //     updateNetwork();
-    // });
 
     // ----------------------------
     // Define dragging behaviour
@@ -150,21 +144,54 @@ function networkInit() {
     //----------------------------
 
     // Load json data
-    d3.json('datasets/FISH-dependencies-static.json', function (error, data) {
+    d3.json('datasets/FISH-dependencies-static.json', function (error, inputData) {
 
-        // Make a copy of data.nodes
-        const allNodes = Object.create(data.nodes);
-        const allLinks = Object.create(data.links);
+        // ----------------------------
+        // Define abstraction level
+        //----------------------------
+
+        // Define datasets
+        const classData = [inputData.nodes, inputData.links];
+
+        // Make deep copies of the data
+        const dataCopy = JSON.parse(JSON.stringify(inputData));
+        const dataCopy2 = JSON.parse(JSON.stringify(inputData));
+
+        const packageOneData = getPackageData(dataCopy.nodes,dataCopy.links, -1);
+        const packageTwoData = getPackageData(dataCopy2.nodes,dataCopy2.links, -2);
+
+        // Update abstraction level on click
+        d3.select("#selectAbstraction").on("change", function () {
+            abstraction = d3.select("#selectAbstraction").property("value");
+            console.log("changed",abstraction)
+            selectData(abstraction);
+
+        });
+
+        function selectData(abstraction){
+            if (abstraction === "packageLevelOne"){
+                updateNetwork(packageOneData);
+            }
+            if(abstraction === "classLevel"){
+                updateNetwork(classData);
+            }
+            if(abstraction === "packageLevelTwo"){
+                updateNetwork(packageTwoData);
+            }
+        }
+        selectData(abstraction);
 
         let clicked = false;
 
-        const packageData = getPackageData(allNodes, allLinks, -1);
 
         function updateNetwork(selectedData) {
 
+            const data = {"nodes": [], "links": []};
+
             data.nodes = selectedData[0];
             data.links = selectedData[1];
-            console.log("start update with:", data.links.length, data.nodes.length, data);
+
+            console.log("start update with:", data.nodes, data.links);
 
             //----------------------------
             // Refresh view
@@ -377,21 +404,36 @@ function networkInit() {
 
                 })
                 .on("click", function (d) {
-                    // Hide tooltip
-                    tooltipOnOff("#networkNodeTooltip", true)
 
-                    // Check if clicked before
-                    if (clicked === false) {
-                        clicked = true;
-                        console.log("selected package:", d.parent);
-                        updateNetwork(getClassData(allNodes, allLinks, d.parent));
-                    } else if (clicked === true) {
-                        console.log(clicked)
-                        clicked = false;
-                        updateNetwork(packageData);
+                    if(abstraction !== "classLevel"){
+                        console.log("clicked !== classlevel")
 
+                        // Hide tooltip
+                        tooltipOnOff("#networkNodeTooltip", true)
+
+                        // Check if clicked before
+                        if (clicked === false) {
+                            clicked = true;
+                            console.log("selected package:", d.parent);
+                            let reqData = getClassData(inputData.nodes, inputData.links, d.parent);
+
+                            // Make sure there is more than one node below
+                            if(reqData[0][1]){
+                                updateNetwork(reqData);
+                            }
+                            else{
+                                console.log(abstraction, "No lower level")
+                            }
+
+                        } else if (clicked === true) {
+                            console.log(clicked)
+                            clicked = false;
+                            updateNetwork(packageOneData);
+                        }
                     }
-
+                    else{
+                        console.log(abstraction, "Clicked class")
+                    }
                 })
                 .on("mouseout", function (d) {
                     // Hide tooltip
@@ -490,8 +532,6 @@ function networkInit() {
 
 
         }
-
-        updateNetwork(packageData);
 
     });
 
