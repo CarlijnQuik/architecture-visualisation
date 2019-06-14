@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles/barchart.css" >
     <link rel="stylesheet" href="styles/tooltips.css" >
     <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/buttons.css">
     <link rel="stylesheet" href="styles/main.css">
 
     <!--JS plugins    -->
@@ -18,6 +19,7 @@
     <script type="text/javascript" src="plugins/forceInABox.js" charset="utf-8"></script>
 
     <!--JS scripts-->
+    <script type="text/javascript" src="scripts/colors.js"></script>
     <script type="text/javascript" src="scripts/network.js"></script>
     <script type="text/javascript" src="scripts/data_helper.js"></script>
     <script type="text/javascript" src="scripts/barchart.js"></script>
@@ -53,6 +55,7 @@
 
     </div>
 
+    <!-- MAIN -->
     <div class='main-container'>
 
         <!-- Slider + title -->
@@ -79,34 +82,73 @@
                     </div>
                 </div>
 
-                <!-- Selection fields with drop down -->
-                <label><input id="checkGroupInABox" type="checkbox" />Group in a Box</label>
-                <label><input id="checkShowTemplate" type="checkbox" />Show Template</label>
+                <!-- The options panel on top of the vis -->
+                <div class='vis-options'>
+                    <div class="column">
+                        <div>
+                            <!-- Select abstraction drop down-->
+                            <select id="selectAbstraction">
+                                <option value="packageLevel1">Package depth -1</option>
+                                <option value="classLevel">Class level</option>
+                            </select>
 
-                <!-- Select algorithm drop down -->
-                <select id="selectTemplate">
-                    <option value="treemap">Treemap</option>
-                    <option value="force">Force</option>
-                </select>
-
-                <!-- Filter drop down -->
-                <dl class="dropdown">
-                    <dt>
-                        <a href="#">
-                            <span class="hida">Select</span>
-                            <p class="multiSel"></p>
-                        </a>
-                    </dt>
-                    <dd>
-                        <div class="mutliSelect">
-                            <ul>
-                                <li><input type="checkbox" value="Java" checked="checked"/>Java</li>
-                                <li><input type="checkbox" value="xLibraries" checked="checked" />xLibraries</li>
-                            </ul>
                         </div>
-                    </dd>
-                    <button>Filter</button>
-                </dl>
+
+                        <div>
+                            <!-- Select algorithm drop down-->
+                            <select id="selectTemplate">
+                                <option value="treemap">Treemap</option>
+                                <option value="force">Force</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <!-- Filter drop down -->
+                        <dl class="dropdown" id="filterData">
+                            <dt>
+                                <a href="#">
+                                    <span class="hida">Select data</span>
+                                    <p class="multiSel"></p>
+                                </a>
+                            </dt>
+                            <dd>
+                                <div class="mutliSelect">
+                                    <ul>
+                                        <div class="boxes">
+
+                                            <li>
+                                                <input type="checkbox" id="java">
+                                                <label for="java">Java</label>
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" id="xLibraries">
+                                                <label for="xLibraries">xLibraries</label>
+                                            </li>
+
+                                        </div>
+                                    </ul>
+                                </div>
+                            </dd>
+                            <button>Filter</button>
+                        </dl>
+                    </div>
+
+                    <div class="column">
+
+                        <!-- Checkboxes group in a box and show template-->
+                        <div class="boxes">
+                            <input type="checkbox" id="checkGroupInABox">
+                            <label for="checkGroupInABox">Group in a Box</label>
+
+                            <input type="checkbox" id="checkShowTemplate" checked>
+                            <label for="checkShowTemplate">Show Template </label>
+                        </div>
+
+
+                    </div>
+
+                </div>
 
                 <div id='network' class='vis'></div>
             </div>

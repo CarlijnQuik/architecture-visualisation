@@ -1,0 +1,168 @@
+/*Styling of the treemap/force drop down */
+select {
+    margin: 3px;
+    background-color: #040C0E;
+    display: inline-block;
+    /*padding: 8px 20px 5px 10px;*/
+    text-align: center;
+    min-height: 4px;
+    overflow: hidden;
+    border: 0;
+    position: relative;
+    width: 130px;
+    font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
+    cursor: pointer;
+    /*margin: 0 auto 2px;*/
+    color: #ddd;
+    text-decoration: none;
+
+}
+
+/*Checkboxes dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    /*margin: 2px 0;*/
+    padding: 5px;
+}
+
+a {
+    color: #fff;
+}
+
+.dropdown dd,
+.dropdown dt {
+    margin: 0px;
+    padding: 0px;
+}
+
+.dropdown ul {
+    margin: -1px 0 0 0;
+}
+
+.dropdown dd {
+    position: relative;
+}
+
+.dropdown a,
+.dropdown a:visited {
+    color: #ddd;
+    text-decoration: none;
+    outline: none;
+    font-size: 12px;
+}
+
+/*Dropdown "select"*/
+.dropdown dt a {
+    background-color: #040C0E; /*#4F6877*/
+    display: inline-block;
+    /*padding: 8px 20px 5px 10px;**
+    text-align: center;
+    /*line-height: 24px;*/
+    overflow: hidden;
+    border: 0;
+    min-height: 5px;
+    width: 130px;
+}
+
+.dropdown dt a span,
+.multiSel span {
+    cursor: pointer;
+    display: inline-block;
+    padding: 2px 2px 2px 2px;
+}
+
+/*Inside the dropdown menu where the checkboxes are*/
+.dropdown dd ul {
+    background-color: #4F6877;
+    border: 0;
+    color: #ddd;
+    display: none;
+    left: 0px;
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    width: 130px;
+    list-style: none;
+    height: 100px;
+    overflow: auto;
+}
+
+.dropdown span.value {
+    display: none;
+}
+
+.dropdown dd ul li a {
+    padding: 5px;
+    display: block;
+}
+
+.dropdown dd ul li a:hover {
+    background-color: #fff;
+}
+
+/*Filter button*/
+button {
+    background-color: #040C0E; /*#6BBE92*/
+    font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
+    width: 130px;
+    /*padding: 10px 0;*/
+    border: 1px solid #6cc0e5;
+    /*margin: 3px 0;*/
+    min-height: 5px;
+    text-align: center;
+    color: #6cc0e5;
+    font-weight: bold;
+}
+
+/*!* Checkboxes *!*/
+.boxes {
+    margin: auto;
+    padding: 5px;
+}
+
+input[type="checkbox"] { display: none; }
+
+input[type="checkbox"] + label {
+    display: block;
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
+    color: #ddd;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+input[type="checkbox"] + label:last-child { margin-bottom: 0; }
+
+input[type="checkbox"] + label:before {
+    content: '';
+    display: block;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #6cc0e5;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: .6;
+    -webkit-transition: all .12s, border-color .08s;
+    transition: all .12s, border-color .08s;
+}
+
+input[type="checkbox"]:checked + label:before {
+    width: 5px;
+    top: -3px;
+    left: 3px;
+    border-radius: 0;
+    opacity: 1;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+
+

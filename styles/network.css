@@ -5,14 +5,10 @@
 }
 
 .link {
-    stroke: #999;
-    stroke-opacity: 0.7;
-    stroke-width: 0.1;
     cursor: pointer;
 }
 
 .node {
-    stroke: #fff;
     stroke-width: 1px;
     cursor: pointer;
 }
@@ -20,7 +16,7 @@
 /* Treemap template boxes */
 rect.cell {
     fill: none;
-    stroke: #3b353b;
+    stroke: #484848;
     stroke-width: 1px;
 }
 
@@ -29,111 +25,5 @@ circle {
     fill: none;
     stroke: #484548;
     stroke-width: 1px;
-}
-
- /*Checkboxes size */
-/*input[type=checkbox]*/
-/*{*/
-/*    !* Triple-sized Checkboxes *!*/
-/*    -ms-transform: scale(1.5); !* IE *!*/
-/*    -moz-transform: scale(1.5); !* FF *!*/
-/*    -webkit-transform: scale(1.5); !* Safari and Chrome *!*/
-/*    -o-transform: scale(1.5); !* Opera *!*/
-/*    padding: 5px;*/
-/*}*/
-
-/*Checkboxes dropdown */
-.dropdown {
-    position: relative;
-    /*top:50%;*/
-    /*transform: translateY(-50%);*/
-}
-
-a {
-    color: #fff;
-}
-
-.dropdown dd,
-.dropdown dt {
-    margin: 0px;
-    padding: 0px;
-}
-
-.dropdown ul {
-    margin: -1px 0 0 0;
-}
-
-.dropdown dd {
-    position: relative;
-}
-
-.dropdown a,
-.dropdown a:visited {
-    color: #fff;
-    text-decoration: none;
-    outline: none;
-    font-size: 12px;
-}
-
-/*Dropdown "select"*/
-.dropdown dt a {
-    background-color: #4F6877;
-    display: inline-block;
-    /*padding: 8px 20px 5px 10px;*/
-    text-align: center;
-    min-height: 25px;
-    line-height: 24px;
-    overflow: hidden;
-    border: 0;
-    width: 100px;
-}
-
-.dropdown dt a span,
-.multiSel span {
-    cursor: pointer;
-    display: inline-block;
-    padding: 0 3px 2px 0;
-}
-
-/*Inside the dropdown menu where the checkboxes are*/
-.dropdown dd ul {
-    background-color: #4F6877;
-    border: 0;
-    color: #fff;
-    display: none;
-    left: 0px;
-    /*padding: 2px 15px 2px 5px;*/
-    position: absolute;
-    top: 2px;
-    width: 100px;
-    list-style: none;
-    height: 100px;
-    overflow: auto;
-}
-
-.dropdown span.value {
-    display: none;
-}
-
-.dropdown dd ul li a {
-    padding: 5px;
-    display: block;
-}
-
-.dropdown dd ul li a:hover {
-    background-color: #fff;
-}
-
-/*Filter button*/
-button {
-    background-color: #6BBE92;
-    font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
-    width: 100px;
-    border: 0;
-    /*padding: 10px 0;*/
-    margin: 5px 0;
-    text-align: center;
-    color: #fff;
-    font-weight: bold;
 }
 

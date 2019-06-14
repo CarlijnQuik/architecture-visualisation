@@ -5,24 +5,28 @@
 
 function networkInit() {
 
+
+
     // Define the colors of the vis
-    let color = d3.scaleOrdinal(d3.schemeCategory20);
+    let color = d3.scaleOrdinal(d3_category50);
+
     const COLOR = {
-        NODE_DEFAULT_FILL: "#fff", // Node color
-        NODE_DEFAULT_STROKE: d => color(d.parent), // Color of node border
-        LINK_DEFAULT_STROKE: "#999", // Color of links
-        LINK_HIGHLIGHT: "#050405",
-        INGOING: "#1b9e77",
-        OUTGOING: "#D63028",
-        TIE: "#d66409",
+        NODE_DEFAULT_FILL: d => color(d.parent), // Node color
+        NODE_DEFAULT_STROKE: "#fff", // Color of node border
+        NODE_HIGHLIGHT_STROKE: d => color(d.parent),
+        LINK_DEFAULT_STROKE: "#6d6c6d", // Color of links  #525B56"#b8c4bf" b3b3b3
+        LINK_HIGHLIGHT: "#000000",
+        INGOING: "#2ca02c", // "#1b9e77"
+        OUTGOING: "#d62728", // "#D63028"
+        TIE: "#ff7f0e", //   "#d66409"
     };
 
     // Define opacity
     const OPACITY = {
-        NODE_DEFAULT: 0.9,
-        LINK_DEFAULT: 0.7,
-        NODE_HIGHLIGHT: 0.8,
-        LINK_HIGHLIGHT: 0.9,
+        NODE_DEFAULT: 1,
+        LINK_DEFAULT: 0.2,
+        NODE_HIGHLIGHT: 1,
+        LINK_HIGHLIGHT: 1,
         LINK_HIDDEN: 0.2,
     };
 
@@ -39,7 +43,7 @@ function networkInit() {
 
     // Set the dimensions and margins of the chart
     let width = 1000;
-    let height = 650;
+    let height = 700;
 
     // Define the standard node radius and link width
     let nodeRadius = d3.scaleSqrt().range([4, 10]);
@@ -203,13 +207,13 @@ function networkInit() {
             //filteredData.map(filter => filterData(filter));
 
 
-            function filterData(filterValue) {
-                console.log(filterValue);
-                data.nodes = data.nodes.filter((node) => !node.name.startsWith(filterValue));
-                data.links = data.links.filter((link) => !link.source.toString().startsWith(filterValue) || !link.target.toString().startsWith(filterValue));
-                updateNetwork([data.nodes, data.links]);
-
-            }
+            // function filterData(filterValue) {
+            //     console.log(filterValue);
+            //     data.nodes = data.nodes.filter((node) => !node.name.startsWith(filterValue));
+            //     data.links = data.links.filter((link) => !link.source.toString().startsWith(filterValue) || !link.target.toString().startsWith(filterValue));
+            //     updateNetwork([data.nodes, data.links]);
+            //
+            // }
 
             // Make sure small nodes are drawn on top of larger nodes
             data.nodes.sort((a, b) => b.count - a.count);
@@ -354,6 +358,7 @@ function networkInit() {
                     // Highlight selected node
                     d3.select(this)
                         .style("fill", colorNodeInOut(d))
+                        .style("stroke", COLOR.NODE_HIGHLIGHT_STROKE)
                         .style("fill-opacity", OPACITY.NODE_HIGHLIGHT);
                     //.transition().duration(TRANSITION_DURATION);
 

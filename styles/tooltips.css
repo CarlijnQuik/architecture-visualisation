@@ -1,16 +1,16 @@
 /* Tooltips */
 #tooltip {
     position: absolute;
-    width: 200px;
+    width: 300px;
     display: inline;
     word-wrap: break-word;
-    max-width: 200px;
+    max-width: 500px;
     height: auto;
     padding: 10px;
     /*display: inline;*/
-    font-size: 10px;
+    font-size: 20px;
     /*    margin: 0;*/
-    /*    line-height: 20px;*/
+        line-height: 20px;
     /* font-family: sans-serif; */
     background-color: #fff;
     -webkit-border-radius: 10px;
