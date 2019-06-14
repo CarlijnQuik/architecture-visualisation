@@ -2,109 +2,33 @@
 // Barchart idiom
 //----------------------------
 
-var previousHeight = {};
-
 function barChartInit() {
 
-    // set the dimensions and margins of the chart
-    var margin = {
-            top: 20,
-            right: 60,
-            bottom: 60,
-            left: 75
-        },
+    // set the dimensions and margins of the graph
+    const margin = {top: 20, right: 20, bottom: 30, left: 40},
+        width = 800 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
 
-        width = 660 - margin.left - margin.right,
-        height = 300 - margin.top - margin.bottom;
+    // Define the colors of the vis
+    let color = d3.scaleOrdinal(d3_category50);
 
-    var sortBarChart = true;
+    // set the ranges
+    const x = d3.scaleBand()
+        .range([0, width])
+        .padding(0.1);
 
-    // define the scales and axes
-    var xScale = d3
-        .scaleBand()
-        .rangeRound([0, width])
-        .padding(0.03);
-
-    var yScale = d3
-        .scaleLinear()
+    const y = d3.scaleLinear()
         .range([height, 0]);
 
-    var xAxis = d3
-        .axisBottom(xScale);
-
-    var yAxis = d3
-        .axisLeft(yScale);
-
-    // define the SVG
-    var barChartSVG = d3
-        .select("#bar_chart")
-        .append("svg")
+    const barChartSVG = d3.select("#barchart").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .attr("style", "margin: 0 auto; display: block; ")
+        .call(d3.zoom().on("zoom", function () {
+            barChartSVG.attr("transform", d3.event.transform)
+        }))
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    //----------------------------
-    // Decide what clicking the buttons does
-    //----------------------------
-
-    // //change button colors onClick
-    // $('#province-button').click(function () {
-    //     if (!$(this).hasClass('barsblue')) {
-    //         $(this).toggleClass('barsblue')
-    //     }
-    //     $('#actor').removeClass("barsblue")
-    //     $('#cause').removeClass("barsblue")
-    // });
-    //
-    //
-    // $('#actor').click(function () {
-    //     if (!$(this).hasClass('barsblue')) {
-    //         $(this).toggleClass('barsblue')
-    //     }
-    //     $('#province-button').removeClass("barsblue")
-    //     $('#cause').removeClass("barsblue")
-    // });
-    //
-    // $('#cause').click(function () {
-    //     if (!$(this).hasClass('barsblue')) {
-    //         $(this).toggleClass('barsblue')
-    //     }
-    //     $('#actor').removeClass("barsblue")
-    //     $('#province-button').removeClass("barsblue")
-    // });
-    //
-    // $('#sort').click(function () {
-    //     sortBarChart = document.getElementById("sort").className !== "button barsblue";
-    //
-    //     $(this).toggleClass('barsblue')
-    //
-    //     sortBarChart ?
-    //         document.getElementById("sort").textContent = "Sorted" :
-    //         document.getElementById("sort").textContent = "Sort";
-    //
-    //     updateBarchart()
-    // });
-    //
-    //
-    // d3.selectAll("#province-button")
-    //     .on("click", function () {
-    //         barChartType = "province"
-    //         updateBarchart()
-    //     });
-    //
-    // d3.selectAll("#actor")
-    //     .on("click", function () {
-    //         barChartType = "actor"
-    //         updateBarchart()
-    //     });
-    //
-    // d3.selectAll("#cause")
-    //     .on("click", function () {
-    //         barChartType = "cause"
-    //         updateBarchart()
-    //     });
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
 
     //----------------------------
     // Draw barchart
@@ -112,307 +36,83 @@ function barChartInit() {
 
     updateBarchart = function () {
 
-        d3.json(`data/${barChartType}.json`).then(function (data) {
+        d3.json('datasets/FISH-dependencies-static.json', function (error, data) {
 
-            var dataCurrentDate = data[currentDate]
+            console.log(data.nodes);
 
-            dataCurrentDate.sort((a, b) =>
-                sortBarChart ?
-                    b.quantity - a.quantity :
-                    a.province.localeCompare(b.province)
-            )
+            data = data.nodes;
 
-            //----------------------------
-            // Define x and y-scale
-            //----------------------------
+            // Scale the range of the data in the domains
+            x.domain(data.map(function(d) { return d.name; }));
+            y.domain([0, d3.max(data, function(d) { return d.count; })]);
 
-            yScale.domain([0, d3.max(da3taCurrentDate, function (d) {
-                return d.quantity + 350;
-            })]);
-            //yScale.domain([0, 1500])
+            // append the rectangles for the bar chart
+            let bar = barChartSVG.selectAll(".bar")
+                    .data(data)
+                    .enter().append("rect")
+                    .attr("class", "bar")
+                    .attr("x", d => x(d.name))
+                    .attr("width", x.bandwidth())
+                    .attr("y", d => y(d.count))
+                    .attr("height", d => height - y(d.count))
+                    .attr("border", "black")
+                    .attr("stroke", d => color(d.parent));
 
-            xScale
-                .domain(
-                    dataCurrentDate
-                        .filter(d => {
-                            return selectedDistricts.has(d.province) || selectedActors.has(d.actor) || selectedCause.has(d.cause)
-                        })
-                        .map(function (d) {
-                            if (selectedDistricts.has(d[barChartType])) {
-                                return d[barChartType]
-                            }
+            // add the x Axis
+            barChartSVG.append("g")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(x));
 
-                            if (selectedActors.has(d[barChartType])) {
-                                return d[barChartType]
-                            }
+            // add the y Axis
+            barChartSVG.append("g")
+                    .call(d3.axisLeft(y));
 
-                            if (selectedCause.has(d[barChartType])) {
-                                return d[barChartType]
-                            }
-                        }));
+            // Show the tooltip with info about the selected item
+            function tooltipOnOff(tooltip, hidden) {
+                // Find mouse position and unhide general tooltip
+                d3.select("#tooltip")
+                    .style("top", (d3.event.pageY) + 20 + "px")
+                    .style("left", (d3.event.pageX) + 20 + "px")
+                    .classed("hidden", hidden);
+                //.transition().duration(TRANSITION_DURATION);
 
-            //----------------------------
-            // Refresh view
-            //----------------------------
+                // Unhide specific tooltip
+                d3.select(tooltip).classed("hidden", hidden);
+                //.transition().duration(TRANSITION_DURATION);
 
-            barChartSVG
-                .selectAll('text')
-                .remove()
+            }
 
-            barChartSVG
-                .selectAll("rect")
-                .remove()
-
-            barChartSVG
-                .selectAll('g')
-                .remove()
-
-            // barChartSVG.selectAll("g.y.axis")
-            //     .call(yAxis);
-
-            // barChartSVG.selectAll("g.x.axis")
-            //     .call(xAxis);
-
-            //----------------------------
-            // Draw bars
+            // ----------------------------
+            // Define bar interaction
             //----------------------------
 
-
-            barChartSVG
-                .attr("class", "bar")
-                .selectAll(".bar")
-                .data(dataCurrentDate)
-                .enter()
-                .filter(function (d) {
-                    return selectedDistricts.has(d.province) || selectedActors.has(d.actor) || selectedCause.has(d.cause)
-                })
-                .append("rect")
-                .attr("x", function (d) {
-                    if (selectedDistricts.has(d[barChartType])) {
-                        return xScale(d[barChartType]);
-                    }
-                    if (selectedActors.has(d[barChartType])) {
-                        return xScale(d[barChartType]);
-                    }
-                    if (selectedCause.has(d[barChartType])) {
-                        return xScale(d[barChartType]);
-                    }
-                })
-                .attr("width", xScale.bandwidth())
-                .attr("y", function (d) {
-                    return yScale(previousHeight[Object.values(d)[0]] || 0);
-                })
-                .attr("height", function (d) {
-                    return height - yScale(previousHeight[Object.values(d)[0]] || 0);
-                })
-                .transition()
-                .attr("y", function (d) {
-                    previousHeight[Object.values(d)[0]] = Object.values(d)[1]
-
-                    return yScale(d.quantity);
-                })
-                .attr("height", function (d) {
-                    return height - yScale(d.quantity);
-                })
-                .attr("fill", (d) => {
-                    if (barChartType === "province")
-                        return colorScale(d.quantity)
-
-                    if (barChartType === "actor")
-                        return greenColorScale(d.quantity)
-
-                    if (barChartType === "cause")
-                        return bluesColorScale(d.quantity)
-
-                })
-                .attr("opacity", (d) => {
-
-                    if (highlighted.value === Object.values(d)[0]) {
-                        return "0.4"
-                    }
-
-                    return "1.0"
-                })
-
-            //----------------------------
-            // Define interactivity
-            //----------------------------
-
-            barChartSVG.selectAll("rect")
-                .on('mouseenter', function (actual, i) {
-
-
-                    highlighted = {
-                        type: Object.keys(actual)[0],
-                        value: actual[Object.keys(actual)[0]]
-                    }
-
-                    rerenderSyriaMap()
-                    rerenderNode()
-
-                    // change opacity of the bars on mouseenter
-                    // d3.selectAll('.value')
-                    //     .attr('opacity', 0)
-
+            bar
+                .on("mouseenter", function (d) {
+                    // Highlight selected bar
                     d3.select(this)
-                        .transition()
-                        .duration(500)
-                        .attr("opacity", 0.6)
-                        .attr('x', (a) => xScale(a[barChartType]) - 5)
-                        .attr('width', xScale.bandwidth() + 10)
+                        .style("stroke", "red");
 
-                    if (document.getElementById("play").className !== "button barsblue") {
-                        // draw text showing relative percentages
-                        barChartSVG
-                            .selectAll()
-                            .data(dataCurrentDate)
-                            .enter()
-                            .filter(function (d) {
-                                return selectedDistricts.has(d.province) || selectedActors.has(d.actor) || selectedCause.has(d.cause)
-                            })
-                            .append('text')
-                            .attr('class', 'divergence')
-                            .attr('x', (a) => {
-                                return xScale(a[barChartType]) + xScale.bandwidth() / 2
-                            })
-                            .attr('y', (a) => yScale(a.quantity) - 30)
-                            .attr('fill', 'white')
-                            .attr('text-anchor', 'middle')
-                            .text("test")
-                            .text((a, idx) => {
-                                const divergence = (a.quantity - actual.quantity).toFixed(1)
+                    // Edit tooltip values
+                    d3.selectAll(".name").text(d.name); // full node name
+                    d3.select("#parent").text(d.parent); // package name
+                    d3.selectAll(".count").text(d.count); // no. of occurrences
+                    d3.selectAll(".inputFile").text(d.origin); // input file of data
+                    d3.selectAll(".dataType").text(d.dataType); // static or dynamic
 
-                                let text = ''
-                                if (divergence > 0) text += '+'
-                                text += `${divergence}%`
+                    // Show tooltip
+                    tooltipOnOff("#networkNodeTooltip", false)
 
-                                return idx !== i ? text : '';
-                            })
-
-                        // draw line on top of bar
-                        const y = yScale(actual.quantity)
-
-                        line = barChartSVG
-                            .append('line')
-                            .attr('id', 'limit')
-                            .attr('x1', 0)
-                            .attr('y1', y)
-                            .attr('x2', width)
-                            .attr('y2', y)
-
-                    }
-                })
-                .on("mouseleave", function () {
-                    // d3.selectAll('.value')
-                    //     .attr('opacity', 1)
-
-                    // change opacity and bar width back to normal
-                    d3.select(this)
-                        .transition()
-                        .duration(300)
-                        .attr('opacity', 1)
-                        .attr("x", function (d) {
-                            return xScale(d[barChartType]);
-                        })
-                        .attr('width', xScale.bandwidth())
-
-                    // remove the line and additional text showing percentages
-                    barChartSVG.selectAll('#limit').remove()
-                    barChartSVG.selectAll('.divergence').remove()
-                })
-                .on("mousemove", function (d) {
-
-                    const type = Object.keys(d)[0];
-
-                    d3.selectAll('.deaths')
-                        .text(d.quantity)
-
-                    d3.selectAll('.date')
-                        .text(currentDate || "");
-
-                    d3.selectAll('.datetype')
-                        .text("on");
-
-                    var w = window.innerWidth;
-
-                    if (w / 3 * 2 < d3.event.pageX) {
-                        d3.select("#tooltip")
-                            .style("top", (d3.event.pageY) + 20 + "px")
-                            .style("left", (d3.event.pageX) - 240 + "px")
-                    } else {
-                        d3.select("#tooltip")
-                            .style("top", (d3.event.pageY) + 20 + "px")
-                            .style("left", (d3.event.pageX) + 20 + "px")
-                    }
-
-                    if (type === "province") {
-                        d3.select('#province')
-                            .text(d[Object.keys(d)[0]]);
-
-                        d3.select("#syriaTooltip").classed("hidden", false);
-                    } else {
-                        d3.select('#actorData')
-                            .text(d[Object.keys(d)[0]]);
-
-                        d3.select("#barChartTooltip").classed("hidden", false);
-                    }
-
-                    d3.select("#tooltip").classed("hidden", false);
                 })
                 .on("mouseout", function (d) {
-                    d3.select("#tooltip").classed("hidden", true);
-                    d3.select("#syriaTooltip").classed("hidden", true);
-                    d3.select("#barChartTooltip").classed("hidden", true);
-                })
+                    // Highlight selected node
+                    d3.select(this)
+                        .style("fill", d => color(d.parent))
+                        .style("stroke", d => color(d.parent));
 
-            //----------------------------
-            // Draw x-axis, y-axes, and grid
-            //----------------------------
+                    // Hide tooltip
+                    tooltipOnOff("#networkNodeTooltip", true)
 
-            barChartSVG.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + (height) + ")")
-                .call(xAxis)
-                .selectAll("text")
-                .attr("y", 0)
-                .attr("x", 9)
-                .attr("dy", ".35em")
-                .attr("transform", "rotate(45)")
-                .style("text-anchor", "start");
-
-            barChartSVG.append("g")
-                .attr("class", "y axis")
-                .call(yAxis)
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6).attr("dy", ".71em")
-
-            barChartSVG.append('g')
-                .attr('class', 'grid')
-                .call(d3.axisLeft()
-                    .scale(yScale)
-                    .tickSize(-width, 0, 0)
-                    .tickFormat(''))
-
-            // //----------------------------
-            // // Draw title and x and y-axes labels
-            // //----------------------------
-
-            // numbers on top of the bars
-            barChartSVG.selectAll()
-                .data(dataCurrentDate)
-                .enter()
-                .filter(function (d) {
-                    return selectedDistricts.has(d.province) || selectedActors.has(d.actor) || selectedCause.has(d.cause)
-                })
-                .append('text')
-                .attr('class', 'value')
-                .attr('x', (a) => xScale(a[barChartType]) + xScale.bandwidth() / 2)
-                .attr('y', (a) => yScale(previousHeight[Object.values(a)[0]] || 0) + -5)
-                .transition()
-                .attr('y', (a) => yScale(a.quantity) + -5)
-                .attr('text-anchor', 'middle')
-                .text((a) => `${a.quantity}`)
+                });
 
             // y-axis label
             barChartSVG.append('text')
@@ -429,37 +129,11 @@ function barChartInit() {
                 .attr('x', 500)
                 .attr('y', 480)
                 .attr('text-anchor', 'middle')
-                .text(barChartType)
-
-            // title
-            barChartSVG.append('text')
-                .attr('class', 'title')
-                .attr('x', width / 2 + 60)
-                .attr('y', -20)
-                .attr('text-anchor', 'middle')
-
-
-
-
-
-
-
-            // .text('Number of deaths caused by the war')
-
-            // source
-            // barChartSVG.append('text')
-            //     .attr('class', 'source')
-            //     .attr('x', 900)
-            //     .attr('y', 360)
-            //     .attr('text-anchor', 'start')
-            //     .text('Source: ...')
+                .text("Classes")
 
         });
 
     }
-
-
-
 
     updateBarchart()
 

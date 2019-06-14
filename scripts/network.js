@@ -5,8 +5,6 @@
 
 function networkInit() {
 
-
-
     // Define the colors of the vis
     let color = d3.scaleOrdinal(d3_category50);
 
@@ -39,7 +37,7 @@ function networkInit() {
     };
 
     // Transition from one state to the other
-    //const TRANSITION_DURATION = 400;
+    const TRANSITION_DURATION = 400;
 
     // Set the dimensions and margins of the chart
     let width = 1000;
@@ -200,10 +198,11 @@ function networkInit() {
             networkSVG
                 .selectAll('.link')
                 .remove()
+                .transition(TRANSITION_DURATION)
 
             networkSVG
                 .selectAll('.node')
-                .remove()
+                .remove(TRANSITION_DURATION)
 
             //----------------------------
             // Update data properties
