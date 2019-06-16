@@ -1,25 +1,18 @@
 //----------------------------
 // Barchart idiom
 //----------------------------
+var barChartSVG;
+// Define the colors of the vis
+var color = d3.scaleOrdinal(d3_category50);
 
+// set the dimensions and margins of the graph
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 800 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-    // set the dimensions and margins of the graph
-    const margin = {top: 20, right: 20, bottom: 30, left: 40},
-        width = 800 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+function barchartInit() {
 
-    // Define the colors of the vis
-    let color = d3.scaleOrdinal(d3_category50);
-
-    // set the ranges
-    const x = d3.scaleBand()
-        .range([0, width])
-        .padding(0.1);
-
-    const y = d3.scaleLinear()
-        .range([height, 0]);
-
-    const barChartSVG = d3.select("#barchart").append("svg")
+    barChartSVG = d3.select("#barchart").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .call(d3.zoom().on("zoom", function () {
@@ -28,6 +21,7 @@
         .append("g")
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
+}
 
     //----------------------------
     // Draw barchart
@@ -40,6 +34,16 @@
             console.log("barchart data:", selectedData.nodes);
 
             const data = selectedData.nodes;
+
+        // set the ranges
+        let x = d3.scaleBand()
+            .range([0, width])
+            .padding(0.1);
+
+        const maxCount = Math.max.apply(Math,data.map(function(o){return o.count;}))
+
+        let y = d3.scaleLinear()
+            .range([height,0]);
 
 
             //----------------------------
@@ -149,6 +153,5 @@
 
         // });
 
-    }
-
+}
 
