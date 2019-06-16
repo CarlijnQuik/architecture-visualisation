@@ -8,7 +8,7 @@ function getClassData(nodes, links, selectedPackage) {
     links = links.filter((link) => (link.source.toString().split('/').slice(0, -1).join('/') === selectedPackage && link.target.toString().split('/').slice(0, -1).join('/') === selectedPackage));
     nodes = getUniqueNodes(nodes);
 
-    return [nodes, links];
+    return {"nodes": nodes, "links": links};
 }
 
 function getPackageData(nodes, links, depth) {
@@ -37,7 +37,7 @@ function getPackageData(nodes, links, depth) {
     //     link.count = packageLinks.filter((v) => (v.message === link.message)).length;
     // });
 
-    return [getUniqueNodes(nodes), links];
+    return {"nodes": getUniqueNodes(nodes), "links": links};
 }
 
 function getUniqueNodes(inputNodes) {

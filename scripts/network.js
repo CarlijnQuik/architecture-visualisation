@@ -57,7 +57,7 @@ function networkInit() {
     let useGroupInABox = true,
         drawTemplate = false,
         template = "treemap",
-        abstraction = "packageLevelOne";
+        abstraction = "classLevel";
 
     // Check which view the user has selected
     d3.select("#checkGroupInABox").property("checked", useGroupInABox);
@@ -149,47 +149,103 @@ function networkInit() {
         //----------------------------
 
         // Define datasets
-        const classData = [inputData.nodes, inputData.links];
+        const classData = inputData;
 
         // Make deep copies of the data
         const dataCopy = JSON.parse(JSON.stringify(inputData));
         const dataCopy2 = JSON.parse(JSON.stringify(inputData));
 
+        // Define package depth -1 and -2 data
         const packageOneData = getPackageData(dataCopy.nodes,dataCopy.links, -1);
         const packageTwoData = getPackageData(dataCopy2.nodes,dataCopy2.links, -2);
 
-        // Update abstraction level on click
+        // Update abstraction level on change
         d3.select("#selectAbstraction").on("change", function () {
             abstraction = d3.select("#selectAbstraction").property("value");
-            console.log("changed",abstraction)
             selectData(abstraction);
 
         });
 
-        function selectData(abstraction){
-            if (abstraction === "packageLevelOne"){
-                updateNetwork(packageOneData);
-            }
-            if(abstraction === "classLevel"){
-                updateNetwork(classData);
-            }
-            if(abstraction === "packageLevelTwo"){
-                updateNetwork(packageTwoData);
-            }
-        }
+        // Select the dataset according to the selected abstraction
+        let selectedData;
         selectData(abstraction);
 
+        function selectData(abstraction){
+            if (abstraction === "packageLevelOne"){
+                selectedData = JSON.parse(JSON.stringify(packageOneData));
+            }
+            if(abstraction === "classLevel"){
+                selectedData = JSON.parse(JSON.stringify(classData));
+            }
+            if(abstraction === "packageLevelTwo"){
+                selectedData = JSON.parse(JSON.stringify(packageTwoData));
+            }
+            filter(selectedData);
+        }
+
+        // ----------------------------
+        // Filter data (on click)
+        //----------------------------
+
+        function filter(selectedData){
+            // Get selected values and filter the data
+            let filterValues = getSelectedValues();
+            console.log(filterValues.length);
+            if(filterValues.length > 0){
+                filterValues.map(value => filterData(selectedData, value));
+                console.log("update network function filter IF")
+                updateNetwork(selectedData);
+                updateBarchart(selectedData);
+            }
+            else{
+                console.log("update network function filter ELSE")
+                updateNetwork(selectedData);
+                updateBarchart(selectedData);
+            }
+
+        }
+
+        // Update filters on click
+        d3.select("#filterButton").on("click", function () {
+            selectData(abstraction);
+
+        });
+
+        // Get an array of selected values in filter
+        function getSelectedValues(){
+            let selected = [];
+            $('.mutliSelect input[type="checkbox"]').each(function() {
+                if (this.checked) {
+                    selected.push($(this).attr('value'));
+                }
+            });
+            console.log(selected);
+            return selected;
+        }
+
+        // Filter the data
+        function filterData(selectedData, filterValue) {
+            console.log("before filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
+            selectedData.nodes = selectedData.nodes.filter((node) => !node.name.toString().startsWith(filterValue));
+            selectedData.links = selectedData.links.filter((link) => !link.source.toString().startsWith(filterValue) && !link.target.toString().startsWith(filterValue));
+            console.log("after filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
+        }
+
+        // The user hasn't clicked a node yet
         let clicked = false;
 
+        // ----------------------------
+        // Update view
+        //----------------------------
 
         function updateNetwork(selectedData) {
 
             const data = {"nodes": [], "links": []};
 
-            data.nodes = selectedData[0];
-            data.links = selectedData[1];
+            data.nodes = selectedData.nodes;
+            data.links = selectedData.links;
 
-            console.log("start update with:", data.nodes, data.links);
+            console.log("start update with:", data.nodes.length, data.links.length);
 
             //----------------------------
             // Refresh view
@@ -207,39 +263,6 @@ function networkInit() {
             //----------------------------
             // Update data properties
             //----------------------------
-
-
-            // Get an array of selected values in filter
-            // function getSelectedValues(){
-            //     let selected = [];
-            //     $('.mutliSelect input[type="checkbox"]').each(function() {
-            //
-            //         selected.push($(this).attr('value'));
-            //
-            //     });
-            //
-            //     return selected;
-            // }
-
-            // $(document).bind('click', function(e) {
-            //     var $clicked = $(e.target);
-            //     if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
-            //
-            // });
-
-            // Filter data
-            //let filteredData = getSelectedValues();
-            //console.log(filteredData);
-            //filteredData.map(filter => filterData(filter));
-
-
-            // function filterData(filterValue) {
-            //     console.log(filterValue);
-            //     data.nodes = data.nodes.filter((node) => !node.name.startsWith(filterValue));
-            //     data.links = data.links.filter((link) => !link.source.toString().startsWith(filterValue) || !link.target.toString().startsWith(filterValue));
-            //     updateNetwork([data.nodes, data.links]);
-            //
-            // }
 
             // Make sure small nodes are drawn on top of larger nodes
             data.nodes.sort((a, b) => b.count - a.count);

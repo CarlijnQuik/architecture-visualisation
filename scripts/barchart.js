@@ -2,7 +2,6 @@
 // Barchart idiom
 //----------------------------
 
-function barChartInit() {
 
     // set the dimensions and margins of the graph
     const margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -34,13 +33,30 @@ function barChartInit() {
     // Draw barchart
     //----------------------------
 
-    updateBarchart = function () {
+    function updateBarchart(selectedData) {
 
-        d3.json('datasets/FISH-dependencies-static.json', function (error, data) {
+        // d3.json('datasets/FISH-dependencies-static.json', function (error, data) {
 
-            console.log(data.nodes);
+            console.log("barchart data:", selectedData.nodes);
 
-            data = data.nodes;
+            const data = selectedData.nodes;
+
+
+            //----------------------------
+            // Refresh view
+            //----------------------------
+
+            barChartSVG
+                .selectAll('text')
+                .remove()
+
+            barChartSVG
+                .selectAll("rect")
+                .remove()
+
+            barChartSVG
+                .selectAll('g')
+                .remove()
 
             // Scale the range of the data in the domains
             x.domain(data.map(function(d) { return d.name; }));
@@ -131,10 +147,8 @@ function barChartInit() {
                 .attr('text-anchor', 'middle')
                 .text("Classes")
 
-        });
+        // });
 
     }
 
-    updateBarchart()
 
-}

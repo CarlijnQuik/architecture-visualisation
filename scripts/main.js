@@ -4,7 +4,6 @@
 window.onload = function () {
 
     networkInit();
-    barChartInit();
 
 };
 
