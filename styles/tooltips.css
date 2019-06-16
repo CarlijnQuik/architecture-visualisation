@@ -1,0 +1,54 @@
+/* Tooltips */
+#tooltip {
+    position: absolute;
+    width: 300px;
+    display: inline;
+    word-wrap: break-word;
+    max-width: 500px;
+    height: auto;
+    padding: 10px;
+    /*display: inline;*/
+    font-size: 20px;
+    /*    margin: 0;*/
+        line-height: 20px;
+    /* font-family: sans-serif; */
+    background-color: #fff;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 2px 2px 5px rgba(131, 131, 131, 0.4);
+    -moz-box-shadow: 2px 2px 5px rgba(131, 131, 131, 0.4);
+    box-shadow: 2px 2px 5px rgba(167, 166, 166, 0.4);
+    pointer-events: none;
+    z-index: 3;
+    /* Makes tooltip box appear above other elements on webpage. */
+}
+
+#tooltip.hidden {
+    display: none;
+}
+
+#networkLinkTooltip.hidden {
+    display: none;
+}
+
+#networkNodeTooltip.hidden {
+    display: none;
+}
+
+.hidden {
+    fill: none;
+    stroke: none;
+    stroke-width: 0px;
+    display: none;
+}
+
+/* tooltips bold text */
+.bold {
+    font-weight: 900;
+}
+
+
+
+
+

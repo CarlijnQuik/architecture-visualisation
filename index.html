@@ -6,16 +6,22 @@
     <!--CSS -- git add -- . :! -->
     <link rel="stylesheet" href="styles/network.css" >
     <link rel="stylesheet" href="styles/barchart.css" >
+    <link rel="stylesheet" href="styles/tooltips.css" >
     <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/buttons.css">
     <link rel="stylesheet" href="styles/main.css">
 
     <!--JS plugins    -->
     <script type="text/javascript" src="plugins/d3.v4.js" charset="utf-8"></script>
+    <script type="text/javascript" src="plugins/underscore.js" charset="utf-8"></script>
     <script type="text/javascript" src="plugins/d3-scale-chromatic.js" charset="utf-8"></script>
+    <script type="text/javascript" src="plugins/jquery.3.3.1.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="plugins/forceInABox.js" charset="utf-8"></script>
 
     <!--JS scripts-->
+    <script type="text/javascript" src="scripts/colors.js"></script>
     <script type="text/javascript" src="scripts/network.js"></script>
+    <script type="text/javascript" src="scripts/data_helper.js"></script>
     <script type="text/javascript" src="scripts/barchart.js"></script>
     <script type="text/javascript" src="scripts/main.js"></script>
 
@@ -25,8 +31,31 @@
 
     <!-- HIDDEN - tooltips  -->
     <div id="tooltip" class="hidden">
+
+        <div id="networkLinkTooltip" class="hidden">
+            <p> Name: <span class="bold" id="linkSource"> </span> - <span id="linkMessage"></span> -> <span class="bold" id="linkTarget"></span></p>
+            <p> Count: <span class="count"></span></p>
+            <p> Type: <span id="depType"></span></p>
+            <p> Subtype: <span id="depSubtype"></span></p>
+            <p> Direct/indirect: <span id="isDirect"></span></p>
+            <p> Inheritance related <span id="isInheritance"></span></p>
+            <p> Inner class related: <span id="isInnerClass"></span></p>
+            <p> Line: <span id="codeLine"></span></p>
+            <p> Origin: <span class="inputFile"></span></p>
+            <p> Data type: <span class="dataType"></span></p>
+        </div>
+
+        <div id="networkNodeTooltip" class="hidden">
+            <p> Name: <span class="name"></span> </p>
+            <p> Count: <span class="count"></span> </p>
+            <p> Parent: <span id="parent"></span> </p>
+            <p> Origin: <span class="inputFile"></span> </p>
+            <p> Data type: <span class="dataType"></span></p>
+        </div>
+
     </div>
 
+    <!-- MAIN -->
     <div class='main-container'>
 
         <!-- Slider + title -->
@@ -35,7 +64,7 @@
             <div class='title'>
                 <p>
                     <!--  -->
-                    ArchVis
+                    Visualising Software Dynamics through Architecture Mining
                 </p>
 
             </div>
@@ -45,36 +74,99 @@
         <!-- Main content -->
         <div class='flex-container'>
 
+            <!-- NETWORK VIS -->
             <div class='visualisation'>
                 <div class='visualisation-title'>
                     <div class='visualisation-title-text'>
                         Relations between classes in the system
                     </div>
                 </div>
-                <!-- Selection fields with drop down -->
-                <label><input id="checkGroupInABox" type="checkbox" />Group in a Box</label>
-                <label><input id="checkShowTreemap" type="checkbox" />Show Template</label>
-                <select id="selectTemplate">
-                    <option value="treemap">Treemap</option>
-                    <option value="force">Force</option>
-                </select>
+
+                <!-- The options panel on top of the vis -->
+                <div class='vis-options'>
+                    <div class="column">
+                        <div>
+                            <!-- Select abstraction drop down-->
+                            <select id="selectAbstraction">
+                                <option value="packageLevelTwo">Package depth -2</option>
+                                <option value="packageLevelOne">Package depth -1</option>
+                                <option value="classLevel">Class level</option>
+                            </select>
+
+                        </div>
+
+                        <div>
+                            <!-- Select algorithm drop down-->
+                            <select id="selectTemplate">
+                                <option value="treemap">Treemap</option>
+                                <option value="force">Force</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <!-- Filter drop down -->
+                        <dl class="dropdown" id="filterData">
+                            <dt>
+                                <a href="#">
+                                    <span class="hida">Select data</span>
+                                    <p class="multiSel"></p>
+                                </a>
+                            </dt>
+                            <dd>
+                                <div class="mutliSelect">
+                                    <ul>
+                                        <div class="boxes">
+
+                                            <li>
+                                                <input type="checkbox" value="java" id="java">
+                                                <label for="java">Java</label>
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" value="xLibraries" id="xLibraries">
+                                                <label for="xLibraries">xLibraries</label>
+                                            </li>
+
+                                        </div>
+                                    </ul>
+                                </div>
+                            </dd>
+                            <button id="filterButton">Filter</button>
+                        </dl>
+                    </div>
+
+                    <div class="column">
+
+                        <!-- Checkboxes group in a box and show template-->
+                        <div class="boxes">
+                            <input type="checkbox" id="checkGroupInABox">
+                            <label for="checkGroupInABox">Group in a Box</label>
+
+                            <input type="checkbox" id="checkShowTemplate" checked>
+                            <label for="checkShowTemplate">Show Template </label>
+                        </div>
+
+                    </div>
+
+                </div>
+
                 <div id='network' class='vis'></div>
             </div>
 
-<!--            <div class='visualisation'>-->
-<!--                <div class='visualisation-title'>-->
-<!--                    <div class='visualisation-title-text'>-->
-<!--                        Sequence and duration of method execution-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div id='barchart' class='vis'></div>-->
-<!--            </div>-->
-
+            <!-- BARCHART VIS -->
+            <div class='visualisation'>
+                <div class='visualisation-title'>
+                    <div class='visualisation-title-text'>
+                        Number of class occurrences
+                    </div>
+                </div>
+                <div id='barchart' class='vis'></div>
             </div>
+
         </div>
+<!--        <div class='flex-container'>-->
 
     </div>
-
 
 
 </body>

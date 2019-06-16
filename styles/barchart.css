@@ -1,0 +1,20 @@
+.axis {
+    font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    text-align: center;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+#barchart{
+    position: absolute;
+    float: right;
+}
+
+.bar{
+    cursor: pointer;
+}

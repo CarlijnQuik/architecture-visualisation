@@ -312,7 +312,7 @@
             // Delete the circle Template if it exists
             container.selectAll("circle.cell").remove();
             container.selectAll("line.cell").remove();
-            let box = container
+            container
                 .selectAll("rect.cell")
                 .data(templateNodes)
                 .enter()
@@ -330,11 +330,6 @@
                 .attr("height", function(d) {
                     return d.y1 - d.y0;
                 });
-
-            // box.append("svg:text")
-            //     .attr("dy", ".35em")
-            //     .text(function(d) { return d.cluster; });
-
 
         }
 
