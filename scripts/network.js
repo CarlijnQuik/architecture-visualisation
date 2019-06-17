@@ -12,7 +12,7 @@ function networkInit() {
         NODE_DEFAULT_FILL: d => color(d.parent), // Node color
         NODE_DEFAULT_STROKE: "#fff", // Color of node border
         NODE_HIGHLIGHT_STROKE: "#fff",
-        LINK_DEFAULT_STROKE: "#6d6c6d", // Color of links  #525B56"#b8c4bf" b3b3b3
+        LINK_DEFAULT_STROKE: "#403f40", // Color of links  #525B56"#b8c4bf" b3b3b3
         LINK_HIGHLIGHT: "#000000",
         INGOING: "#2ca02c", // "#1b9e77"
         OUTGOING: "#d62728", // "#D63028"
@@ -142,7 +142,7 @@ function networkInit() {
     //----------------------------
 
     // Load json data
-    d3.json('datasets/FISH-dependencies-static.json', function (error, inputData) {
+    d3.json('datasets/JabRef-dependencies-static.json', function (error, inputData) {
 
         // ----------------------------
         // Define abstraction level
@@ -195,12 +195,12 @@ function networkInit() {
                 filterValues.map(value => filterData(selectedData, value));
                 console.log("update network function filter IF")
                 updateNetwork(selectedData);
-                // updateBarchart(selectedData);
+                updateBarchart(selectedData);
             }
             else{
                 console.log("update network function filter ELSE")
                 updateNetwork(selectedData);
-                // updateBarchart(selectedData);
+                updateBarchart(selectedData);
             }
 
         }
