@@ -89,7 +89,8 @@ def get_dynamic_links(dataset, file_name):
                      'message': '/'.join(row['Message'].split('.')),
                      'origin': file_name,
                      'dataType': "Dynamic",
-                     'count': int(messages.count(row['Message']))}
+                     'count': 1}
+                     # 'count': int(messages.count(row['Message']))}
 
         # append the dictionary to the list of link dictionaries
         list_links.append(link_dict)
