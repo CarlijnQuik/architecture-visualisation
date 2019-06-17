@@ -26,9 +26,6 @@ function getPackageData(nodes, links, depth) {
         link.target = link.target.toString().split('/').slice(0, Number(depth)).join('/');
     });
 
-    //let packageNodes = Object.create(packageNodes);
-    // let packageLinks = Object.create(data.links);
-
     // Set node and link count
     nodes.map(function (node) {
         node.count = nodes.filter((v) => (v.name === node.name)).length;
@@ -37,7 +34,9 @@ function getPackageData(nodes, links, depth) {
     //     link.count = packageLinks.filter((v) => (v.message === link.message)).length;
     // });
 
-    return {"nodes": getUniqueNodes(nodes), "links": links};
+    //console.log(links.length, getUniqueLinks(links).length);
+
+    return {"nodes": getUniqueNodes(nodes), "links": getUniqueLinks(links)};
 }
 
 function getUniqueNodes(inputNodes) {
@@ -45,6 +44,15 @@ function getUniqueNodes(inputNodes) {
     return inputNodes.filter(node => {
         const duplicate = seen.has(node.name);
         seen.add(node.name);
+        return !duplicate;
+    });
+}
+
+function getUniqueLinks(inputLinks) {
+    let seen = new Set();
+    return inputLinks.filter(link => {
+        const duplicate = seen.has(link.source + link.target);
+        seen.add(link.source + link.target);
         return !duplicate;
     });
 }

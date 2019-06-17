@@ -35,7 +35,7 @@ def get_csv(input_file, output_file):
 
             stacks = {}
             for row in reader:
-                print(row)
+                # print(row)
                 if row['Type'] == 'Entry':
                     if row['Thread'] in stacks:
                         stacks[row['Thread']].append(row)
@@ -52,15 +52,15 @@ def get_csv(input_file, output_file):
                                      ''.join(callee.split('.')[-1]),  # calleeID
                                      '.'.join(callee.split('.')[:-1]),  # callee
                                      row['Message']])
-                else:
-                    print(row)
+                # else:
+                    # print(row)
 
             for thread_name, thread in stacks.items():
                 if len(thread) > 0:
-                    print('Incomplete log for thread {}, flushing'.format(thread_name))
+                    # print('Incomplete log for thread {}, flushing'.format(thread_name))
                     while len(thread) > 0:
                         row = thread.pop()
-                        print(row)
+                        # print(row)
                         writer.writerow([row['Timestamp'].split('T')[0], row['Timestamp'].split('T')[-1], row['Thread'],
                                          '2999-12-31T00:00:00,000', '2999-12-31T00:00:00,000',
                                          ''.join(row['Caller'].split('.')[-1]),  # callerID

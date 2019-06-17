@@ -12,7 +12,7 @@ function networkInit() {
         NODE_DEFAULT_FILL: d => color(d.parent), // Node color
         NODE_DEFAULT_STROKE: "#fff", // Color of node border
         NODE_HIGHLIGHT_STROKE: "#fff",
-        LINK_DEFAULT_STROKE: "#6d6c6d", // Color of links  #525B56"#b8c4bf" b3b3b3
+        LINK_DEFAULT_STROKE: "#403f40", // Color of links  #525B56"#b8c4bf" b3b3b3
         LINK_HIGHLIGHT: "#000000",
         INGOING: "#2ca02c", // "#1b9e77"
         OUTGOING: "#d62728", // "#D63028"
@@ -37,7 +37,7 @@ function networkInit() {
     };
 
     // Transition from one state to the other
-    const TRANSITION_DURATION = 400;
+    const TRANSITION_DURATION = 0;
 
     // Set the dimensions and margins of the chart
     let width = 1000;
@@ -111,7 +111,7 @@ function networkInit() {
             .strength(groupingForce.getLinkStrength)
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
-        .force('center', d3.forceCenter(width / 2, height / 2)); // setting the center of gravity of the system;
+        // .force('center', d3.forceCenter(width / 2, height / 2)); // setting the center of gravity of the system;
     // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
     // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
     // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
@@ -142,7 +142,7 @@ function networkInit() {
     //----------------------------
 
     // Load json data
-    d3.json('datasets/FISH-dependencies-static.json', function (error, inputData) {
+    d3.json('datasets/JabRef-dependencies-static.json', function (error, inputData) {
 
         // ----------------------------
         // Define abstraction level
@@ -437,10 +437,11 @@ function networkInit() {
                         if (clicked === false) {
                             clicked = true;
                             console.log("selected package:", d.parent);
-                            let reqData = getClassData(inputData.nodes, inputData.links, d.parent);
+                            console.log(classData);
+                            let reqData = getClassData(classData.nodes, classData.links, d.parent);
 
                             // Make sure there is more than one node below
-                            if(reqData[0][1]){
+                            if(reqData.nodes.length > 1){
                                 updateNetwork(reqData);
                             }
                             else{
@@ -450,7 +451,7 @@ function networkInit() {
                         } else if (clicked === true) {
                             console.log(clicked)
                             clicked = false;
-                            updateNetwork(packageOneData);
+                            updateNetwork(selectedData);
                         }
                     }
                     else{

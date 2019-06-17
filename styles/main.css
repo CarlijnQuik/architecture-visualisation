@@ -120,7 +120,7 @@ body {
 }
 
 text {
-    fill: #f2f2f2;
+    fill: #000000;
     font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
     text-anchor: middle;
 }
