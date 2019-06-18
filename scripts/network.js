@@ -12,7 +12,7 @@ function networkInit() {
         NODE_DEFAULT_FILL: d => color(d.parent), // Node color
         NODE_DEFAULT_STROKE: "#fff", // Color of node border
         NODE_HIGHLIGHT_STROKE: "#fff",
-        LINK_DEFAULT_STROKE: "#403f40", // Color of links  #525B56"#b8c4bf" b3b3b3
+        LINK_DEFAULT_STROKE: "#999", // Color of links  #525B56"#b8c4bf" b3b3b3
         LINK_HIGHLIGHT: "#000000",
         INGOING: "#2ca02c", // "#1b9e77"
         OUTGOING: "#d62728", // "#D63028"
@@ -22,7 +22,7 @@ function networkInit() {
     // Define opacity
     const OPACITY = {
         NODE_DEFAULT: 1,
-        LINK_DEFAULT: 0.2,
+        LINK_DEFAULT: 0.7,
         NODE_HIGHLIGHT: 1,
         LINK_HIGHLIGHT: 1,
         LINK_HIDDEN: 0.2,
@@ -142,7 +142,7 @@ function networkInit() {
     //----------------------------
 
     // Load json data
-    d3.json('datasets/FISH-dependencies-static.json', function (error, inputData) {
+    d3.json('datasets/static/FISH-dependencies-static.json', function (error, inputData) {
 
         // ----------------------------
         // Define abstraction level

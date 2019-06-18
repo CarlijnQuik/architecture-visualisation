@@ -93,7 +93,7 @@ function barchartInit() {
             .on("mouseenter", function (d) {
                 // Highlight selected bar
                 d3.select(this)
-                    .style("stroke", "red");
+                    .style("stroke", "black");
 
                 // Edit tooltip values
                 d3.selectAll(".name").text(d.name); // full node name
@@ -110,7 +110,7 @@ function barchartInit() {
                 // Highlight selected node
                 d3.select(this)
                     .style("fill", d => color(d.parent))
-                    .style("stroke", d => color(d.parent));
+                    .style("stroke", "#fff");
 
                 // Hide tooltip
                 tooltipOnOff("#networkNodeTooltip", true)
