@@ -57,7 +57,7 @@ function networkInit() {
     let useGroupInABox = true,
         drawTemplate = false,
         template = "treemap",
-        abstraction = "classLevel";
+        abstraction = "packageLevelTwo";
 
     // Check which view the user has selected
     d3.select("#checkGroupInABox").property("checked", useGroupInABox);
@@ -111,7 +111,7 @@ function networkInit() {
             .strength(groupingForce.getLinkStrength)
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
-        // .force('center', d3.forceCenter(width / 2, height / 2)); // setting the center of gravity of the system;
+        .force('center', d3.forceCenter(width / 2, height / 2)); // setting the center of gravity of the system;
     // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
     // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
     // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
@@ -142,7 +142,7 @@ function networkInit() {
     //----------------------------
 
     // Load json data
-    d3.json('datasets/JabRef-dependencies-static.json', function (error, inputData) {
+    d3.json('datasets/FISH-dependencies-static.json', function (error, inputData) {
 
         // ----------------------------
         // Define abstraction level
@@ -162,6 +162,7 @@ function networkInit() {
         // Update abstraction level on change
         d3.select("#selectAbstraction").on("change", function () {
             abstraction = d3.select("#selectAbstraction").property("value");
+            //forceSim.force("parent").deleteTemplate(networkSVG);
             selectData(abstraction);
 
         });
@@ -511,6 +512,12 @@ function networkInit() {
             // ----------------------------
             // Define template behaviour
             //----------------------------
+
+            forceSim.force("parent").deleteTemplate(networkSVG);
+            template = d3.select("#selectTemplate").property("value");
+            forceSim.stop();
+            forceSim.force("parent").template(template);
+            forceSim.alphaTarget(0.5).restart();
 
             d3.select("#checkGroupInABox").on("change", function () {
                 forceSim.stop();
