@@ -82,7 +82,7 @@ def get_dynamic_links(dataset, file_name):
 
     # create a separate dictionary for all unique links
     for index, row in dataset.iterrows():
-        link_id = row['Dependency from'] + row['Dependency to']
+        link_id = row['Caller'] + row['Callee']
         if link_id not in unique_links:
             unique_links.append(link_id)
             link_dict = {'startDate': row['Start Date'],

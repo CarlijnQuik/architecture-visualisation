@@ -12,7 +12,7 @@ function networkInit() {
         NODE_DEFAULT_FILL: d => color(d.parent), // Node color
         NODE_DEFAULT_STROKE: "#fff", // Color of node border
         NODE_HIGHLIGHT_STROKE: "#fff",
-        LINK_DEFAULT_STROKE: "#999", // Color of links  #525B56"#b8c4bf" b3b3b3
+        LINK_DEFAULT_STROKE: "#000000", // Color of links  #525B56"#b8c4bf" b3b3b3
         LINK_HIGHLIGHT: "#000000",
         INGOING: "#2ca02c", // "#1b9e77"
         OUTGOING: "#d62728", // "#D63028"
@@ -22,7 +22,7 @@ function networkInit() {
     // Define opacity
     const OPACITY = {
         NODE_DEFAULT: 1,
-        LINK_DEFAULT: 0.7,
+        LINK_DEFAULT: 1,
         NODE_HIGHLIGHT: 1,
         LINK_HIGHLIGHT: 1,
         LINK_HIDDEN: 0.2,
@@ -50,20 +50,22 @@ function networkInit() {
     // Define dragging behaviour
     let drag = d3.drag()
         .on('start', dragStart)
-        .on('drag', dragging)
-        .on('end', dragEnd);
+        .on('drag', dragging);
+        // .on('end', dragEnd);
 
     // Define the template in use
     let useGroupInABox = true,
         drawTemplate = false,
         template = "treemap",
-        abstraction = "packageLevelTwo";
+        abstraction = "packageLevelTwo",
+        selectDataset = "static/FISH-dependencies-static.json";
 
     // Check which view the user has selected
     d3.select("#checkGroupInABox").property("checked", useGroupInABox);
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
     d3.select("#selectTemplate").property("value", template);
     d3.select("#selectAbstraction").property("value", abstraction);
+    d3.select("#selectDataset").property("value", selectDataset);
 
     //----------------------------
     // Dropdown filter behaviour
@@ -92,7 +94,6 @@ function networkInit() {
         }))
         .append('g')
         .attr('transform', 'translate(1,1)');
-
     // Initialize force in a box
     const groupingForce = forceInABox()
         .strength(0.1) // Strength to foci
@@ -131,109 +132,150 @@ function networkInit() {
         d.fy = d3.event.y;
     }
 
-    function dragEnd(d) {
-        if (!d3.event.active) forceSim.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-    }
+    // function dragEnd(d) {
+    //     // if (!d3.event.active) forceSim.alphaTarget(0);
+    //     // d.fx = null;
+    //     // d.fy = null;
+    //     // // d.fx = d.x;
+    //     // // d.fy = d.y;
+    // }
+
+    dataInit();
+
+    // Update dataset level on change
+    d3.select("#selectDataset").on("change", function () {
+        selectDataset = d3.select("#selectDataset").property("value");
+        dataInit();
+    });
 
     //----------------------------
     // Update network with data
     //----------------------------
 
-    // Load json data
-    d3.json('datasets/static/FISH-dependencies-static.json', function (error, inputData) {
+    function dataInit() {
 
-        // ----------------------------
-        // Define abstraction level
-        //----------------------------
+        // Load json data
+        d3.json(`datasets/${selectDataset}`, function (error, inputData) {
 
-        // Define datasets
-        const classData = inputData;
+            // ----------------------------
+            // Define abstraction level
+            //----------------------------
 
-        // Make deep copies of the data
-        const dataCopy = JSON.parse(JSON.stringify(inputData));
-        const dataCopy2 = JSON.parse(JSON.stringify(inputData));
+            // var root = d3.stratify()
+            //     .id(function(d) { return d.name; })
+            //     .parentId(function(d) { return d.parent; })
+            //     (table);
 
-        // Define package depth -1 and -2 data
-        const packageOneData = getPackageData(dataCopy.nodes,dataCopy.links, -1);
-        const packageTwoData = getPackageData(dataCopy2.nodes,dataCopy2.links, -2);
+            // Make deep copies of the data
+            const dataCopy = JSON.parse(JSON.stringify(inputData));
+            const dataCopy2 = JSON.parse(JSON.stringify(inputData));
+            const dataCopy3 = JSON.parse(JSON.stringify(inputData));
+            const dataCopy4 = JSON.parse(JSON.stringify(inputData));
+            const dataCopy5 = JSON.parse(JSON.stringify(inputData));
+            const dataCopy6 = JSON.parse(JSON.stringify(inputData));
+            const dataCopy7 = JSON.parse(JSON.stringify(inputData));
 
-        // Update abstraction level on change
-        d3.select("#selectAbstraction").on("change", function () {
-            abstraction = d3.select("#selectAbstraction").property("value");
-            //forceSim.force("parent").deleteTemplate(networkSVG);
-            selectData(abstraction);
+            // Define datasets
+            const classData = inputData;
+            const packageOneData = getPackageData(dataCopy.nodes, dataCopy.links, -1);
+            const packageTwoData = getPackageData(dataCopy2.nodes, dataCopy2.links, -2);
+            const packageThreeData = getPackageData(dataCopy3.nodes, dataCopy3.links, -3);
+            const packageFourData = getPackageData(dataCopy4.nodes, dataCopy4.links, -4);
+            const packageFiveData = getPackageData(dataCopy5.nodes, dataCopy5.links, -5);
+            const packageSixData = getPackageData(dataCopy6.nodes, dataCopy6.links, -6);
+            const packageSevenData = getPackageData(dataCopy7.nodes, dataCopy7.links, -7);
 
-        });
+            console.log(packageThreeData, packageFourData, packageFiveData, packageSixData, packageSevenData);
 
-        // Select the dataset according to the selected abstraction
-        let selectedData;
-        selectData(abstraction);
-
-        function selectData(abstraction){
-            if (abstraction === "packageLevelOne"){
-                selectedData = JSON.parse(JSON.stringify(packageOneData));
-            }
-            if(abstraction === "classLevel"){
-                selectedData = JSON.parse(JSON.stringify(classData));
-            }
-            if(abstraction === "packageLevelTwo"){
-                selectedData = JSON.parse(JSON.stringify(packageTwoData));
-            }
-            filter(selectedData);
-        }
-
-        // ----------------------------
-        // Filter data (on click)
-        //----------------------------
-
-        function filter(selectedData){
-            // Get selected values and filter the data
-            let filterValues = getSelectedValues();
-            console.log(filterValues.length);
-            if(filterValues.length > 0){
-                filterValues.map(value => filterData(selectedData, value));
-                console.log("update network function filter IF")
-                updateNetwork(selectedData);
-                updateBarchart(selectedData);
-            }
-            else{
-                console.log("update network function filter ELSE")
-                updateNetwork(selectedData);
-                updateBarchart(selectedData);
-            }
-
-        }
-
-        // Update filters on click
-        d3.select("#filterButton").on("click", function () {
-            selectData(abstraction);
-
-        });
-
-        // Get an array of selected values in filter
-        function getSelectedValues(){
-            let selected = [];
-            $('.mutliSelect input[type="checkbox"]').each(function() {
-                if (this.checked) {
-                    selected.push($(this).attr('value'));
-                }
+            // Update abstraction level on change
+            d3.select("#selectAbstraction").on("change", function () {
+                abstraction = d3.select("#selectAbstraction").property("value");
+                selectData(abstraction);
             });
-            console.log(selected);
-            return selected;
-        }
 
-        // Filter the data
-        function filterData(selectedData, filterValue) {
-            console.log("before filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
-            selectedData.nodes = selectedData.nodes.filter((node) => !node.name.toString().startsWith(filterValue));
-            selectedData.links = selectedData.links.filter((link) => !link.source.toString().startsWith(filterValue) && !link.target.toString().startsWith(filterValue));
-            console.log("after filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
-        }
+            // Select the dataset according to the selected abstraction
+            let selectedData;
+            selectData(abstraction);
 
-        // The user hasn't clicked a node yet
-        let clicked = false;
+            function selectData(abstraction) {
+                if (abstraction === "classLevel") {
+                    selectedData = JSON.parse(JSON.stringify(classData));
+                }
+                if (abstraction === "packageLevelOne") {
+                    selectedData = JSON.parse(JSON.stringify(packageOneData));
+                }
+                if (abstraction === "packageLevelTwo") {
+                    selectedData = JSON.parse(JSON.stringify(packageTwoData));
+                }
+                if (abstraction === "packageLevelThree") {
+                    selectedData = JSON.parse(JSON.stringify(packageThreeData));
+                }
+                if (abstraction === "packageLevelFour") {
+                    selectedData = JSON.parse(JSON.stringify(packageFourData));
+                }
+                if (abstraction === "packageLevelFive") {
+                    selectedData = JSON.parse(JSON.stringify(packageFiveData));
+                }
+                if (abstraction === "packageLevelSix") {
+                    selectedData = JSON.parse(JSON.stringify(packageSixData));
+                }
+                if (abstraction === "packageLevelSeven") {
+                    selectedData = JSON.parse(JSON.stringify(packageSevenData));
+                }
+                filter(selectedData);
+            }
+
+            // ----------------------------
+            // Filter data (on click)
+            //----------------------------
+
+            function filter(selectedData) {
+                // Get selected values and filter the data
+                let filterValues = getSelectedValues();
+                console.log(filterValues.length);
+                if (filterValues.length > 0) {
+                    filterValues.map(value => filterData(selectedData, value));
+                    console.log("update network function filter IF")
+                    updateNetwork(selectedData);
+                    updateBarchart(selectedData);
+                } else {
+                    console.log("update network function filter ELSE")
+                    updateNetwork(selectedData);
+                    updateBarchart(selectedData);
+                }
+
+            }
+
+            // Update filters on click
+            d3.select("#filterButton").on("click", function () {
+                selectData(abstraction);
+
+            });
+
+            // Get an array of selected values in filter
+            function getSelectedValues() {
+                let selected = [];
+                $('.mutliSelect input[type="checkbox"]').each(function () {
+                    if (this.checked) {
+                        selected.push($(this).attr('value'));
+                    }
+                });
+                console.log(selected);
+                return selected;
+            }
+
+            // Filter the data
+            function filterData(selectedData, filterValue) {
+                console.log("before filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
+                selectedData.nodes = selectedData.nodes.filter((node) => !node.name.toString().startsWith(filterValue));
+                selectedData.links = selectedData.links.filter((link) => !link.source.toString().startsWith(filterValue) && !link.target.toString().startsWith(filterValue));
+                console.log("after filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
+            }
+
+            // The user hasn't clicked a node yet
+            let clicked = false;
+
+        });
 
         // ----------------------------
         // Update view
@@ -255,11 +297,11 @@ function networkInit() {
             networkSVG
                 .selectAll('.link')
                 .remove()
-                .transition(TRANSITION_DURATION)
+                .transition(TRANSITION_DURATION);
 
             networkSVG
                 .selectAll('.node')
-                .remove(TRANSITION_DURATION)
+                .remove(TRANSITION_DURATION);
 
             //----------------------------
             // Update data properties
@@ -413,7 +455,7 @@ function networkInit() {
                     //.transition().duration(TRANSITION_DURATION);
 
                     // Edit tooltip values
-                    d3.selectAll(".name").text(d.name); // full node name
+                    d3.selectAll(".name").text(d.name); // node name
                     d3.select("#parent").text(d.parent); // package name
                     d3.selectAll(".count").text(d.count); // no. of occurrences
                     d3.selectAll(".inputFile").text(d.origin); // input file of data
@@ -428,7 +470,7 @@ function networkInit() {
                 })
                 .on("click", function (d) {
 
-                    if(abstraction !== "classLevel"){
+                    if (abstraction !== "classLevel") {
                         console.log("clicked !== classlevel")
 
                         // Hide tooltip
@@ -438,24 +480,44 @@ function networkInit() {
                         if (clicked === false) {
                             clicked = true;
                             console.log("selected package:", d.parent);
-                            console.log(classData);
-                            let reqData = getClassData(classData.nodes, classData.links, d.parent);
+
+                            // Get the required data
+                            let reqData;
+                            if (abstraction === "packageLevelOne") {
+                                reqData = JSON.parse(JSON.stringify(getChildren(classData, d.parent)));
+                            } else if (abstraction === "packageLevelTwo") {
+                                reqData = JSON.parse(JSON.stringify(getChildren(packageOneData, d.parent)));
+                            } else if (abstraction === "packageLevelThree") {
+                                reqData = JSON.parse(JSON.stringify(getChildren(packageTwoData, d.parent)));
+                            } else if (abstraction === "packageLevelFour") {
+                                reqData = JSON.parse(JSON.stringify(getChildren(packageThreeData, d.parent)));
+                            } else if (abstraction === "packageLevelFive") {
+                                reqData = JSON.parse(JSON.stringify(getChildren(packageFourData, d.parent)));
+                            }
 
                             // Make sure there is more than one node below
-                            if(reqData.nodes.length > 1){
+                            if (reqData.nodes.length > 1) {
                                 updateNetwork(reqData);
-                            }
-                            else{
+                            } else {
                                 console.log(abstraction, "No lower level")
                             }
 
+                            // If clicked before go back to overview
                         } else if (clicked === true) {
-                            console.log(clicked)
                             clicked = false;
-                            updateNetwork(selectedData);
+                            if (abstraction === "packageLevelOne") {
+                                updateNetwork(packageOneData);
+                            } else if (abstraction === "packageLevelTwo") {
+                                updateNetwork(packageTwoData);
+                            } else if (abstraction === "packageLevelThree") {
+                                updateNetwork(packageThreeData);
+                            } else if (abstraction === "packageLevelFour") {
+                                updateNetwork(packageFourData);
+                            } else if (abstraction === "packageLevelFive") {
+                                updateNetwork(packageFiveData);
+                            }
                         }
-                    }
-                    else{
+                    } else {
                         console.log(abstraction, "Clicked class")
                     }
                 })
@@ -563,7 +625,8 @@ function networkInit() {
 
         }
 
-    });
+    }
+
 
 }
 

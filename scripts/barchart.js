@@ -68,7 +68,7 @@ function barchartInit() {
             .attr("y", d => y(d.count))
             .attr("height", d => (height - y(d.count)))
             .attr("fill", d => color(d.parent))
-            .attr("stroke", d => color(d.parent));
+            .attr("stroke", "#fff");
 
         // Show the tooltip with info about the selected item
         function tooltipOnOff(tooltip, hidden) {
