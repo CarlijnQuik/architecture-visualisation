@@ -9,21 +9,21 @@
 }
 
 .node {
-    stroke-width: 1px;
+    stroke-width: 2px;
     cursor: pointer;
 }
 
 /* Treemap template boxes */
 rect.cell {
     fill: none;
-    stroke: #484848;
-    stroke-width: 1px;
+    stroke: #ddd; /* #403f40 ddd  #484848*/
+    stroke-width: 2px;
 }
 
 /* Force template circles */
 circle {
     fill: none;
-    stroke: #484548;
-    stroke-width: 1px;
+    stroke: #484548; /*#484548  #403f40*/
+    stroke-width: 2px;
 }
 
