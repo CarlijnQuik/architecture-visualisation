@@ -1,3 +1,7 @@
+/* --------------------------- /
+/* Regular drop down
+/* ---------------------------- */
+
 /*Styling of the treemap/force drop down */
 select {
     margin: 3px;
@@ -21,6 +25,10 @@ select {
 option{
     cursor: pointer;
 }
+
+/* --------------------------- /
+/* Drop down with checkboxes
+/* ---------------------------- */
 
 /*Checkboxes dropdown */
 .dropdown {
@@ -118,6 +126,10 @@ button {
     color: #6cc0e5;
     font-weight: bold;
 }
+
+/* --------------------------- /
+/* Checkboxes
+/* ---------------------------- */
 
 /*!* Checkboxes *!*/
 .boxes {

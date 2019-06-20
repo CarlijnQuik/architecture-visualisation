@@ -17,11 +17,17 @@ def get_nodes(dataset, fr, to, file_name, data_type):
 
     # create a separate dictionary for all unique nodes
     for node in unique_nodes:
+        parent = '/'.join(node.split('.')[:-1])
+        #print(node, parent)
         node_dict = {'name': '/'.join(node.split('.')),  # fullname
                      'origin': file_name,
+                     'parent': parent,
                      'dataType': data_type,
-                     'parent': '/'.join(node.split('.')[:-1]),
                      'count': int(nodes.count(node))}
+
+        # check if the parent is a node, otherwise it is a root node
+        # if parent in unique_nodes:
+        #     node_dict['parent'] = parent
 
         # # if the node is not already present in the db
         # if not nodes_db.find_one({"name": '/'.join(node.split('.'))}):

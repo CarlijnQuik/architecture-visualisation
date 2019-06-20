@@ -64,3 +64,50 @@ function getUniqueLinks(inputLinks) {
         }
     });
 }
+
+function createCheckboxes(nodes, nodeNames){
+    nodes.map(node => {
+        let root = node.name.split("/", 1).join("/").toString();
+        if(!nodeNames.includes(root)) {
+            nodeNames.push(root);
+            addItem(root);
+        }
+    });
+}
+
+// Add a checkbox
+function addItem(checkboxName){
+    // get the HTML IDs
+    var ul = document.getElementById('ul'); //ul
+    var li = document.createElement('li');//li
+
+    // create the checkbox
+    var checkbox = document.createElement('input');
+    checkbox.type = "checkbox";
+    checkbox.id = checkboxName;
+    checkbox.value = checkboxName;
+
+    // append the checkbox to a list item
+    li.appendChild(checkbox);
+
+    // append a label to the list item
+    var newlabel = document.createElement("label");
+    newlabel.setAttribute("for",checkbox.id);
+    newlabel.innerHTML = checkbox.value;
+    li.appendChild(newlabel);
+
+    // append list item with checkbox and label to drop down
+    ul.appendChild(li);
+}
+
+// Get an array of selected values in filter
+function getSelectedValues() {
+    let selected = [];
+    $('.mutliSelect input[type="checkbox"]').each(function () {
+        if (this.checked) {
+            selected.push($(this).attr('value'));
+        }
+    });
+    return selected;
+}
+

@@ -4,8 +4,7 @@
 <head>
 
     <!--CSS -- git add -- . :! -->
-    <link rel="stylesheet" href="styles/network.css" >
-    <link rel="stylesheet" href="styles/barchart.css" >
+    <link rel="stylesheet" href="styles/idioms.css" >
     <link rel="stylesheet" href="styles/tooltips.css" >
     <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/buttons.css">
@@ -23,6 +22,7 @@
     <script type="text/javascript" src="scripts/network.js"></script>
     <script type="text/javascript" src="scripts/data_helper.js"></script>
     <script type="text/javascript" src="scripts/barchart.js"></script>
+    <script type="text/javascript" src="scripts/tree.js"></script>
     <script type="text/javascript" src="scripts/main.js"></script>
 
 </head>
@@ -116,7 +116,7 @@
                                 <option value="static/JabRef-dependencies-static.json">JabRef dependencies</option>
                                 <option value="static/FISH-dependencies-static.json">FISH dependencies</option>
                                 <option value="dynamic/jabref-scenario-1-dynamic.json">JabRef scenario 1</option>
-                                <option value="dynamic/fish-dynamic.json">FISH random clicks</option>
+                                <option value="dynamic/fish2-dynamic.json">FISH random clicks</option>
                             </select>
                         </div>
                     </div>
@@ -132,20 +132,14 @@
                             </dt>
                             <dd>
                                 <div class="mutliSelect">
-                                    <ul>
-                                        <div class="boxes">
+                                    <div class="boxes">
+                                        <ul id="ul">
+<!--                                            Checkboxes created in network.js-->
+                                            <input type="checkbox" id="all_values" checked>
+                                            <label for="all_values">All</label>
 
-                                            <li>
-                                                <input type="checkbox" value="java" id="java">
-                                                <label for="java">Java</label>
-                                            </li>
-                                            <li>
-                                                <input type="checkbox" value="xLibraries" id="xLibraries">
-                                                <label for="xLibraries">xLibraries</label>
-                                            </li>
-
-                                        </div>
-                                    </ul>
+                                        </ul>
+                                    </div>
                                 </div>
                             </dd>
                             <button id="filterButton">Filter / Reset</button>
@@ -180,8 +174,17 @@
                 <div id='barchart' class='vis'></div>
             </div>
 
+            <!-- TREE VIS -->
+            <div class='visualisation'>
+                <div class='visualisation-title'>
+                    <div class='visualisation-title-text'>
+                        Package structure
+                    </div>
+                </div>
+                <div id='tree' class='vis'></div>
+            </div>
+
         </div>
-<!--        <div class='flex-container'>-->
 
     </div>
 

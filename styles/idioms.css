@@ -1,0 +1,71 @@
+/* --------------------------- /
+/* Network diagram styles
+/* ---------------------------- */
+
+#network{
+    padding-top:10px
+}
+
+.link {
+    cursor: pointer;
+}
+
+.node {
+    stroke-width: 2px;
+    cursor: pointer;
+}
+
+/* Treemap template boxes */
+rect.cell {
+    fill: none;
+    stroke: #ddd; /* #403f40 ddd  #484848*/
+    stroke-width: 2px;
+}
+
+/* Force template circles */
+circle {
+    fill: none;
+    stroke: #484548; /*#484548  #403f40*/
+    stroke-width: 2px;
+}
+
+/* --------------------------- /
+/* Bar chart styles
+/* ---------------------------- */
+
+#barchart{
+    position: absolute;
+    float: right;
+}
+
+.bar{
+    cursor: pointer;
+}
+
+.grid path {
+    stroke-width: 3;
+}
+
+.grid .tick line {
+    stroke: #9FAAAE;
+    stroke-opacity: 0.2;
+}
+
+/* --------------------------- /
+/* Treemap styles
+/* ---------------------------- */
+#tree {
+    float: right;
+}
+
+.node circle {
+    fill: #fff;
+    stroke: #403f40;
+    stroke-width: 3px;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
