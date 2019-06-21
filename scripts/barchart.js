@@ -6,8 +6,8 @@ var barChartSVG;
 
 // set the dimensions and margins of the graph
 var bMargin = {top: 20, right: 90, bottom: 30, left: 90},
-    bWidth = 700 - bMargin.left - bMargin.right,
-    bHeight = 300 - bMargin.top - bMargin.bottom;
+    bWidth = 800 - bMargin.left - bMargin.right,
+    bHeight = 500 - bMargin.top - bMargin.bottom;
 
 function barchartInit() {
 
@@ -24,29 +24,9 @@ function barchartInit() {
 }
 
 //----------------------------
-// Draw barchart
+// Refresh view
 //----------------------------
-
-function updateBarchart(inputData) {
-
-    // Only the nodes are needed
-    let data = inputData.nodes;
-    console.log("bar chart data", data);
-
-    // Scale the range of the data in the domains
-    let x = d3.scaleBand()
-        .range([0, bWidth])
-        .padding(0.03)
-        .domain(data.map(d => d.name));
-
-    let y = d3.scaleLinear()
-        .range([bHeight,0])
-        .domain([0, d3.max(data, d =>  d.count)]);
-
-    //----------------------------
-    // Refresh view
-    //----------------------------
-
+function refreshBarchart(){
     barChartSVG
         .selectAll('.text')
         .remove();
@@ -58,6 +38,30 @@ function updateBarchart(inputData) {
     barChartSVG
         .selectAll('g')
         .remove();
+}
+
+//----------------------------
+// Draw barchart
+//----------------------------
+
+function updateBarchart(inputData) {
+
+    // Only the nodes are needed
+    let data = inputData.nodes;
+    console.log("bar chart data", inputData);
+
+    // Refresh view
+    refreshBarchart();
+
+    // Scale the range of the data in the domains
+    let x = d3.scaleBand()
+        .range([0, bWidth])
+        .padding(0.03)
+        .domain(data.map(d => d.name));
+
+    let y = d3.scaleLinear()
+        .range([bHeight,0])
+        .domain([0, d3.max(data, d =>  d.count)]);
 
     // append the rectangles for the bar chart
     let bar = barChartSVG.selectAll(".bar")

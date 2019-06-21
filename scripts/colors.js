@@ -6,7 +6,7 @@ var COLOR = {
     NODE_DEFAULT_FILL: d => color(d.parent), // Node color
     NODE_DEFAULT_STROKE: "#fff", // Color of node border
     NODE_HIGHLIGHT_STROKE: "#fff",
-    LINK_DEFAULT_STROKE: "#000000", // Color of links  #525B56"#b8c4bf" b3b3b3
+    LINK_DEFAULT_STROKE: "#6d6d6d", // Color of links  #525B56"#b8c4bf" b3b3b3
     LINK_HIGHLIGHT: "#000000",
     INGOING: "#2ca02c", // "#1b9e77"
     OUTGOING: "#d62728", // "#D63028"

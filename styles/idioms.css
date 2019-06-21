@@ -64,6 +64,7 @@ circle {
     stroke-width: 3px;
 }
 
+/*! Be careful since these are also the network links*/
 .link {
     fill: none;
     stroke: #ccc;

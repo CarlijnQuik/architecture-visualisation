@@ -3,15 +3,12 @@
 // Based on: https://bl.ocks.org/d3noob/43a860bc0024792f8803bba8ca0d5ecd
 //----------------------------
 
-// set the dimensions and margins of the graph
+// set the dimensions and margins of the tree graph
 var tMargin = {top: 20, right: 90, bottom: 30, left: 90},
-    tWidth = 700 - tMargin.left - tMargin.right,
-    tHeight = 300 - tMargin.top - tMargin.bottom;
+    tWidth = 1000 - tMargin.left - tMargin.right,
+    tHeight = 500 - tMargin.top - tMargin.bottom;
 
 var treeSVG;
-var allNodes;
-var nodeNames;
-var treeData;
 var treemap;
 var i = 0,
     duration = 750,
@@ -28,6 +25,28 @@ function treeInit() {
         .append("g")
         .attr("transform", "translate("
             + tMargin.left + "," + tMargin.top + ")");
+
+}
+
+//----------------------------
+// Refresh view
+//----------------------------
+function refreshTree(){
+    treeSVG
+        .selectAll('.circle')
+        .remove();
+
+    treeSVG
+        .selectAll('.text')
+        .remove();
+
+    treeSVG
+        .selectAll('.node')
+        .remove();
+
+    treeSVG
+        .selectAll('.link')
+        .remove();
 
 }
 
@@ -85,7 +104,7 @@ function updateTree(source) {
             return d.children || d._children ? "end" : "start";
         })
         .text(function (d) {
-            return d.data.data.name;
+            return d.data.name;
         });
 
     // UPDATE
@@ -177,16 +196,7 @@ function updateTree(source) {
         return path
     }
 
-    // Toggle children on click.
-    function click(d) {
-        if (d.children) {
-            d._children = d.children;
-            d.children = null;
-        } else {
-            d.children = d._children;
-            d._children = null;
-        }
-        updateTree(d);
-    }
 }
+
+
 

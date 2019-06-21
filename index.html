@@ -21,6 +21,8 @@
     <script type="text/javascript" src="scripts/colors.js"></script>
     <script type="text/javascript" src="scripts/network.js"></script>
     <script type="text/javascript" src="scripts/data_helper.js"></script>
+    <script type="text/javascript" src="scripts/treedata_init.js"></script>
+    <script type="text/javascript" src="scripts/filter.js"></script>
     <script type="text/javascript" src="scripts/barchart.js"></script>
     <script type="text/javascript" src="scripts/tree.js"></script>
     <script type="text/javascript" src="scripts/main.js"></script>
@@ -88,13 +90,7 @@
                         <div>
                             <!-- Select abstraction drop down-->
                             <select id="selectAbstraction">
-                                <option value="packageLevelSeven">Package depth -7</option>
-                                <option value="packageLevelSix">Package depth -6</option>
-                                <option value="packageLevelFive">Package depth -5</option>
-                                <option value="packageLevelFour">Package depth -4</option>
-                                <option value="packageLevelThree">Package depth -3</option>
-                                <option value="packageLevelTwo">Package depth -2</option>
-                                <option value="packageLevelOne">Package depth -1</option>
+                                <option value="packageLevelOne">Package level</option>
                                 <option value="classLevel">Class level</option>
                             </select>
 
@@ -105,18 +101,6 @@
                             <select id="selectTemplate">
                                 <option value="treemap">Treemap</option>
                                 <option value="force">Force</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="column">
-                        <div>
-                            <!-- Select algorithm drop down-->
-                            <select id="selectDataset">
-                                <option value="static/JabRef-dependencies-static.json">JabRef dependencies</option>
-                                <option value="static/FISH-dependencies-static.json">FISH dependencies</option>
-                                <option value="dynamic/jabref-scenario-1-dynamic.json">JabRef scenario 1</option>
-                                <option value="dynamic/fish2-dynamic.json">FISH random clicks</option>
                             </select>
                         </div>
                     </div>
@@ -135,8 +119,8 @@
                                     <div class="boxes">
                                         <ul id="ul">
 <!--                                            Checkboxes created in network.js-->
-                                            <input type="checkbox" id="all_values" checked>
-                                            <label for="all_values">All</label>
+<!--                                            <input type="checkbox" id="all_values" checked>-->
+<!--                                            <label for="all_values">All</label>-->
 
                                         </ul>
                                     </div>
@@ -178,9 +162,23 @@
             <div class='visualisation'>
                 <div class='visualisation-title'>
                     <div class='visualisation-title-text'>
-                        Package structure
+                        Dataset structure
                     </div>
                 </div>
+                <div class='vis-options'>
+                    <div class="column">
+                        <div>
+                            <!-- Select dataset drop down-->
+                            <select id="datasetName">
+                                <option value="static/JabRef-dependencies-static.json">JabRef dependencies</option>
+                                <option value="static/FISH-dependencies-static.json">FISH dependencies</option>
+                                <option value="dynamic/jabref-scenario-1-dynamic.json">JabRef scenario 1</option>
+                                <option value="dynamic/fish2-dynamic.json">FISH random clicks</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div id='tree' class='vis'></div>
             </div>
 

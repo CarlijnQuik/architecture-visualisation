@@ -16,9 +16,6 @@ var networkSVG;
 var groupingForce;
 var forceSim;
 
-//
-var nodeNames = [];
-
 // Boolean to define whether node has been clicked before
 var clicked;
 
@@ -92,23 +89,10 @@ function networkInit() {
 
 }
 
-// ----------------------------
-// Update view
 //----------------------------
-
-function updateNetwork(selectedData) {
-
-    const data = {"nodes": [], "links": []};
-
-    data.nodes = selectedData.nodes;
-    data.links = selectedData.links;
-
-    console.log("start update with:", data.nodes.length, data.links.length);
-
-    //----------------------------
-    // Refresh view
-    //----------------------------
-
+// Refresh view
+//----------------------------
+function refreshNetwork(){
     networkSVG
         .selectAll('.link')
         .remove();
@@ -116,6 +100,25 @@ function updateNetwork(selectedData) {
     networkSVG
         .selectAll('.node')
         .remove();
+
+
+}
+
+// ----------------------------
+// Update view
+//----------------------------
+
+function updateNetwork(selectedData) {
+
+    // Refresh the view
+    refreshNetwork();
+
+    const data = {"nodes": [], "links": []};
+
+    data.nodes = selectedData.nodes;
+    data.links = selectedData.links;
+
+    console.log("start update with:", data.nodes.length, data.links.length);
 
     //----------------------------
     // Update data properties
