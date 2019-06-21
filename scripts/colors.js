@@ -45,3 +45,65 @@ var d3_category50= [
 
 // Define the color scale of the visualisations
 var color = d3.scaleOrdinal(d3_category50);
+//let greyScale = d3.scaleOrdinal(d3.schemeGreys[d => linkStrength(d.count)]);
+
+// ----------------------------
+// Default styling of the links and nodes in the network diagram
+// ----------------------------
+function linkDefaultStyle(link) {
+    link
+        .style("stroke", COLOR.LINK_DEFAULT_STROKE) // The color of the link
+        .style("stroke-width", STROKE_WIDTH.LINK_DEFAULT)
+        .style("stroke-opacity", OPACITY.LINK_DEFAULT);
+}
+
+function nodeDefaultStyle(node){
+    node
+        .style("stroke", COLOR.NODE_DEFAULT_STROKE) // The border around the node
+        .style("fill", COLOR.NODE_DEFAULT_FILL)
+        .style("stroke-width", STROKE_WIDTH.NODE_DEFAULT)
+        .style("fill-opacity", OPACITY.NODE_DEFAULT);
+}
+
+// ----------------------------
+// Color interaction
+// ----------------------------
+
+// Highlight the links connected to the nodes (instead of using default)
+function highlightConnected(selectedNode, links) {
+    let outgoingLinks = links.filter(d => d.source === selectedNode);
+    outgoingLinks
+        .style("stroke", COLOR.OUTGOING)
+        .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
+        .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT);
+
+    let incomingLinks = links.filter(d => d.target === selectedNode);
+    incomingLinks
+        .style("stroke", COLOR.INGOING)
+        .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
+        .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT);
+
+    // Hide unconnected links
+    let unconnectedLinks = links.filter(d => d.source !== selectedNode && d.target !== selectedNode);
+    unconnectedLinks
+        .style("stroke-opacity", OPACITY.LINK_HIDDEN);
+
+}
+
+// Return the color of the node according to fan in/out
+function colorNodeInOut(selectedNode, links) {
+    // Define incoming and outgoing links
+    let outgoingLinks = links.filter(d => d.source === selectedNode);
+    let incomingLinks = links.filter(d => d.target === selectedNode);
+
+    // Make node color red or green according to fan in/out ratio
+    if (outgoingLinks._groups[0].length > incomingLinks._groups[0].length) {
+        return COLOR.OUTGOING;
+    } else if (incomingLinks._groups[0].length > outgoingLinks._groups[0].length) {
+        return COLOR.INGOING;
+    } else {
+        return COLOR.TIE;
+    }
+
+}
+

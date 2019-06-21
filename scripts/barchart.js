@@ -6,7 +6,7 @@ var barChartSVG;
 
 // set the dimensions and margins of the graph
 var bMargin = {top: 20, right: 90, bottom: 30, left: 90},
-    bWidth = 800 - bMargin.left - bMargin.right,
+    bWidth = 1000 - bMargin.left - bMargin.right,
     bHeight = 500 - bMargin.top - bMargin.bottom;
 
 function barchartInit() {
@@ -32,7 +32,7 @@ function refreshBarchart(){
         .remove();
 
     barChartSVG
-        .selectAll(".rect")
+        .selectAll(".bar")
         .remove();
 
     barChartSVG
@@ -50,9 +50,6 @@ function updateBarchart(inputData) {
     let data = inputData.nodes;
     console.log("bar chart data", inputData);
 
-    // Refresh view
-    refreshBarchart();
-
     // Scale the range of the data in the domains
     let x = d3.scaleBand()
         .range([0, bWidth])
@@ -63,6 +60,9 @@ function updateBarchart(inputData) {
         .range([bHeight,0])
         .domain([0, d3.max(data, d =>  d.count)]);
 
+    // Refresh view
+    refreshBarchart();
+
     // append the rectangles for the bar chart
     let bar = barChartSVG.selectAll(".bar")
         .data(data)
@@ -72,21 +72,7 @@ function updateBarchart(inputData) {
         .attr("width", x.bandwidth())
         .attr("y", d => y(d.count))
         .attr("height", d => (bHeight - y(d.count)))
-        .attr("fill", d => color(d.parent))
-        .attr("stroke", "#fff");
-
-    // Show the tooltip with info about the selected item
-    function tooltipOnOff(tooltip, hidden) {
-        // Find mouse position and unhide general tooltip
-        d3.select("#tooltip")
-            .style("top", (d3.event.pageY) + 20 + "px")
-            .style("left", (d3.event.pageX) + 20 + "px")
-            .classed("hidden", hidden);
-
-        // Unhide specific tooltip
-        d3.select(tooltip).classed("hidden", hidden);
-
-    }
+        .attr("fill", d => color(d.parent));
 
     // ----------------------------
     // Define bar interaction
@@ -96,14 +82,11 @@ function updateBarchart(inputData) {
         .on("mouseenter", function (d) {
             // Highlight selected bar
             d3.select(this)
-                .style("stroke", "black");
+                .style("stroke", "black")
+                .style("stroke-width", "2px");
 
             // Edit tooltip values
-            d3.selectAll(".name").text(d.name); // full node name
-            d3.select("#parent").text(d.parent); // package name
-            d3.selectAll(".count").text(d.count); // no. of occurrences
-            d3.selectAll(".inputFile").text(d.origin); // input file of data
-            d3.selectAll(".dataType").text(d.dataType); // static or dynamic
+            nodeTooltip(d);
 
             // Show tooltip
             tooltipOnOff("#networkNodeTooltip", false)
@@ -112,8 +95,7 @@ function updateBarchart(inputData) {
         .on("mouseout", function (d) {
             // Highlight selected node
             d3.select(this)
-                .style("fill", d => color(d.parent))
-                .style("stroke", "#fff");
+                .style("stroke-width", "0.1px");
 
             // Hide tooltip
             tooltipOnOff("#networkNodeTooltip", true)

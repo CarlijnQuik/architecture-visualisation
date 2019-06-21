@@ -29,7 +29,7 @@ function controlsInit(){
     useGroupInABox = true;
     drawTemplate = false;
     template = "treemap";
-    abstraction = "classLevel";
+    abstraction = "packageLevel";
     datasetName = "static/FISH-dependencies-static.json";
     selectedNodes = [];
 
@@ -108,13 +108,13 @@ function selectAbstraction(selectedDataset, abstraction) {
     // Make a deep copy of the data to define the data sets
     const classData = selectedDataset;
     const dataCopy = JSON.parse(JSON.stringify(selectedDataset));
-    const packageOneData = getPackageData(dataCopy.nodes, dataCopy.links, -1);
+    const packageData = getPackageData(dataCopy.nodes, dataCopy.links, -1);
 
     if (abstraction === "classLevel") {
         selectedData = JSON.parse(JSON.stringify(classData));
     }
-    if (abstraction === "packageLevelOne") {
-        selectedData = JSON.parse(JSON.stringify(packageOneData));
+    if (abstraction === "packageLevel") {
+        selectedData = JSON.parse(JSON.stringify(packageData));
     }
 
     filterAndUpdate(selectedData);
