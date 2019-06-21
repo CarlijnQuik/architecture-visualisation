@@ -1,4 +1,6 @@
-/* Tooltips */
+/* --------------------------- /
+/* Tool tips
+/* ---------------------------- */
 #tooltip {
     position: absolute;
     width: 300px;
@@ -41,11 +43,6 @@
     stroke: none;
     stroke-width: 0px;
     display: none;
-}
-
-/* tooltips bold text */
-.bold {
-    font-weight: 900;
 }
 
 

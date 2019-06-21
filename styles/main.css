@@ -1,17 +1,10 @@
-/* Main styles */
+/* --------------------------- /
+/* Main styles
+/* ---------------------------- */
 
 html {
     height: 100%;
 }
-
-/*body {*/
-/*    font: normal 14px/100% "Andale Mono", AndaleMono, monospace;*/
-/*    color: #fff;*/
-/*    padding: 50px;*/
-/*    width: 300px;*/
-/*    margin: 0 auto;*/
-/*    background-color: #374954;*/
-/*}*/
 
 body {
     font: normal 14px/100% "Andale Mono", AndaleMono, monospace;
@@ -57,10 +50,13 @@ body {
 }
 
 #slider:hover {
-    /* opacity: 0.9; */
+     opacity: 0.9;
 }
 
-/* Visualisations */
+/* --------------------------- /
+/* Visualisations
+/* ---------------------------- */
+
 .vis {
     /*background-color: #040C0E;*/
     /*padding: 5px 5px 5px 5px;*/
@@ -106,7 +102,10 @@ body {
     font-size:15px;
 }
 
-/* Text */
+/* --------------------------- /
+/* Text
+/* ---------------------------- */
+
 .title {
     text-align: center;
     margin-top: 5px;
@@ -123,6 +122,11 @@ text {
     fill: #000000;
     font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
     text-anchor: middle;
+}
+
+/* tooltips bold text */
+.bold {
+    font-weight: 900;
 }
 
 h1 {

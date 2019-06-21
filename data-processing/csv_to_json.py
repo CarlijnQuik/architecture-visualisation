@@ -17,11 +17,17 @@ def get_nodes(dataset, fr, to, file_name, data_type):
 
     # create a separate dictionary for all unique nodes
     for node in unique_nodes:
+        parent = '/'.join(node.split('.')[:-1])
+        #print(node, parent)
         node_dict = {'name': '/'.join(node.split('.')),  # fullname
                      'origin': file_name,
+                     'parent': parent,
                      'dataType': data_type,
-                     'parent': '/'.join(node.split('.')[:-1]),
                      'count': int(nodes.count(node))}
+
+        # check if the parent is a node, otherwise it is a root node
+        # if parent in unique_nodes:
+        #     node_dict['parent'] = parent
 
         # # if the node is not already present in the db
         # if not nodes_db.find_one({"name": '/'.join(node.split('.'))}):
@@ -82,7 +88,7 @@ def get_dynamic_links(dataset, file_name):
 
     # create a separate dictionary for all unique links
     for index, row in dataset.iterrows():
-        link_id = row['Dependency from'] + row['Dependency to']
+        link_id = row['Caller'] + row['Callee']
         if link_id not in unique_links:
             unique_links.append(link_id)
             link_dict = {'startDate': row['Start Date'],
