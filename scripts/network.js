@@ -30,7 +30,7 @@ var drag = d3.drag()
 // .on('end', dragEnd);
 
 function dragStart(d) {
-    if (!d3.event.active) forceSim.alphaTarget(0.3).restart();
+    if (!d3.event.active) forceSim.alphaTarget(0).restart();
     d.fx = d.x;
     d.fy = d.y;
 }
@@ -82,7 +82,8 @@ function networkInit() {
             .strength(groupingForce.getLinkStrength)
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
-        .force('center', d3.forceCenter(width / 2, height / 2)); // setting the center of gravity of the system;
+        .force('center', d3.forceCenter(width / 2, height / 2)) // setting the center of gravity of the system;
+        .alphaTarget(0); // Make sure nodes do not move after load (otherwise insert 0.5)
     // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
     // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
     // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
@@ -279,7 +280,7 @@ function refreshTemplate(){
     template = d3.select("#selectTemplate").property("value");
     forceSim.stop();
     forceSim.force("parent").template(template);
-    forceSim.alphaTarget(0.5).restart();
+    forceSim.alphaTarget(0).restart();
 
 }
 
@@ -294,7 +295,7 @@ function refreshGroups(){
     forceSim
         .force("parent")
         .enableGrouping(useGroupInABox);
-    forceSim.alphaTarget(0.5).restart();
+    forceSim.alphaTarget(0).restart();
 }
 
 

@@ -50,15 +50,15 @@ var color = d3.scaleOrdinal(d3_category50);
 // ----------------------------
 // Default styling of the links and nodes in the network diagram
 // ----------------------------
-function linkDefaultStyle(link) {
-    link
+function linkDefaultStyle(links) {
+    links
         .style("stroke", COLOR.LINK_DEFAULT_STROKE) // The color of the link
         .style("stroke-width", STROKE_WIDTH.LINK_DEFAULT)
         .style("stroke-opacity", OPACITY.LINK_DEFAULT);
 }
 
-function nodeDefaultStyle(node){
-    node
+function nodeDefaultStyle(nodes){
+    nodes
         .style("stroke", COLOR.NODE_DEFAULT_STROKE) // The border around the node
         .style("fill", COLOR.NODE_DEFAULT_FILL)
         .style("stroke-width", STROKE_WIDTH.NODE_DEFAULT)
