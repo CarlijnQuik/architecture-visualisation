@@ -20,46 +20,18 @@ var forceSim;
 var clicked;
 
 // ----------------------------
-// Define dragging behaviour
-//----------------------------
-
-// Define dragging behaviour
-var drag = d3.drag()
-    .on('start', dragStart)
-    .on('drag', dragging);
-// .on('end', dragEnd);
-
-function dragStart(d) {
-    if (!d3.event.active) forceSim.alphaTarget(0).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-}
-
-function dragging(d) {
-    d.fx = d3.event.x;
-    d.fy = d3.event.y;
-}
-
-// Uncomment for behaviour when drag end
-// function dragEnd(d) {
-//     // if (!d3.event.active) forceSim.alphaTarget(0);
-//     // d.fx = null;
-//     // d.fy = null;
-// }
-
-// ----------------------------
 // Define SVG and force simulation
 //----------------------------
 
 function networkInit() {
-    // Define the svg and connect it to the html/css id "nodelink"
+    // Define the svg and connect it to the html/css id "network"
     networkSVG = d3
         .select("#network")
         .append('svg')
         .attr('width', width)
         .attr('height', height)
         .call(d3.zoom().on("zoom", function () {
-            networkSVG.attr("transform", d3.event.transform)
+            networkSVG.attr("transform", d3.event.transform) // Enable zooming in and out
         }))
         .append('g')
         .attr('transform', 'translate(1,1)');
@@ -82,11 +54,13 @@ function networkInit() {
             .strength(groupingForce.getLinkStrength)
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
-        .force('center', d3.forceCenter(width / 2, height / 2)) // setting the center of gravity of the system;
-        .alphaTarget(0); // Make sure nodes do not move after load (otherwise insert 0.5)
+        .force('center', d3.forceCenter(width / 2, height / 2)); // setting the center of gravity of the system;
+        // .alphaTarget(0); // Make sure nodes do not move after load (otherwise insert 0.5)
     // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
     // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
     // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
+
+    clicked = false; // Nothing clicked yet
 
 }
 
@@ -101,7 +75,6 @@ function refreshNetwork(){
     networkSVG
         .selectAll('.node')
         .remove();
-
 
 }
 
@@ -158,7 +131,7 @@ function updateNetwork(selectedData) {
         .append("circle")
         .attr("class", "node")
         .attr("r", d => nodeRadius(d.count))
-        .call(drag);
+        .call(drag); // Enable dragging behaviour
 
     // Style network
     linkDefaultStyle(links);
@@ -183,26 +156,37 @@ function updateNetwork(selectedData) {
 
     nodes
         .on("mouseenter", function (d) {
-            // Highlight selected node
             d3.select(this)
-                .style("fill", colorNodeInOut(d, links))
-                .style("stroke", COLOR.NODE_HIGHLIGHT_STROKE)
-                .style("fill-opacity", OPACITY.NODE_HIGHLIGHT);
-            highlightConnected(d, links);  // Highlight connected nodes
+                .style("stroke-width", STROKE_WIDTH.NODE_HIGHLIGHT);
 
             nodeTooltip(d);  // Edit tooltip values
-            tooltipOnOff("#networkNodeTooltip", false);  // Show tooltip
+            tooltipOnOff("#nodeTooltip", false);  // Show tooltip
 
         })
         .on("click", function (d) {
-            tooltipOnOff("#networkNodeTooltip", true);    // Hide tooltip
-            highlightConnected(d, links);  // Highlight connected nodes
+            if(d3.select(this).style("fill-opacity") == OPACITY.NODE_HIGHLIGHT){
+                console.log("click if", d3.select(this).style("fill-opacity"));
+                deHighlightConnected(d, links);
+                nodeDefaultStyle(d3.select(this));
+                updateBarchart(data, "null");
+            } else {
+                updateBarchart(data, d);
+                d3.select(this)
+                    .style("fill", colorNodeInOut(d, links))
+                    .style("stroke", COLOR.NODE_HIGHLIGHT_STROKE)
+                    .style("fill-opacity", OPACITY.NODE_HIGHLIGHT);
+                highlightConnected(d, links);  // Highlight connected
+
+                tooltipOnOff("#nodeTooltip", true);    // Hide tooltip
+
+
+
+            }
 
         })
         .on("mouseout", function (d) {
-            nodeDefaultStyle(nodes);
-            linkDefaultStyle(links);
-            tooltipOnOff("#networkNodeTooltip", true);  // Hide tooltip
+            // deHighlightConnected(d, links);
+            tooltipOnOff("#nodeTooltip", true);  // Hide tooltip
 
         });
 
@@ -212,20 +196,19 @@ function updateNetwork(selectedData) {
 
     links
         .on("mouseenter", function (d) {
-            // Change style
-            d3.select(this)
-                .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
-                .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
-                .style("stroke", COLOR.LINK_HIGHLIGHT);
+            if(d3.select(this).style("stroke-opacity") == OPACITY.LINK_DEFAULT ) {
+                highLightLink(d3.select(this));
+            }
 
             linkTooltip(d);  // Load data into tooltip
-            tooltipOnOff("#networkLinkTooltip", false);    // Show tooltip
+            tooltipOnOff("#linkTooltip", false);    // Show tooltip
 
         })
         .on("mouseout", function (d) {
-            nodeDefaultStyle(nodes);
-            linkDefaultStyle(links);
-            tooltipOnOff("#networkLinkTooltip", true); // Hide tooltip
+            if(d3.select(this).style("stroke-opacity") == OPACITY.LINK_DEFAULT ) {
+                linkDefaultStyle(d3.select(this));
+            }
+            tooltipOnOff("#linkTooltip", true); // Hide tooltip
 
         });
 
@@ -280,7 +263,7 @@ function refreshTemplate(){
     template = d3.select("#selectTemplate").property("value");
     forceSim.stop();
     forceSim.force("parent").template(template);
-    forceSim.alphaTarget(0).restart();
+    forceSim.alphaTarget(0.5).restart();
 
 }
 
@@ -295,7 +278,7 @@ function refreshGroups(){
     forceSim
         .force("parent")
         .enableGrouping(useGroupInABox);
-    forceSim.alphaTarget(0).restart();
+    forceSim.alphaTarget(0.5).restart();
 }
 
 

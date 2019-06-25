@@ -3,7 +3,7 @@
 /* ---------------------------- */
 #tooltip {
     position: absolute;
-    width: 300px;
+    width: 500px;
     display: inline;
     word-wrap: break-word;
     max-width: 500px;
@@ -30,11 +30,11 @@
     display: none;
 }
 
-#networkLinkTooltip.hidden {
+#linkTooltip.hidden {
     display: none;
 }
 
-#networkNodeTooltip.hidden {
+#nodeTooltip.hidden {
     display: none;
 }
 

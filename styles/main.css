@@ -71,7 +71,7 @@ body {
 }
 
 .column {
-    width : 130px;
+    width : 150px;
     float : left;
     padding-left: 10px;
     padding-top:2px;
@@ -110,7 +110,7 @@ body {
     text-align: center;
     margin-top: 5px;
     margin-bottom: 5px;
-    color: white;
+    color: #000000;
     padding-left: 18px;
     font-size: 15px;
     padding-right: 4px;

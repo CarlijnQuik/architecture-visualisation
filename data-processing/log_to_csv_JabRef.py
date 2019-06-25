@@ -23,7 +23,8 @@ def fix_null_callee(callee_class, call):
 def get_csv(input_file, output_file):
     with open(input_file, 'r') as f:
         reader = csv.DictReader(f, delimiter=';',
-                                fieldnames=['Timestamp', 'Thread', 'Type', 'Caller', 'Caller ID', 'Callee', 'Callee ID','Message'])
+                                fieldnames=['Timestamp', 'Thread', 'Type', 'Caller',
+                                            'Callee', 'Message'])
 
         with open(output_file, 'w', newline='') as out:
             writer = csv.writer(out, delimiter=';')
@@ -43,16 +44,16 @@ def get_csv(input_file, output_file):
                 elif row['Type'] == 'Exit':
                     callee = fix_null_callee(row['Callee'], row['Message'])
                     entry = stacks[row['Thread']].pop()
-                    writer.writerow([entry['Timestamp'].split(' ')[0], entry['Timestamp'].split(' ')[1],
-                                     row['Timestamp'].split(' ')[0], row['Timestamp'].split(' ')[1],
+                    writer.writerow([entry['Timestamp'].split('T')[0], entry['Timestamp'].split('T')[-1],
+                                     row['Timestamp'].split('T')[0], row['Timestamp'].split('T')[-1],
                                      row['Thread'],
-                                     ''.join(row['Caller ID'].split('.')),  # callerID
-                                     '.'.join(row['Caller'].split('.')),  # caller
-                                     row['Callee ID'],  # calleeID
-                                     '.'.join(callee.split('.')),  # callee
+                                     ''.join(row['Caller'].split('.')[-1]),  # callerID
+                                     '.'.join(row['Caller'].split('.')[:-1]),  # caller
+                                     ''.join(callee.split('.')[-1]),  # calleeID
+                                     '.'.join(callee.split('.')[:-1]),  # callee
                                      row['Message']])
                 # else:
-                    # print(row)
+                # print(row)
 
             for thread_name, thread in stacks.items():
                 if len(thread) > 0:
@@ -60,13 +61,13 @@ def get_csv(input_file, output_file):
                     while len(thread) > 0:
                         row = thread.pop()
                         # print(row)
-                        writer.writerow([row['Timestamp'].split(' ')[0], row['Timestamp'].split(' ')[1],
-                                         row['Timestamp'].split(' ')[0], row['Timestamp'].split(' ')[1],
-                                         row['Thread'],
-                                         ''.join(row['Caller ID'].split('.')),  # callerID
-                                         '.'.join(row['Caller'].split('.')),  # caller
-                                         row['Callee ID'],  # calleeID
-                                         '.'.join(row['Callee'].split('.')),  # callee
-                                         row['Message']])
+                        writer.writerow([row['Timestamp'].split('T')[0], row['Timestamp'].split('T')[-1],
+                                        row['Timestamp'].split('T')[0], row['Timestamp'].split('T')[-1],
+                                        row['Thread'],
+                                        ''.join(row['Caller'].split('.')[-1]),  # callerID
+                                        '.'.join(row['Caller'].split('.')[:-1]),  # caller
+                                        ''.join(row['Callee'].split('.')[-1]),  # calleeID
+                                        '.'.join(row['Callee'].split('.')[:-1]),  # callee
+                                        row['Message']])
 
         return output_file

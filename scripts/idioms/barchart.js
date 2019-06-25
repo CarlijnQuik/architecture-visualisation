@@ -44,21 +44,61 @@ function refreshBarchart(){
 // Draw barchart
 //----------------------------
 
-function updateBarchart(inputData) {
+function updateBarchart(inputData, selectedNode) {
 
-    // Only the nodes are needed
-    let data = inputData.nodes;
-    console.log("bar chart data", inputData);
+    let data;
+    let x_values;
+    let category;
+    let y_values;
+
+    data = JSON.parse(JSON.stringify(inputData));
+
+    if(selectedNode !== "null"){
+        console.log(selectedNode);
+        console.log("before barfilter", data.links);
+        data.links = data.links.filter(link => link.source.name === selectedNode.name || link.target.name === selectedNode.name);
+        console.log("after barfilter", data.links);
+    }
+
+    // Choose values according to selected option
+    if(barchartData === "class_occurrences"){
+        // Only the nodes are needed
+        data = data.nodes;
+        x_values = "name";
+        category = "parent";
+        y_values = "count";
+        data = data.filter(link => link.count > 0.5);
+    }
+    else if(barchartData === "method_occurrences"){
+        data = data.links;
+        x_values = "message";
+        category = "type";
+        y_values = "count";
+
+        data = data.filter(link => link.count > 0.5);
+
+    }
+    else if(barchartData === "duration"){
+        data = data.links;
+        x_values = "message";
+        y_values = "duration";
+        category = "thread";
+
+        data = data.filter(link => link.duration > 0);
+
+    }
+
+    console.log("bar chart data", data);
 
     // Scale the range of the data in the domains
     let x = d3.scaleBand()
         .range([0, bWidth])
         .padding(0.03)
-        .domain(data.map(d => d.name));
+        .domain(data.map(d => d[x_values]));
 
     let y = d3.scaleLinear()
         .range([bHeight,0])
-        .domain([0, d3.max(data, d =>  d.count)]);
+        .domain([0, d3.max(data, d =>  d[y_values])]);
 
     // Refresh view
     refreshBarchart();
@@ -68,11 +108,11 @@ function updateBarchart(inputData) {
         .data(data)
         .enter().append("rect")
         .attr("class", "bar")
-        .attr("x", d => x(d.name))
+        .attr("x", d => x(d[x_values]))
         .attr("width", x.bandwidth())
-        .attr("y", d => y(d.count))
-        .attr("height", d => (bHeight - y(d.count)))
-        .attr("fill", d => color(d.parent));
+        .attr("y", d => y(d[y_values]))
+        .attr("height", d => (bHeight - (y(d[y_values]))))
+        .attr("fill", d => color(d[category]));
 
     // ----------------------------
     // Define bar interaction
@@ -85,11 +125,16 @@ function updateBarchart(inputData) {
                 .style("stroke", "black")
                 .style("stroke-width", "2px");
 
-            // Edit tooltip values
-            nodeTooltip(d);
+            // Edit tooltip values and show tooltip
+            if(barchartData === "class_occurrences"){
+                nodeTooltip(d);
+                tooltipOnOff("#nodeTooltip", false)
+            }
+            else {
+                linkTooltip(d);
+                tooltipOnOff("#linkTooltip", false)
+            }
 
-            // Show tooltip
-            tooltipOnOff("#networkNodeTooltip", false)
 
         })
         .on("mouseout", function (d) {
@@ -98,7 +143,13 @@ function updateBarchart(inputData) {
                 .style("stroke-width", "0.1px");
 
             // Hide tooltip
-            tooltipOnOff("#networkNodeTooltip", true)
+            if(barchartData === "class_occurrences"){
+                tooltipOnOff("#nodeTooltip", true)
+            }
+            else {
+                tooltipOnOff("#linkTooltip", true)
+
+            }
 
         });
 

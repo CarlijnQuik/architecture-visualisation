@@ -312,7 +312,7 @@
             // Delete the circle Template if it exists
             container.selectAll("circle.cell").remove();
             container.selectAll("line.cell").remove();
-            container
+            let cells = container
                 .selectAll("rect.cell")
                 .data(templateNodes)
                 .enter()
@@ -331,7 +331,27 @@
                     return d.y1 - d.y0;
                 });
 
-        }
+                // .style("stroke", function(d) {
+            //                 //     return color(d.data.id);
+            //                 // });
+            //
+            // let nodes = d3.select('svg g')
+            //     .selectAll('g')
+            //     .data(templateNodes)
+            //     .enter()
+            //     .append('g')
+            //     .attr('transform', function(d) {return 'translate(' + [d.x0, d.y0] + ')'})
+            //     .on("mouseenter", console.log("RECT") );
+            //
+            // nodes
+            //     .append('text')
+            //     .attr('dx', 4)
+            //     .attr('dy', 14)
+            //     .text(function(d) {
+            //         return d.data.id;
+            //     });
+
+    }
 
         function drawGraph(container) {
             // Delete the treemap if any

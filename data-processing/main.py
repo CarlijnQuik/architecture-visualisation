@@ -3,7 +3,7 @@ import json
 import sys
 
 import csv_to_json as ctj
-import log_to_csv as ltc
+import log_to_csv_JabRef as ltc
 import pandas as pd
 
 # get input files from command prompt

@@ -22,7 +22,8 @@ var useGroupInABox,
     abstraction,
     datasetName,        // the selected dataset's name: jabref, fish etc.
     selectedNodes,
-    selectedData;       // the data selected within a dataset
+    selectedData, // the data selected within a dataset
+    barchartData;
 
 function controlsInit(){
     // Define the initial settings
@@ -32,6 +33,7 @@ function controlsInit(){
     abstraction = "packageLevel";
     datasetName = "static/FISH-dependencies-static.json";
     selectedNodes = [];
+    barchartData = "class_occurrences";
 
     // Change the controls to the initialised values
     d3.select("#checkGroupInABox").property("checked", useGroupInABox);
@@ -39,6 +41,7 @@ function controlsInit(){
     d3.select("#selectTemplate").property("value", template);
     d3.select("#selectAbstraction").property("value", abstraction);
     d3.select("#datasetName").property("value", datasetName);
+    d3.select("#selectBarchartData").property("value", barchartData);
 
     // ----------------------------
     // Define selected dataset (on change)
@@ -81,12 +84,27 @@ function loadDataset(datasetName){
         // ----------------------------
         // Filter data on click
         // ----------------------------
-        // Create checkboxes
         createCheckboxes(selectedDataset.nodes);
         d3.select("#filterButton").on("click", function () {
             filterAndUpdate(selectedData);
 
         });
+
+        // ----------------------------
+        // Bar chart data selection
+        // ----------------------------
+        d3.select("#selectBarchartData").on("change", function () {
+            barchartData = d3.select("#selectBarchartData").property("value");
+            filterAndUpdate(selectedData);
+        });
+
+        // ----------------------------
+        // Depedency type on change
+        // ----------------------------
+        // d3.select("#filterType").on("change", function () {
+        //     barchartData = d3.select("#filterType").property("value");
+        //     filterAndUpdate(selectedData);
+        // });
 
     });
 }
@@ -96,12 +114,13 @@ function loadDataset(datasetName){
 //----------------------------
 function updateIdioms(data){
 
-    updateBarchart(data);
+    updateBarchart(data, "null");
     updateNetwork(data);
 
 }
 
 //----------------------------
+// Define the dataset according to the selected abstraction level
 // Define the dataset according to the selected abstraction level
 //----------------------------
 function selectAbstraction(selectedDataset, abstraction) {

@@ -1,4 +1,6 @@
 import pymongo
+from datetime import datetime, date
+
 
 # client = pymongo.MongoClient('mongodb://localhost:27017/')
 # db = client["archvis"]
@@ -18,7 +20,7 @@ def get_nodes(dataset, fr, to, file_name, data_type):
     # create a separate dictionary for all unique nodes
     for node in unique_nodes:
         parent = '/'.join(node.split('.')[:-1])
-        #print(node, parent)
+        # print(node, parent)
         node_dict = {'name': '/'.join(node.split('.')),  # fullname
                      'origin': file_name,
                      'parent': parent,
@@ -32,7 +34,7 @@ def get_nodes(dataset, fr, to, file_name, data_type):
         # # if the node is not already present in the db
         # if not nodes_db.find_one({"name": '/'.join(node.split('.'))}):
         # # insert in mongodb
-        # nodes_db.insert_one(node_dict)
+        # nodes_db.insert_one(node_dict)htt
 
         # append the dictionary to the list of node dictionaries
         list_nodes.append(node_dict)
@@ -57,7 +59,7 @@ def get_static_links(dataset, file_name):
         if link_id not in unique_links:
             unique_links.append(link_id)
             link_dict = {'message': '/'.join(row['Used Entity (variable or method)'].split('.')),
-                         'source':  '/'.join(row['Dependency from'].split('.')),
+                         'source': '/'.join(row['Dependency from'].split('.')),
                          'target': '/'.join(row['Dependency to'].split('.')),
                          'type': row['Dependency type'],
                          'subtype': row['Sub type'],
@@ -89,12 +91,16 @@ def get_dynamic_links(dataset, file_name):
     # create a separate dictionary for all unique links
     for index, row in dataset.iterrows():
         link_id = row['Caller'] + row['Callee']
+        start = datetime.strptime(row['Start Time'], '%H:%M:%S,%f')
+        end = datetime.strptime(row['End Time'], '%H:%M:%S,%f')
+        duration = datetime.combine(date.min, end.time()) - datetime.combine(date.min, start.time())
         if link_id not in unique_links:
             unique_links.append(link_id)
             link_dict = {'startDate': row['Start Date'],
                          'startTime': row['Start Time'],
                          'endDate': row['End Date'],
                          'endTime': row['End Time'],
+                         'duration': duration.total_seconds(),  # get an integer
                          'thread': row['Thread'],
                          'callerID': row['Caller ID'],
                          'calleeID': row['Callee ID'],
@@ -111,6 +117,3 @@ def get_dynamic_links(dataset, file_name):
     # insert in mongodb
     # dynamic_links_db.insert_many(list_links)
     return list_links
-
-
-

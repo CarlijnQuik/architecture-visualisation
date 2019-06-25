@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles/idioms.css" >
     <link rel="stylesheet" href="styles/tooltips.css" >
     <link rel="stylesheet" href="styles/reset.css">
-    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/controls.css">
     <link rel="stylesheet" href="styles/main.css">
 
     <!--JS plugins    -->
@@ -18,16 +18,17 @@
     <script type="text/javascript" src="plugins/forceInABox.js" charset="utf-8"></script>
 
     <!--JS scripts-->
-    <script type="text/javascript" src="scripts/colors.js"></script>
-    <script type="text/javascript" src="scripts/interaction.js"></script>
+    <script type="text/javascript" src="scripts/interaction/colors.js"></script>
+    <script type="text/javascript" src="scripts/interaction/tooltips.js"></script>
+    <script type="text/javascript" src="scripts/interaction/interaction.js"></script>
 
-    <script type="text/javascript" src="scripts/data_helper.js"></script>
-    <script type="text/javascript" src="scripts/treedata_init.js"></script>
-    <script type="text/javascript" src="scripts/filter.js"></script>
+    <script type="text/javascript" src="scripts/data_helpers/data_helper.js"></script>
+    <script type="text/javascript" src="scripts/data_helpers/treedata_init.js"></script>
+    <script type="text/javascript" src="scripts/data_helpers/filter.js"></script>
 
-    <script type="text/javascript" src="scripts/network.js"></script>
-    <script type="text/javascript" src="scripts/barchart.js"></script>
-    <script type="text/javascript" src="scripts/tree.js"></script>
+    <script type="text/javascript" src="scripts/idioms/network.js"></script>
+    <script type="text/javascript" src="scripts/idioms/barchart.js"></script>
+    <script type="text/javascript" src="scripts/idioms/tree.js"></script>
 
     <script type="text/javascript" src="scripts/main.js"></script>
 
@@ -38,25 +39,37 @@
     <!-- HIDDEN - tooltips  -->
     <div id="tooltip" class="hidden">
 
-        <div id="networkLinkTooltip" class="hidden">
-            <p> Name: <span class="bold" id="linkSource"> </span> - <span id="linkMessage"></span> -> <span class="bold" id="linkTarget"></span></p>
-            <p> Count: <span class="count"></span></p>
-            <p> Type: <span id="depType"></span></p>
-            <p> Subtype: <span id="depSubtype"></span></p>
-            <p> Direct/indirect: <span id="isDirect"></span></p>
-            <p> Inheritance related <span id="isInheritance"></span></p>
-            <p> Inner class related: <span id="isInnerClass"></span></p>
-            <p> Line: <span id="codeLine"></span></p>
-            <p> Origin: <span class="inputFile"></span></p>
-            <p> Data type: <span class="dataType"></span></p>
+        <div id="linkTooltip" class="hidden">
+            <p> <span class="bold" id="linkMessage"></span></p>
+            <p> <span id="linkSource"> </span> </p>
+            <p> <span id="linkTarget"></span></p>
+            <p> <span class="count"></span></p>
+            <br />
+
+            <p> <span id="depType"></span></p>
+            <p> <span id="depSubtype"></span></p>
+            <p> <span id="isDirect"></span></p>
+            <p> <span id="isInheritance"></span></p>
+            <p> <span id="isInnerClass"></span></p>
+            <p> <span id="codeLine"></span></p>
+
+            <p> <span class="bold" id="duration"></span></p>
+            <p> <span id="thread"></span></p>
+            <p> <span id="dates"></span></p>
+            <p> <span id="times"></span></p>
+            <br />
+
+            <p> <span class="inputFile"></span></p>
+            <p> <span class="dataType"></span></p>
+
         </div>
 
-        <div id="networkNodeTooltip" class="hidden">
-            <p> Name: <span class="name"></span> </p>
-            <p> Count: <span class="count"></span> </p>
-            <p> Parent: <span id="parent"></span> </p>
-            <p> Origin: <span class="inputFile"></span> </p>
-            <p> Data type: <span class="dataType"></span></p>
+        <div id="nodeTooltip" class="hidden">
+            <p> <span class="name"></span> </p>
+            <p> <span class="count"></span> </p>
+            <p> <span id="parent"></span> </p>
+            <p> <span class="inputFile"></span> </p>
+            <p> <span class="dataType"></span></p>
         </div>
 
     </div>
@@ -84,7 +97,7 @@
             <div class='visualisation'>
                 <div class='visualisation-title'>
                     <div class='visualisation-title-text'>
-                        Relations between classes in the system
+                        Relations between classes/objects in the system
                     </div>
                 </div>
 
@@ -110,31 +123,6 @@
                     </div>
 
                     <div class="column">
-                        <!-- Filter drop down -->
-                        <dl class="dropdown" id="filterData">
-                            <dt>
-                                <a href="#">
-                                    <span class="hida">Select data</span>
-                                    <p class="multiSel"></p>
-                                </a>
-                            </dt>
-                            <dd>
-                                <div class="mutliSelect">
-                                    <div class="boxes">
-                                        <ul id="ul">
-<!--                                            Checkboxes created in network.js-->
-<!--                                            <input type="checkbox" id="all_values" checked>-->
-<!--                                            <label for="all_values">All</label>-->
-
-                                        </ul>
-                                    </div>
-                                </div>
-                            </dd>
-                            <button id="filterButton">Filter / Reset</button>
-                        </dl>
-                    </div>
-
-                    <div class="column">
 
                         <!-- Checkboxes group in a box and show template-->
                         <div class="boxes">
@@ -156,7 +144,20 @@
             <div class='visualisation'>
                 <div class='visualisation-title'>
                     <div class='visualisation-title-text'>
-                        Number of class occurrences
+                        Statistics on classes/objects and methods/relations
+                    </div>
+                </div>
+                <div class='vis-options'>
+                    <div class="column">
+                        <div>
+                            <!-- Select bar chart drop down-->
+                            <select id="selectBarchartData">
+                                <option value="class_occurrences">Class/object occurrences</option>
+                                <option value="method_occurrences">Method/relation occurrences</option>
+                                <option value="duration">Method duration (run-time)</option>
+                            </select>
+
+                        </div>
                     </div>
                 </div>
                 <div id='barchart' class='vis'></div>
@@ -180,6 +181,68 @@
                                 <option value="dynamic/fish2-dynamic.json">FISH random clicks</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div class="column">
+                        <!-- Filter drop down -->
+                        <dl class="dropdown" id="filterType">
+                            <dt>
+                                <a>
+                                    <span class="hida">Select data</span>
+                                    <p class="multiSel"></p>
+                                </a>
+                            </dt>
+                            <dd>
+                                <div id="filterTypeSel" class="mutliSelect">
+                                    <div class="boxes">
+                                        <ul id="filterTypeUl">
+
+                                            <input type="checkbox" id="access" value="access" checked>
+                                            <label for="access">Access</label>
+                                            <input type="checkbox" id="annotation" value="annotation" checked>
+                                            <label for="annotation">Annotation</label>
+                                            <input type="checkbox" id="call" value="call" checked>
+                                            <label for="call">Call</label>
+                                            <input type="checkbox" id="declaration" value="declaration" checked>
+                                            <label for="declaration">Declaration</label>
+                                            <input type="checkbox" id="import" value="import" checked>
+                                            <label for="import">Import</label>
+                                            <input type="checkbox" id="inheritance" value="inheritance" checked>
+                                            <label for="inheritance">Inheritance</label>
+                                            <input type="checkbox" id="reference" value="reference" checked>
+                                            <label for="reference">Reference</label>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </dd>
+                            <button id="filterTypeButton">Filter / Reset</button>
+                        </dl>
+                    </div>
+
+                    <div class="column">
+                        <!-- Filter drop down -->
+                        <dl class="dropdown" id="filterData">
+                            <dt>
+                                <a>
+                                    <span class="hida">Select data</span>
+                                    <p class="multiSel"></p>
+                                </a>
+                            </dt>
+                            <dd>
+                                <div id="filterDataSel" class="mutliSelect">
+                                    <div class="boxes">
+                                        <ul id="filterDataUl">
+                                            <!--                                            Checkboxes created in network.js-->
+                                            <!--                                            <input type="checkbox" id="all_values" checked>-->
+                                            <!--                                            <label for="all_values">All</label>-->
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </dd>
+                            <button id="filterButton">Filter / Reset</button>
+                        </dl>
                     </div>
                 </div>
 

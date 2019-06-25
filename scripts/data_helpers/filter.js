@@ -34,7 +34,7 @@ function filterData(selectedData, filterValue) {
 // Get an array of selected values in filter
 function getSelectedValues() {
     let selected = [];
-    $('.mutliSelect input[type="checkbox"]').each(function () {
+    $('.multiSel input[type="checkbox"]').each(function () {
         if (this.checked) {
             selected.push($(this).attr('value'));
         }
@@ -62,7 +62,7 @@ function createCheckboxes(nodes){
 // Add a checkbox
 function addItem(checkboxName){
     // get the HTML IDs
-    var ul = document.getElementById('ul'); //ul
+    var ul = document.getElementById('filterDataUl'); //ul
     var li = document.createElement('li');//li
 
     // create the checkbox

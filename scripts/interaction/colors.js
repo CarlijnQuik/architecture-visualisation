@@ -5,18 +5,18 @@
 var COLOR = {
     NODE_DEFAULT_FILL: d => color(d.parent), // Node color
     NODE_DEFAULT_STROKE: "#fff", // Color of node border
-    NODE_HIGHLIGHT_STROKE: "#fff",
-    LINK_DEFAULT_STROKE: "#6d6d6d", // Color of links  #525B56"#b8c4bf" b3b3b3
+    NODE_HIGHLIGHT_STROKE: "#000000",
+    LINK_DEFAULT_STROKE: "#606060", // Color of links  #525B56"#b8c4bf" b3b3b3
     LINK_HIGHLIGHT: "#000000",
-    INGOING: "#2ca02c", // "#1b9e77"
+    INCOMING: "#2ca02c", // "#1b9e77"
     OUTGOING: "#d62728", // "#D63028"
     TIE: "#ff7f0e", //   "#d66409"
 };
 
 // Define opacity
 var OPACITY = {
-    NODE_DEFAULT: 1,
-    LINK_DEFAULT: 1,
+    NODE_DEFAULT: 0.8,
+    LINK_DEFAULT: 0.8,
     NODE_HIGHLIGHT: 1,
     LINK_HIGHLIGHT: 1,
     LINK_HIDDEN: 0.2,
@@ -26,6 +26,7 @@ var OPACITY = {
 var STROKE_WIDTH = {
     NODE_DEFAULT: "1px",    // Stroke width
     LINK_DEFAULT: 0.1,      // Line width
+    NODE_HIGHLIGHT: "2px",
     LINK_HIGHLIGHT: d => linkStrength(d.count), // width according to count
 
 };
@@ -50,15 +51,15 @@ var color = d3.scaleOrdinal(d3_category50);
 // ----------------------------
 // Default styling of the links and nodes in the network diagram
 // ----------------------------
-function linkDefaultStyle(links) {
-    links
+function linkDefaultStyle(link) {
+    link
         .style("stroke", COLOR.LINK_DEFAULT_STROKE) // The color of the link
         .style("stroke-width", STROKE_WIDTH.LINK_DEFAULT)
         .style("stroke-opacity", OPACITY.LINK_DEFAULT);
 }
 
-function nodeDefaultStyle(nodes){
-    nodes
+function nodeDefaultStyle(node){
+    node
         .style("stroke", COLOR.NODE_DEFAULT_STROKE) // The border around the node
         .style("fill", COLOR.NODE_DEFAULT_FILL)
         .style("stroke-width", STROKE_WIDTH.NODE_DEFAULT)
@@ -79,7 +80,7 @@ function highlightConnected(selectedNode, links) {
 
     let incomingLinks = links.filter(d => d.target === selectedNode);
     incomingLinks
-        .style("stroke", COLOR.INGOING)
+        .style("stroke", COLOR.INCOMING)
         .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
         .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT);
 
@@ -88,6 +89,20 @@ function highlightConnected(selectedNode, links) {
     unconnectedLinks
         .style("stroke-opacity", OPACITY.LINK_HIDDEN);
 
+}
+
+// Reverse highlight connected
+function deHighlightConnected(selectedNode, links){
+    let connectedLinks = links.filter(d => d.source === selectedNode || d.target === selectedNode);
+    linkDefaultStyle(connectedLinks);
+
+}
+
+// Highlight a single link
+function highLightLink(selectedLink){
+    selectedLink
+        .style("stroke-width", STROKE_WIDTH.LINK_HIGHLIGHT)
+        .style("stroke", COLOR.LINK_HIGHLIGHT);
 }
 
 // Return the color of the node according to fan in/out
@@ -100,7 +115,7 @@ function colorNodeInOut(selectedNode, links) {
     if (outgoingLinks._groups[0].length > incomingLinks._groups[0].length) {
         return COLOR.OUTGOING;
     } else if (incomingLinks._groups[0].length > outgoingLinks._groups[0].length) {
-        return COLOR.INGOING;
+        return COLOR.INCOMING;
     } else {
         return COLOR.TIE;
     }
