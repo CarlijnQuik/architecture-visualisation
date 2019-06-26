@@ -13,8 +13,8 @@ select {
     overflow: hidden;
     border: 0;
     position: relative;
-    width: 130px;
-    font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
+    width: 200px;
+    font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
     cursor: pointer;
     /*margin: 0 auto 2px;*/
     color: #ddd;
@@ -44,8 +44,8 @@ a {
 
 .dropdown dd,
 .dropdown dt {
-    margin: 0px;
-    padding: 0px;
+    margin: 2px;
+    padding: 2px;
 }
 
 .dropdown ul {
@@ -61,7 +61,7 @@ a {
     color: #ddd;
     text-decoration: none;
     outline: none;
-    font-size: 12px;
+    font-size: 20px;
 }
 
 /*Dropdown "select"*/
@@ -90,7 +90,7 @@ a {
     border: 0;
     color: #ddd;
     display: none;
-    left: 0px;
+    left: 2px;
     position: absolute;
     top: 2px;
     bottom: 2px;
@@ -116,7 +116,7 @@ a {
 /*Filter button*/
 button {
     background-color: #040C0E; /*#6BBE92*/
-    font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
+    font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
     width: 130px;
     /*padding: 10px 0;*/
     border: 1px solid #6cc0e5;
@@ -142,9 +142,9 @@ input[type="checkbox"] { display: none; }
 input[type="checkbox"] + label {
     display: block;
     position: relative;
-    padding-left: 20px;
+    padding-left: 25px;
     margin-bottom: 10px;
-    font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
+    font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
     color: #ddd;
     cursor: pointer;
     -webkit-user-select: none;
@@ -157,8 +157,8 @@ input[type="checkbox"] + label:last-child { margin-bottom: 0; }
 input[type="checkbox"] + label:before {
     content: '';
     display: block;
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
     border: 1px solid #6cc0e5;
     position: absolute;
     left: 0;
@@ -179,6 +179,87 @@ input[type="checkbox"]:checked + label:before {
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
 }
+
+/* --------------------------- /
+/* Toggle
+/* ---------------------------- */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 90px;
+    height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #6cc0e5;
+
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #6cc0e5;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(55px);
+    -ms-transform: translateX(55px);
+    transform: translateX(55px);
+}
+
+.on
+{
+    display: none;
+}
+
+.on, .off
+{
+    color: white;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    font: normal 15px/100% "Andale Mono", AndaleMono, monospace;
+}
+
+input:checked+ .slider .on
+{display: block;}
+
+input:checked + .slider .off
+{display: none;}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;}
 
 
 

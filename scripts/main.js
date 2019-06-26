@@ -9,8 +9,7 @@ window.onload = function () {
     // Initialise the idioms
     barchartInit();
     networkInit();
-    treeInit();
-
+    // treeInit();
 };
 
 //----------------------------
@@ -70,7 +69,7 @@ function loadDataset(datasetName){
     d3.json(`datasets/${datasetName}`, function (error, selectedDataset) {
 
         // Initialize the tree (tree does not change)
-        treeDataInit(selectedDataset);
+        // treeDataInit(selectedDataset);
 
         // ----------------------------
         // Define abstraction level (on change)

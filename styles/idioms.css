@@ -15,14 +15,14 @@
     cursor: pointer;
 }
 
-/* Treemap template boxes */
+ /*Treemap template boxes*/
 rect.cell {
     fill: none;
     stroke: #ddd; /* #403f40 ddd  #484848*/
     stroke-width: 2px;
 }
 
-/* Force template circles */
+ /*Force template circles*/
 circle {
     fill: none;
     stroke: #484548; /*#484548  #403f40*/
@@ -72,4 +72,25 @@ circle {
     fill: none;
     stroke: #ccc;
     stroke-width: 2px;
+}
+
+/* --------------------------- /
+/* Bi sankey
+/* ---------------------------- */
+
+.node rect {
+    cursor: move;
+    shape-rendering: crispEdges;
+}
+
+.node text {
+    pointer-events: none;
+    text-shadow: 1px 1px 2px #fff;
+    font-size: 0.8em;
+    font-family: sans-serif;
+}
+
+.value {
+    white-space: pre-line;
+    margin: 0;
 }

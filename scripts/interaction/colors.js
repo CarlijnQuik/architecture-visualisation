@@ -6,7 +6,7 @@ var COLOR = {
     NODE_DEFAULT_FILL: d => color(d.parent), // Node color
     NODE_DEFAULT_STROKE: "#fff", // Color of node border
     NODE_HIGHLIGHT_STROKE: "#000000",
-    LINK_DEFAULT_STROKE: "#606060", // Color of links  #525B56"#b8c4bf" b3b3b3
+    LINK_DEFAULT_STROKE: "#b3b3b3", // Color of links  #525B56"#b8c4bf" b3b3b3 #969696
     LINK_HIGHLIGHT: "#000000",
     INCOMING: "#2ca02c", // "#1b9e77"
     OUTGOING: "#d62728", // "#D63028"
@@ -15,17 +15,18 @@ var COLOR = {
 
 // Define opacity
 var OPACITY = {
-    NODE_DEFAULT: 0.8,
-    LINK_DEFAULT: 0.8,
-    NODE_HIGHLIGHT: 1,
+    NODE_DEFAULT: 0.9,
+    NODE_FADED: 0.1,
+    NODE_HIGHLIGHT: 0.8,
+    LINK_DEFAULT: 0.6,
+    LINK_FADED: 0.5,
     LINK_HIGHLIGHT: 1,
-    LINK_HIDDEN: 0.2,
 };
 
 // Define line width
 var STROKE_WIDTH = {
     NODE_DEFAULT: "1px",    // Stroke width
-    LINK_DEFAULT: 0.1,      // Line width
+    LINK_DEFAULT: "1px",      // Line width
     NODE_HIGHLIGHT: "2px",
     LINK_HIGHLIGHT: d => linkStrength(d.count), // width according to count
 
@@ -48,8 +49,12 @@ var d3_category50= [
 var color = d3.scaleOrdinal(d3_category50);
 //let greyScale = d3.scaleOrdinal(d3.schemeGreys[d => linkStrength(d.count)]);
 
+// colorScale = d3.scaleOrdinal().domain(TYPES).range(TYPE_COLORS),
+// var highlightColorScale = d3.scaleOrdinal(d3_category50);
+// var colorScale = d3.scaleOrdinal(d3_category50);
+
 // ----------------------------
-// Default styling of the links and nodes in the network diagram
+// Network Diagram
 // ----------------------------
 function linkDefaultStyle(link) {
     link
@@ -67,7 +72,7 @@ function nodeDefaultStyle(node){
 }
 
 // ----------------------------
-// Color interaction
+// Colors on interaction (network diagram)
 // ----------------------------
 
 // Highlight the links connected to the nodes (instead of using default)
@@ -87,7 +92,7 @@ function highlightConnected(selectedNode, links) {
     // Hide unconnected links
     let unconnectedLinks = links.filter(d => d.source !== selectedNode && d.target !== selectedNode);
     unconnectedLinks
-        .style("stroke-opacity", OPACITY.LINK_HIDDEN);
+        .style("stroke-opacity", OPACITY.LINK_FADED);
 
 }
 
@@ -121,4 +126,3 @@ function colorNodeInOut(selectedNode, links) {
     }
 
 }
-

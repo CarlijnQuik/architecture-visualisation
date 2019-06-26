@@ -50,12 +50,11 @@ function networkInit() {
     forceSim = d3.forceSimulation()
         .force('link', d3.forceLink() // creating a fixed distance between connected elements
             .id(d => d.name)
-            //.distance(5)
+            // .distance(5)
             .strength(groupingForce.getLinkStrength)
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
-        .force('center', d3.forceCenter(width / 2, height / 2)); // setting the center of gravity of the system;
-        // .alphaTarget(0); // Make sure nodes do not move after load (otherwise insert 0.5)
+        .force('center', d3.forceCenter(width / 2, height / 2)) // setting the center of gravity of the system;
     // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
     // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
     // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
@@ -178,8 +177,6 @@ function updateNetwork(selectedData) {
                 highlightConnected(d, links);  // Highlight connected
 
                 tooltipOnOff("#nodeTooltip", true);    // Hide tooltip
-
-
 
             }
 

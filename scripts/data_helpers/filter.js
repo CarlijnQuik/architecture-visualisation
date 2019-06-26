@@ -26,7 +26,13 @@ function filterData(selectedData, filterValue) {
     console.log("before filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
 
     selectedData.nodes = selectedData.nodes.filter((node) => !node.name.toString().startsWith(filterValue));
-    selectedData.links = selectedData.links.filter((link) => !link.source.toString().startsWith(filterValue) && !link.target.toString().startsWith(filterValue));
+    if(abstraction === "packageLevel"){
+        selectedData.links = selectedData.links.filter((link) => !link.source.name.startsWith(filterValue) && !link.target.name.startsWith(filterValue));
+    }
+    else{
+        selectedData.links = selectedData.links.filter((link) => !link.source.startsWith(filterValue) && !link.target.startsWith(filterValue));
+    }
+
 
     console.log("after filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
 }
@@ -34,7 +40,7 @@ function filterData(selectedData, filterValue) {
 // Get an array of selected values in filter
 function getSelectedValues() {
     let selected = [];
-    $('.multiSel input[type="checkbox"]').each(function () {
+    $('.mutliSelect input[type="checkbox"]').each(function () {
         if (this.checked) {
             selected.push($(this).attr('value'));
         }

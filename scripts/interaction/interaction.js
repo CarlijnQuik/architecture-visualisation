@@ -1,4 +1,10 @@
 // ----------------------------
+// Interaction
+//----------------------------
+
+var TRANSITION_DURATION = 400;
+
+// ----------------------------
 // Define dragging behaviour
 //----------------------------
 
@@ -7,6 +13,7 @@ var drag = d3.drag()
     .on('drag', dragging);
 // .on('end', dragEnd);
 
+// Use this only for the network diagram (which has the force sim)
 function dragStart(d) {
     if (!d3.event.active) forceSim.alphaTarget(0.3).restart();
     d.fx = d.x;
@@ -24,3 +31,6 @@ function dragging(d) {
 //     // d.fx = null;
 //     // d.fy = null;
 // }
+
+
+

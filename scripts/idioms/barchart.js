@@ -7,7 +7,7 @@ var barChartSVG;
 // set the dimensions and margins of the graph
 var bMargin = {top: 20, right: 90, bottom: 30, left: 90},
     bWidth = 1000 - bMargin.left - bMargin.right,
-    bHeight = 500 - bMargin.top - bMargin.bottom;
+    bHeight = 600 - bMargin.top - bMargin.bottom;
 
 function barchartInit() {
 
@@ -49,7 +49,6 @@ function updateBarchart(inputData, selectedNode) {
     let data;
     let x_values;
     let category;
-    let y_values;
 
     data = JSON.parse(JSON.stringify(inputData));
 
@@ -66,26 +65,30 @@ function updateBarchart(inputData, selectedNode) {
         data = data.nodes;
         x_values = "name";
         category = "parent";
-        y_values = "count";
-        data = data.filter(link => link.count > 0.5);
+        function y_values(d){
+            return Math.log(d["count"]);
+        }
+        data = data.filter(link => link.count > 0);
     }
     else if(barchartData === "method_occurrences"){
         data = data.links;
         x_values = "message";
         category = "type";
-        y_values = "count";
-
-        data = data.filter(link => link.count > 0.5);
-
+        function y_values(d){
+            return Math.log(d["count"]);
+        }
+        data = data.filter(link => link.count > 0);
     }
     else if(barchartData === "duration"){
         data = data.links;
         x_values = "message";
-        y_values = "duration";
+        function y_values(d){
+            return d["duration"];
+        }
+
         category = "thread";
 
         data = data.filter(link => link.duration > 0);
-
     }
 
     console.log("bar chart data", data);
@@ -98,7 +101,7 @@ function updateBarchart(inputData, selectedNode) {
 
     let y = d3.scaleLinear()
         .range([bHeight,0])
-        .domain([0, d3.max(data, d =>  d[y_values])]);
+        .domain([0, d3.max(data, d => y_values(d))]);
 
     // Refresh view
     refreshBarchart();
@@ -110,8 +113,8 @@ function updateBarchart(inputData, selectedNode) {
         .attr("class", "bar")
         .attr("x", d => x(d[x_values]))
         .attr("width", x.bandwidth())
-        .attr("y", d => y(d[y_values]))
-        .attr("height", d => (bHeight - (y(d[y_values]))))
+        .attr("y", d => y(y_values(d)))
+        .attr("height", d => (bHeight - (y(y_values(d)))))
         .attr("fill", d => color(d[category]));
 
     // ----------------------------
