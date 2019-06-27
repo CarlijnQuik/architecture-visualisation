@@ -128,7 +128,6 @@ function updateIdioms(data){
 
 //----------------------------
 // Define the dataset according to the selected abstraction level
-// Define the dataset according to the selected abstraction level
 //----------------------------
 function selectAbstraction(selectedDataset, abstraction) {
     // Make a deep copy of the data to define the data sets

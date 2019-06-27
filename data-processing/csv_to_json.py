@@ -2,25 +2,22 @@ import pymongo
 from datetime import datetime, date
 import pandas as pd
 
-
 # client = pymongo.MongoClient('mongodb://localhost:27017/')
 # db = client["archvis"]
 # nodes_db = db['nodes']
 # static_links_db = db['static_links']
 # dynamic_links_db = db['dynamic_links']
 
-# return a list of unique node names
+
 def get_nodes(dataset, fr, to, file_name, data_type):
     list_nodes = []
 
     # merge dependency from and to columns to one list
     nodes = dataset[fr].tolist() + dataset[to].tolist()
-    print(nodes)
     unique_nodes = list(dict.fromkeys(nodes))
 
     # create a separate dictionary for all unique nodes
     for node in unique_nodes:
-
         # print(node, parent)
         node_dict = {'name': '/'.join(node.split('.')),  # fullname
                      'origin': file_name,
@@ -41,7 +38,6 @@ def get_nodes(dataset, fr, to, file_name, data_type):
     return list_nodes
 
 
-# return a list of links
 def get_static_links(dataset, file_name):
     dict_links = {}
     unique_links = []
@@ -75,10 +71,11 @@ def get_static_links(dataset, file_name):
             sub_links = [link_specs]
             link_dict = {'source': '/'.join(row['Dependency from'].split('.')),
                          'target': '/'.join(row['Dependency to'].split('.')),
-                         'linkID': link_id,
+                         'linkID': '/'.join(link_id.split('.')),
                          'dataType': "Static",
                          'origin': file_name,
-                         'count': len(df[df.linkID == link_id]),  # the number of times the link id exists in the dataset
+                         'count': len(df[df.linkID == link_id]),
+                         # the number of times the link id exists in the dataset
                          'subLinks': sub_links}
 
             dict_links[link_id] = link_dict
@@ -87,14 +84,12 @@ def get_static_links(dataset, file_name):
         else:
             dict_links[link_id]["subLinks"].append(link_specs)
 
-
     # insert in mongodb
     # static_links_db.insert_many(list_links)
     list_links = list(dict_links.values())
     return list_links
 
 
-# return a list of links
 def get_dynamic_links(dataset, file_name):
     dict_links = {}
     unique_links = []
@@ -130,7 +125,7 @@ def get_dynamic_links(dataset, file_name):
             sub_links = [link_specs]
             link_dict = {'source': '/'.join(row['Caller'].split('.')),
                          'target': '/'.join(row['Callee'].split('.')),
-                         'linkID': link_id,
+                         'linkID': '/'.join(link_id.split('.')),
                          'origin': file_name,
                          'dataType': "Dynamic",
                          'count': len(df[df.linkID == link_id]),

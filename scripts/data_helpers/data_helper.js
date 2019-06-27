@@ -58,19 +58,23 @@ function getPackageData(nodes, links, depth) {
     });
 
     // Filter out the unique nodes and links
-    const uniqueNodes = getUniqueNodes(nodes);
-    const uniqueLinks = getUniqueLinks(links);
+    const uniqueNodes = JSON.parse(JSON.stringify(getUniqueNodes(nodes)));
+    const uniqueLinks = JSON.parse(JSON.stringify(getUniqueLinks(links)));
+
+    uniqueLinks.map(uniqueLink => links.map(link =>
+                        {if(link.linkID === uniqueLink.linkID){
+                            Array.prototype.push.apply(uniqueLink.subLinks,link.subLinks);
+                        }
+                    }));
 
     // Set node and link count according to the total count in the original dataset
     uniqueNodes.map(function (node) {
         node.count = nodes.filter((v) => (v.name === node.name)).length;
     });
 
-    // ! -> This is incorrect, since random unique node is selected
-    uniqueLinks.map(function (link) {
-        if(link.message !== "Is/Empty"){
-            link.count = links.filter((v) => (v.message === link.message)).length;
-        }
+    // Set link count to count of link ID in package links dataset
+    uniqueLinks.map(function (uniqueLink) {
+        uniqueLink.count = links.filter((link) => (uniqueLink.linkID === link.linkID)).length;
     });
 
     return {"nodes": uniqueNodes, "links": uniqueLinks};
