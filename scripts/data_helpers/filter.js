@@ -14,7 +14,7 @@ function filterAndUpdate(selectedData) {
         updateIdioms(selectedData);
 
     } else {
-        console.log("UPDATE");
+
         updateIdioms(selectedData);
 
     }

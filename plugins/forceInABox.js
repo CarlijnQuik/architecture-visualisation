@@ -331,6 +331,8 @@
                     return d.y1 - d.y0;
                 });
 
+            cells.on("click", console.log("clicked"));
+
                 // .style("stroke", function(d) {
             //                 //     return color(d.data.id);
             //                 // });

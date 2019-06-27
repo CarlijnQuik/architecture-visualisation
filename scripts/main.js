@@ -70,6 +70,10 @@ function loadDataset(datasetName){
 
         // Initialize the tree (tree does not change)
         // treeDataInit(selectedDataset);
+        console.log(selectedDataset);
+
+        d3.select("#totalNodes").text(selectedDataset.nodes.length);
+        d3.select("#totalLinks").text(selectedDataset.links.length);
 
         // ----------------------------
         // Define abstraction level (on change)
@@ -112,7 +116,11 @@ function loadDataset(datasetName){
 // Update the idioms with new data
 //----------------------------
 function updateIdioms(data){
+    // Update info
+    d3.select("#selectedNodes").text(data.nodes.length);
+    d3.select("#selectedLinks").text(data.links.length);
 
+    // Update idioms
     updateBarchart(data, "null");
     updateNetwork(data);
 

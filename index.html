@@ -20,7 +20,6 @@
     <!--JS scripts-->
     <script type="text/javascript" src="scripts/interaction/colors.js"></script>
     <script type="text/javascript" src="scripts/interaction/tooltips.js"></script>
-    <script type="text/javascript" src="scripts/interaction/interaction.js"></script>
 
     <script type="text/javascript" src="scripts/data_helpers/data_helper.js"></script>
     <script type="text/javascript" src="scripts/data_helpers/treedata_init.js"></script>
@@ -40,14 +39,16 @@
     <div id="tooltip" class="hidden">
 
         <div id="linkTooltip" class="hidden">
-            <p> <span  id="messageTitle" class="tooltipTitle"></span> <span class="bold" id="linkMessage"></span></p>
             <p> <span  id="linkSourceTitle" class="tooltipTitle"></span><span id="linkSource"> </span> </p>
             <p> <span  id="linkTargetTitle" class="tooltipTitle"></span><span id="linkTarget"></span></p>
             <p> <span  id="linkCountTitle" class="tooltipTitle"></span><span id="countLink"></span></p>
             <br />
+            <p> <span  id="showMessages" class="tooltipTitle">(Double click to show messages)</span>
+            <br />
 
             <!-- Static -->
             <div id="staticFields" class="hidden">
+                <p> <span  id="staticMsgTitle" class="tooltipTitle"></span> <span class="bold" id="staticMsg"></span></p>
                 <p> <span  id="depTypeTitle" class="tooltipTitle"></span> <span id="depType"> </span> </p>
                 <p> <span  id="depSubTypeTitle" class="tooltipTitle"></span> <span id="depSubtype"> </span> </p>
                 <p> <span  id="isDirectTitle" class="tooltipTitle"></span> <span id="isDirect"> </span> </p>
@@ -58,6 +59,7 @@
 
             <!-- Dynamic -->
             <div id="dynamicFields" class="hidden">
+                <p> <span  id="dynamicMsgTitle" class="tooltipTitle"></span> <span class="bold" id="dynamicMsg"></span></p>
                 <p> <span  id="durationTitle" class="tooltipTitle"></span> <span class="bold" id="duration"></span></p>
                 <p> <span  id="threadTitle" class="tooltipTitle"></span> <span id="thread"></span></p>
                 <p> <span id="dates" class="tooltipTitle"></span></p>
@@ -179,25 +181,34 @@
                     <table style="width:100%">
 
                         <tr>
-                            <th>Total classes etc</th>
-                            <th id='total'>1235</th>
+                            <th> </th>
+                            <th>Total</th>
+                            <th>Selected</th>
                         </tr>
-                        <tr>
-                            <!-- Select state toggle -->
-                            <label class="switch">
-                                <input type="checkbox" id="togBtn">
-                                <div class="slider round">
-                                    <span class="on">Dynamic</span>
-                                    <span class="off">Static</span>
-                                </div>
 
-                            </label>
-                            <!-- Select state toggle -->
-                        </tr>
                         <tr>
-                            <td>App name tc.</td>
-                            <th id='total' class='blue'>555</th>
+                            <td>Nodes</td>
+                            <td id='totalNodes' class="bold"></td>
+                            <td id='selectedNodes' class="bold"></td>
                         </tr>
+
+                        <tr>
+                            <td>Links</td>
+                            <td id='totalLinks' class="bold"></td>
+                            <td id='selectedLinks' class="bold"></td>
+                        </tr>
+
+                            <!-- Select state toggle -->
+<!--                            <label class="switch">-->
+<!--                                <input type="checkbox" id="togBtn">-->
+<!--                                <div class="slider round">-->
+<!--                                    <span class="on">Dynamic</span>-->
+<!--                                    <span class="off">Static</span>-->
+<!--                                </div>-->
+
+<!--                            </label>-->
+                            <!-- Select state toggle -->
+
                     </table>
                 </div>
 

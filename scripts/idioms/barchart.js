@@ -38,6 +38,10 @@ function refreshBarchart(){
     barChartSVG
         .selectAll('g')
         .remove();
+
+    barChartSVG
+        .selectAll('text')
+        .remove();
 }
 
 //----------------------------
@@ -49,6 +53,8 @@ function updateBarchart(inputData, selectedNode) {
     let data;
     let x_values;
     let category;
+    let x_axis_text;
+    let y_axis_text;
 
     data = JSON.parse(JSON.stringify(inputData));
 
@@ -68,25 +74,34 @@ function updateBarchart(inputData, selectedNode) {
         function y_values(d){
             return Math.log(d["count"]);
         }
+        x_axis_text = "Classes";
+        y_axis_text = "Number of class occurences";
+
         data = data.filter(link => link.count > 0);
     }
     else if(barchartData === "method_occurrences"){
         data = data.links;
-        x_values = "message";
+        x_values = "linkID";
         category = "type";
         function y_values(d){
             return Math.log(d["count"]);
         }
+        x_axis_text = "Links: source + target";
+        y_axis_text = "Number of method occurences";
+
         data = data.filter(link => link.count > 0);
     }
     else if(barchartData === "duration"){
         data = data.links;
-        x_values = "message";
+        x_values = "linkID";
         function y_values(d){
             return d["duration"];
         }
 
         category = "thread";
+
+        x_axis_text = "Methods";
+        y_axis_text = "Method duration";
 
         data = data.filter(link => link.duration > 0);
     }
@@ -181,7 +196,7 @@ function updateBarchart(inputData, selectedNode) {
         .attr('y', -35)
         .attr('transform', 'rotate(-90)')
         .attr('text-anchor', 'middle')
-        .text('Number of occurences');
+        .text(y_axis_text);
 
     // x-axis title
     barChartSVG
@@ -190,7 +205,7 @@ function updateBarchart(inputData, selectedNode) {
         .attr('x', bWidth/2)
         .attr('y', bHeight+25)
         .attr('text-anchor', 'middle')
-        .text("Classes");
+        .text(x_axis_text);
 
     // grid lines
     barChartSVG.append('g')

@@ -3,7 +3,7 @@ import json
 import sys
 
 import csv_to_json as ctj
-import log_to_csv_JabRef as ltc
+import log_to_csv as ltc
 import pandas as pd
 
 # get input files from command prompt
@@ -24,7 +24,7 @@ if extension == 'csv':
     dataset = pd.read_csv(input_file, sep=';')
 
     # remove NaN from fields
-    dataset.fillna("Is.Empty", inplace=True)
+    dataset.fillna("Empty.field", inplace=True)
 
     # create a dictionary and put the nodes and links from the dataset in it
     static_dict = {"nodes": ctj.get_nodes(dataset, 'Dependency from', 'Dependency to', file_name, "Static"),
@@ -40,7 +40,7 @@ else:
     dataset = pd.read_csv(dynamic_csv, sep=';')
 
     # remove NaN from fields
-    dataset.fillna("Is.Empty", inplace=True)
+    dataset.fillna("Empty.field", inplace=True)
 
     # create a dictionary and put the nodes and links from the dataset in it
     dynamic_dict = {"nodes": ctj.get_nodes(dataset, 'Caller', 'Callee', input_file, "Dynamic"),
@@ -49,6 +49,9 @@ else:
     # write the dictionary to JSON file
     with open(file_name + "-dynamic.json", 'w') as fp:
         json.dump(dynamic_dict, fp)
+
+
+
 
 
 

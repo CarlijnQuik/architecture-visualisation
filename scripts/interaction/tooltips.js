@@ -29,6 +29,9 @@ function linkTooltip(d){
     d3.select("#linkTargetTitle").text("Target: ");
     d3.select("#linkTarget").text(d.target.name);
 
+}
+
+function expandLinkToolTip(d){
     // Static
     if(d.dataType === "Static") {
         // Unhide static fields
@@ -36,8 +39,8 @@ function linkTooltip(d){
         d3.select("#dynamicFields").classed("hidden", true);
 
         // Used entity or variable
-        d3.select("#messageTitle").text("Used entity or variable: ");
-        d3.select("#linkMessage").text(d.message);
+        d3.select("#staticMsgTitle").text("Used entity or variable: ");
+        d3.select("#staticMsg").text(d.message);
 
         // Dependency type
         d3.select("#depTypeTitle").text("Dep. type: ");
@@ -72,8 +75,8 @@ function linkTooltip(d){
 
         // Method called
         let method = d.message.split(' ').slice(-1).toString();
-        d3.select("#messageTitle").text("Method: ");
-        d3.select("#linkMessage").text(method.replace(d.target.name, ""));
+        d3.select("#dynamicMsgTitle").text("Method: ");
+        d3.select("#dynamicMsg").text(method.replace(d.target.name, ""));
 
         // Method duration
         d3.select("#durationTitle").text("Duration: ");
