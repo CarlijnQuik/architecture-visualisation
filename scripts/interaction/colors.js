@@ -16,9 +16,9 @@ var COLOR = {
 // Define opacity
 var OPACITY = {
     NODE_DEFAULT: 0.9,
-    NODE_FADED: 0.1,
-    NODE_HIGHLIGHT: 0.8,
-    LINK_DEFAULT: 0.6,
+    NODE_FADED: 0.5,
+    NODE_HIGHLIGHT: 1,
+    LINK_DEFAULT: 0.9,
     LINK_FADED: 0.5,
     LINK_HIGHLIGHT: 1,
 };

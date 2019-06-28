@@ -53,7 +53,6 @@ function controlsInit(){
     // ----------------------------
     d3.select("#datasetName").on("change", function () {
         datasetName = d3.select("#datasetName").property("value");
-        document.getElementById("loader").style.display = "inline";
         loadDataset(datasetName);
     });
 
@@ -82,10 +81,17 @@ function controlsInit(){
 
 }
 
+function loadUI(){
+    document.getElementById("loader").style.display = "inline";
+    // document.getElementById('main_id').style.userSelect = "none";
+}
+
 //----------------------------
 // Load the dataset
 //----------------------------
 function loadDataset(datasetName){
+    // Disable user interactions and show load icon
+    loadUI();
 
     // Choose abstraction of dataset
     if(packageLevel){
@@ -109,7 +115,10 @@ function loadDataset(datasetName){
         // Initialize the tree (tree does not change)
         // treeDataInit(selectedDataset);
         console.log(selectedDataset);
+
+        // Enable user interactions again
         document.getElementById("loader").style.display = "none";
+        // document.getElementById('main_id').style.userSelect = "auto";
 
         // Remove the checkboxes in the filter
         $("ul").empty();
@@ -117,6 +126,8 @@ function loadDataset(datasetName){
         // Update info box
         d3.select("#totalNodes").text(selectedDataset.nodes.length);
         d3.select("#totalLinks").text(selectedDataset.links.length);
+        let noOfCells = selectedDataset.nodes.reduce( (acc, node) => (acc[node.parent] = (acc[node.parent] || 0)+1, acc), {} );
+        d3.select("#totalCells").text(Object.keys(noOfCells).length);
 
         // Filter data on click
         createCheckboxes(selectedDataset.nodes);
@@ -152,6 +163,8 @@ function updateIdioms(data){
     // Update info
     d3.select("#selectedNodes").text(data.nodes.length);
     d3.select("#selectedLinks").text(data.links.length);
+    let selectedCells = data.nodes.reduce( (acc, node) => (acc[node.parent] = (acc[node.parent] || 0)+1, acc), {} );
+    d3.select("#selectedCells").text(Object.keys(selectedCells).length);
 
     // Update idioms
     updateBarchart(data, "null");
