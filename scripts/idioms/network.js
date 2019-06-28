@@ -41,7 +41,7 @@ function networkInit() {
         .strength(0.1) // Strength to foci
         .template(template) // Either treemap or force
         .groupBy('parent') // Setting package as the attribute to group by
-        .enableGrouping(useGroupInABox)
+        .enableGrouping(true)
         .forceCharge(-60) // Separation between nodes on the force template
         .nodeSize(4) // Used to compute the size of the template nodes, think of it as the radius the node uses, including its padding
         .size([width, height]); // Size of the diagram
@@ -213,10 +213,9 @@ function updateNetwork(selectedData) {
 
     // Refresh template
     refreshTemplate();
-    refreshGroups();
     checkTemplate();
 
-    // Template and group-in-a-box user controls
+    // Template user controls
     defineOnChange();
 
 }
@@ -237,10 +236,6 @@ function defineOnChange(){
         checkTemplate();
     });
 
-    d3.select("#checkGroupInABox").on("change", function () {
-        refreshGroups();
-    });
-
 }
 
 // Check whether the template is checked
@@ -255,25 +250,17 @@ function checkTemplate(){
 // Refresh the template
 function refreshTemplate(){
     forceSim.force("parent").deleteTemplate(networkSVG);
-    template = d3.select("#selectTemplate").property("value");
+    treemapTemplate = d3.select("#selectTemplate").property("checked");
+    if(treemapTemplate){
+        template = 'treemap';
+    }
+    else{
+        template = 'force'
+    }
     forceSim.stop();
     forceSim.force("parent").template(template);
     forceSim.alphaTarget(0.5).restart();
 
-}
-
-// Refresh group-in-a-box
-function refreshGroups(){
-    // drawTemplate = d3.select("#checkShowTemplate").property("unchecked");
-    // refreshTemplate();
-    // checkTemplate();
-
-    forceSim.stop();
-    useGroupInABox = d3.select("#checkGroupInABox").property("checked");
-    forceSim
-        .force("parent")
-        .enableGrouping(useGroupInABox);
-    forceSim.alphaTarget(0.5).restart();
 }
 
 // ----------------------------

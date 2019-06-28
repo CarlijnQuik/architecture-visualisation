@@ -30,8 +30,6 @@ function treeDataInit(treeData) {
     root.x0 = tHeight / 2;
     root.y0 = 0;
 
-    console.log(root);
-
     // Collapse after the second level
     root.children.forEach(collapse);
 

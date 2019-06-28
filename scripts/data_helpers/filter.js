@@ -3,19 +3,19 @@
 //----------------------------
 
 // Filter selected data and update views accordingly
-function filterAndUpdate(selectedData) {
+function getFilteredData(data) {
     // Get selected filtervalues
     let filterValues = getSelectedValues();
     console.log("filtervalues", filterValues);
 
     // If filtervalues are present filter the data
     if (filterValues.length > 0) {
-        filterValues.map(value => filterData(selectedData, value));
-        updateIdioms(selectedData);
+        filterValues.map(value => filterData(data, value));
+        return data;
 
     } else {
 
-        updateIdioms(selectedData);
+        return data;
 
     }
 
@@ -26,13 +26,7 @@ function filterData(selectedData, filterValue) {
     console.log("before filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
 
     selectedData.nodes = selectedData.nodes.filter((node) => !node.name.toString().startsWith(filterValue));
-    if(abstraction === "packageLevel"){
-        selectedData.links = selectedData.links.filter((link) => !link.source.name.startsWith(filterValue) && !link.target.name.startsWith(filterValue));
-    }
-    else{
-        selectedData.links = selectedData.links.filter((link) => !link.source.startsWith(filterValue) && !link.target.startsWith(filterValue));
-    }
-
+    selectedData.links = selectedData.links.filter((link) => !link.source.name.startsWith(filterValue) && !link.target.name.startsWith(filterValue));
 
     console.log("after filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
 }
@@ -69,7 +63,7 @@ function createCheckboxes(nodes){
 function addItem(checkboxName){
     // get the HTML IDs
     var ul = document.getElementById('filterDataUl'); //ul
-    var li = document.createElement('li');//li
+    var li = document.createElement('li'); //li
 
     // create the checkbox
     var checkbox = document.createElement('input');

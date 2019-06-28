@@ -94,81 +94,6 @@
         <!-- Main content -->
         <div class='flex-container'>
 
-            <!-- NETWORK VIS -->
-            <div class='visualisation'>
-                <div class='visualisation-title'>
-                    <div class='visualisation-title-text'>
-                        Relations between classes/objects in the system
-                    </div>
-                </div>
-
-                <!-- The options panel on top of the vis -->
-                <div class='vis-options'>
-                    <div class="column">
-                        <div>
-                            <!-- Select algorithm drop down-->
-                            <select id="selectTemplate">
-                                <option value="treemap">Treemap</option>
-                                <option value="force">Force</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="column">
-
-                        <!-- Checkboxes group in a box and show template-->
-                        <div class="boxes">
-                            <input type="checkbox" id="checkGroupInABox">
-                            <label for="checkGroupInABox">Group in a Box</label>
-                        </div>
-
-                    </div>
-
-                    <div class="column">
-                        <div class="boxes">
-                            <input type="checkbox" id="checkShowTemplate" checked>
-                            <label for="checkShowTemplate">Show Template </label>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div id='network' class='vis'></div>
-            </div>
-
-            <!-- BARCHART VIS -->
-            <div class='visualisation'>
-                <div class='visualisation-title'>
-                    <div class='visualisation-title-text'>
-                        Statistics on classes/objects and methods/relations
-                    </div>
-                </div>
-                <div class='vis-options'>
-                    <div class="column">
-                        <div>
-                            <!-- Select bar chart drop down-->
-                            <select id="selectBarchartData">
-                                <option value="class_occurrences">Class/object occurrences</option>
-                                <option value="method_occurrences">Method/relation occurrences</option>
-                                <option value="duration">Method duration (run-time)</option>
-                            </select>
-
-                        </div>
-                    </div>
-                </div>
-                <div id='barchart' class='vis'></div>
-            </div>
-
-            <!-- TREE VIS -->
-<!--            <div class='visualisation'>-->
-<!--                <div class='visualisation-title'>-->
-<!--                    <div class='visualisation-title-text'>-->
-<!--                        Dataset structure-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div id='tree' class='vis'></div>-->
-<!--            </div>-->
-
             <!-- VIS OPTIONS-->
             <div class='visualisation'>
                 <div class='visualisation-title'>
@@ -198,17 +123,6 @@
                             <td id='selectedLinks' class="bold"></td>
                         </tr>
 
-                            <!-- Select state toggle -->
-<!--                            <label class="switch">-->
-<!--                                <input type="checkbox" id="togBtn">-->
-<!--                                <div class="slider round">-->
-<!--                                    <span class="on">Dynamic</span>-->
-<!--                                    <span class="off">Static</span>-->
-<!--                                </div>-->
-
-<!--                            </label>-->
-                            <!-- Select state toggle -->
-
                     </table>
                 </div>
 
@@ -220,22 +134,30 @@
                         <!-- Select dataset drop down-->
                         <div>
                             <select id="datasetName">
-                                <option value="static/JabRef-dependencies-static.json">JabRef dependencies</option>
-                                <option value="static/FISH-dependencies-static.json">FISH dependencies</option>
-                                <option value="dynamic/jabref-scenario-1-dynamic.json">JabRef scenario 1</option>
-                                <option value="dynamic/fish2-dynamic.json">FISH random clicks</option>
+                                <option value="jabref">JabRef</option>
+                                <option value="fish">FISH</option>
                             </select>
                         </div>
-                        <!-- Select dataset drop down-->
 
-                        <!-- Select abstraction drop down-->
-                        <div>
-                            <select id="selectAbstraction">
-                                <option value="packageLevel">Package level</option>
-                                <option value="classLevel">Class level</option>
-                            </select>
-                        </div>
-                        <!-- Select abstraction drop down-->
+                        <div id="loader" style="display:none;"></div>
+
+                        <!-- Package or class level toggle -->
+                        <label class="switch">
+                            <input type="checkbox" id="selectAbstraction">
+                            <div class="slider round">
+                                <span class="on">Packages</span>
+                                <span class="off">Classes</span>
+                            </div>
+                        </label>
+
+                        <!-- Static or dynamic toggle -->
+                        <label class="switch">
+                            <input type="checkbox" id="selectDataType">
+                            <div class="slider round">
+                                <span class="on">Dynamic</span>
+                                <span class="off">Static</span>
+                            </div>
+                        </label>
 
                         <!-- Filter type drop down -->
 <!--                        <div>-->
@@ -281,7 +203,7 @@
                             <dl class="dropdown" id="filterData">
                                 <dt>
                                     <a>
-                                        <span class="hida">Select data</span>
+                                        <span class="hida">Select filters</span>
                                         <p class="multiSel"></p>
                                     </a>
                                 </dt>
@@ -290,15 +212,11 @@
                                         <div class="boxes">
                                             <ul id="filterDataUl">
                                                 <!--                                            Checkboxes created in network.js-->
-                                                <!--                                            <input type="checkbox" id="all_values" checked>-->
-                                                <!--                                            <label for="all_values">All</label>-->
                                             </ul>
                                         </div>
-
                                     </div>
-
+                                    <button id="filterButton">Filter</button>
                                 </dd>
-                                <button id="filterButton">Filter</button>
                             </dl>
                         </div>
                         <!-- Filter drop down -->
@@ -311,6 +229,74 @@
 
             </div>
             <!-- VIS for VIS OPTIONS-->
+
+            <!-- NETWORK VIS -->
+            <div class='visualisation'>
+                <div class='visualisation-title'>
+                    <div class='visualisation-title-text'>
+                        Relations between classes/objects in the system
+                    </div>
+                </div>
+
+                <!-- The options panel on top of the vis -->
+                <div class='vis-options'>
+                    <div class="column">
+                        <!-- Treemap or force toggle -->
+                        <label class="switch">
+                            <input type="checkbox" id="selectTemplate">
+                            <div class="slider round">
+                                <span class="on">Treemap</span>
+                                <span class="off">Force</span>
+                            </div>
+                        </label>
+
+                    </div>
+
+                    <!-- Checkbox show template-->
+                    <div class="column">
+                        <div class="boxes">
+                            <input type="checkbox" id="checkShowTemplate" checked>
+                            <label for="checkShowTemplate">Show Template </label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id='network' class='vis'></div>
+            </div>
+
+            <!-- BARCHART VIS -->
+            <div class='visualisation'>
+                <div class='visualisation-title'>
+                    <div class='visualisation-title-text'>
+                        Statistics on classes/objects and methods/relations
+                    </div>
+                </div>
+                <div class='vis-options'>
+                    <div class="column">
+                        <div>
+                            <!-- Select bar chart drop down-->
+                            <select id="selectBarchartData">
+                                <option value="class_occurrences">Class/object occurrences</option>
+                                <option value="method_occurrences">Method/relation occurrences</option>
+                                <option value="duration">Method duration (run-time)</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+                <div id='barchart' class='vis'></div>
+            </div>
+
+            <!-- TREE VIS -->
+            <!--            <div class='visualisation'>-->
+            <!--                <div class='visualisation-title'>-->
+            <!--                    <div class='visualisation-title-text'>-->
+            <!--                        Dataset structure-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--                <div id='tree' class='vis'></div>-->
+            <!--            </div>-->
 
     </div>
     <!-- MAIN -->

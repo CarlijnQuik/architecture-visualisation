@@ -75,7 +75,7 @@ function updateBarchart(inputData, selectedNode) {
             return Math.log(d["count"]);
         }
         x_axis_text = "Classes";
-        y_axis_text = "Number of class occurences";
+        y_axis_text = "Number of class occurrences (logarithmic scale)";
 
         data = data.filter(link => link.count > 0);
     }
@@ -87,7 +87,7 @@ function updateBarchart(inputData, selectedNode) {
             return Math.log(d["count"]);
         }
         x_axis_text = "Links: source + target";
-        y_axis_text = "Number of method occurences";
+        y_axis_text = "Number of method occurrences (logarithmic scale)";
 
         data = data.filter(link => link.count > 0);
     }
@@ -101,7 +101,7 @@ function updateBarchart(inputData, selectedNode) {
         category = "thread";
 
         x_axis_text = "Methods";
-        y_axis_text = "Method duration";
+        y_axis_text = "Method duration (seconds)";
 
         data = data.filter(link => link.duration > 0);
     }

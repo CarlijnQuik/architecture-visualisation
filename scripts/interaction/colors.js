@@ -26,7 +26,7 @@ var OPACITY = {
 // Define line width
 var STROKE_WIDTH = {
     NODE_DEFAULT: "1px",    // Stroke width
-    LINK_DEFAULT: "1px",      // Line width
+    LINK_DEFAULT: "0.5px",      // Line width
     NODE_HIGHLIGHT: "2px",
     LINK_HIGHLIGHT: d => linkStrength(d.count), // width according to count
 

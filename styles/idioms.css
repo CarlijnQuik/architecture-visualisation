@@ -20,6 +20,11 @@ rect.cell {
     fill: none;
     stroke: #ddd; /* #403f40 ddd  #484848*/
     stroke-width: 2px;
+    cursor: pointer;
+}
+
+rect.cell:hover{
+    stroke-width: 5px;
 }
 
  /*Force template circles*/
@@ -27,6 +32,19 @@ circle {
     fill: none;
     stroke: #484548; /*#484548  #403f40*/
     stroke-width: 2px;
+}
+
+/*Text in the treemap template (forceInABox line 338 and 422*/
+.text-small{
+    font: bold 10px/100% "Andale Mono", AndaleMono, monospace;
+    max-width: fit-content;
+    text-anchor: start;
+    cursor: pointer;
+    /*word-wrap: break-word;*/
+    background-color: #dddddd;
+}
+.text-small:hover {
+    font: bold 20px/100% "Andale Mono", AndaleMono, monospace;
 }
 
 /* --------------------------- /

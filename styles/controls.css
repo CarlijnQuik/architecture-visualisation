@@ -27,6 +27,37 @@ option{
 }
 
 /* --------------------------- /
+/* "Loading..."
+/* ---------------------------- */
+
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #6cc0e5;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --------------------------- /
 /* Drop down with checkboxes
 /* ---------------------------- */
 
@@ -35,7 +66,7 @@ option{
     position: relative;
     display: inline-block;
     /*margin: 2px 0;*/
-    padding: 5px;
+    padding-top: 5px;
 }
 
 a {
@@ -74,7 +105,7 @@ a {
     overflow: hidden;
     border: 0;
     min-height: 5px;
-    width: 130px;
+    width: 200px;
 }
 
 .dropdown dt a span,
@@ -94,7 +125,7 @@ a {
     position: absolute;
     top: 2px;
     bottom: 2px;
-    width: 130px;
+    width: 200px;
     list-style: none;
     height: 100px;
     overflow: auto;
@@ -117,7 +148,7 @@ a {
 button {
     background-color: #040C0E; /*#6BBE92*/
     font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
-    width: 130px;
+    width: 200px;
     /*padding: 10px 0;*/
     border: 1px solid #6cc0e5;
     /*margin: 3px 0;*/
@@ -239,16 +270,17 @@ input:checked + .slider:before {
 
 .on, .off
 {
+    transform: translate(-20%,-50%);
     color: white;
     position: absolute;
-    transform: translate(-50%,-50%);
     top: 50%;
     left: 50%;
-    font: normal 15px/100% "Andale Mono", AndaleMono, monospace;
+    font: normal 13px/100% "Andale Mono", AndaleMono, monospace;
 }
 
 input:checked+ .slider .on
-{display: block;}
+{display: block;
+    transform: translate(-80%,-50%);}
 
 input:checked + .slider .off
 {display: none;}
