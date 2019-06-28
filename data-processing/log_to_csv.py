@@ -60,8 +60,9 @@ def get_csv(input_file, output_file):
                     while len(thread) > 0:
                         row = thread.pop()
                         # print(row)
-                        writer.writerow([row['Timestamp'].split(' ')[0], row['Timestamp'].split(' ')[1], row['Thread'],
-                                         '2999-12-31T00:00:00,000', '2999-12-31T00:00:00,000',
+                        writer.writerow([row['Timestamp'].split(' ')[0], row['Timestamp'].split(' ')[1],
+                                         row['Timestamp'].split(' ')[0], row['Timestamp'].split(' ')[1],
+                                         row['Thread'],
                                          ''.join(row['Caller ID'].split('.')),  # callerID
                                          '.'.join(row['Caller'].split('.')),  # caller
                                          row['Callee ID'],  # calleeID

@@ -1,0 +1,297 @@
+/* --------------------------- /
+/* Regular drop down
+/* ---------------------------- */
+
+/*Styling of the treemap/force drop down */
+select {
+    margin: 3px;
+    background-color: #040C0E;
+    display: inline-block;
+    /*padding: 8px 20px 5px 10px;*/
+    text-align: center;
+    min-height: 4px;
+    overflow: hidden;
+    border: 0;
+    position: relative;
+    width: 200px;
+    font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
+    cursor: pointer;
+    /*margin: 0 auto 2px;*/
+    color: #ddd;
+    text-decoration: none;
+
+}
+
+option{
+    cursor: pointer;
+}
+
+/* --------------------------- /
+/* "Loading..."
+/* ---------------------------- */
+
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #6cc0e5;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --------------------------- /
+/* Drop down with checkboxes
+/* ---------------------------- */
+
+/*Checkboxes dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    /*margin: 2px 0;*/
+    padding-top: 5px;
+}
+
+a {
+    color: #fff;
+}
+
+.dropdown dd,
+.dropdown dt {
+    margin: 2px;
+    padding: 2px;
+}
+
+.dropdown ul {
+    margin: -1px 0 0 0;
+}
+
+.dropdown dd {
+    position: relative;
+}
+
+.dropdown a,
+.dropdown a:visited {
+    color: #ddd;
+    text-decoration: none;
+    outline: none;
+    font-size: 20px;
+}
+
+/*Dropdown "select"*/
+.dropdown dt a {
+    background-color: #040C0E; /*#4F6877*/
+    display: inline-block;
+    /*padding: 8px 20px 5px 10px;**
+    text-align: center;
+    /*line-height: 24px;*/
+    overflow: hidden;
+    border: 0;
+    min-height: 5px;
+    width: 200px;
+}
+
+.dropdown dt a span,
+.multiSel span {
+    cursor: pointer;
+    display: inline-block;
+    padding: 2px 2px 2px 2px;
+}
+
+/*Inside the dropdown menu where the checkboxes are*/
+.dropdown dd ul {
+    background-color: #484848; /*#4F6877*/
+    border: 0;
+    color: #ddd;
+    display: none;
+    left: 2px;
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    width: 200px;
+    list-style: none;
+    height: 100px;
+    overflow: auto;
+}
+
+.dropdown span.value {
+    display: none;
+}
+
+.dropdown dd ul li a {
+    padding: 5px;
+    display: block;
+}
+
+.dropdown dd ul li a:hover {
+    background-color: #fff;
+}
+
+/*Filter button*/
+button {
+    background-color: #040C0E; /*#6BBE92*/
+    font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
+    width: 200px;
+    /*padding: 10px 0;*/
+    border: 1px solid #6cc0e5;
+    /*margin: 3px 0;*/
+    min-height: 5px;
+    text-align: center;
+    color: #6cc0e5;
+    font-weight: bold;
+}
+
+/* --------------------------- /
+/* Checkboxes
+/* ---------------------------- */
+
+/*!* Checkboxes *!*/
+.boxes {
+    margin: auto;
+    padding: 5px;
+}
+
+input[type="checkbox"] { display: none; }
+
+input[type="checkbox"] + label {
+    display: block;
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+    font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
+    color: #ddd;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+input[type="checkbox"] + label:last-child { margin-bottom: 0; }
+
+input[type="checkbox"] + label:before {
+    content: '';
+    display: block;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #6cc0e5;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: .6;
+    -webkit-transition: all .12s, border-color .08s;
+    transition: all .12s, border-color .08s;
+}
+
+input[type="checkbox"]:checked + label:before {
+    width: 5px;
+    top: -3px;
+    left: 3px;
+    border-radius: 0;
+    opacity: 1;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+/* --------------------------- /
+/* Toggle
+/* ---------------------------- */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 90px;
+    height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #6cc0e5;
+
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #6cc0e5;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(55px);
+    -ms-transform: translateX(55px);
+    transform: translateX(55px);
+}
+
+.on
+{
+    display: none;
+}
+
+.on, .off
+{
+    transform: translate(-20%,-50%);
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font: normal 13px/100% "Andale Mono", AndaleMono, monospace;
+}
+
+input:checked+ .slider .on
+{display: block;
+    transform: translate(-80%,-50%);}
+
+input:checked + .slider .off
+{display: none;}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;}
+
+
+

@@ -1,4 +1,6 @@
 import pymongo
+from datetime import datetime, date
+import pandas as pd
 
 # client = pymongo.MongoClient('mongodb://localhost:27017/')
 # db = client["archvis"]
@@ -7,7 +9,6 @@ import pymongo
 # dynamic_links_db = db['dynamic_links']
 
 
-# return a list of unique node names
 def get_nodes(dataset, fr, to, file_name, data_type):
     list_nodes = []
 
@@ -17,19 +18,14 @@ def get_nodes(dataset, fr, to, file_name, data_type):
 
     # create a separate dictionary for all unique nodes
     for node in unique_nodes:
-        parent = '/'.join(node.split('.')[:-1])
-        #print(node, parent)
+        # print(node, parent)
         node_dict = {'name': '/'.join(node.split('.')),  # fullname
                      'origin': file_name,
-                     'parent': parent,
+                     'parent': '/'.join(node.split('.')[:-1]),
                      'dataType': data_type,
                      'count': int(nodes.count(node))}
 
-        # check if the parent is a node, otherwise it is a root node
-        # if parent in unique_nodes:
-        #     node_dict['parent'] = parent
-
-        # # if the node is not already present in the db
+        # if the node is not already present in the db
         # if not nodes_db.find_one({"name": '/'.join(node.split('.'))}):
         # # insert in mongodb
         # nodes_db.insert_one(node_dict)
@@ -42,75 +38,111 @@ def get_nodes(dataset, fr, to, file_name, data_type):
     return list_nodes
 
 
-# return a list of links
 def get_static_links(dataset, file_name):
-    list_links = []
+    dict_links = {}
     unique_links = []
 
-    # merge dependency from and to columns to one list
-    messages = dataset['Used Entity (variable or method)'].tolist()
-    messages = [x for x in messages if x != "Is.Empty"]
+    # create link ID column and lists to count from
+    dataset['linkID'] = dataset['Dependency from'] + dataset['Dependency to']
+    list_ids = dataset['linkID'].tolist()
+    list_msgs = dataset['Used Entity (variable or method)'].tolist()
 
     # create a separate dictionary for all unique links
-    for index, row in dataset.iterrows():
-        link_id = row['Dependency from'] + row['Dependency to']
+    for index, link in dataset.iterrows():
+        link_id = link['linkID']
+        message = link['Used Entity (variable or method)']
+        if message != "Empty.field":
+            message_count = list_msgs.count(message)
+        else:
+            message_count = 0
+
+        link_specs = {
+            'message': '/'.join(link['Used Entity (variable or method)'].split('.')),
+            'type': link['Dependency type'],
+            'subtype': link['Sub type'],
+            'line': link['Line'],
+            'direct': link['Direct/Indirect'],
+            'inheritance': link['Inheritance Related'],
+            'innerclass': link['Inner Class Related'],
+            'messageCount': message_count}  # the number of times the message exists in the dataset
+
+        # if this is the first time we encounter this specific link ID
         if link_id not in unique_links:
             unique_links.append(link_id)
-            link_dict = {'message': '/'.join(row['Used Entity (variable or method)'].split('.')),
-                         'source':  '/'.join(row['Dependency from'].split('.')),
-                         'target': '/'.join(row['Dependency to'].split('.')),
-                         'type': row['Dependency type'],
-                         'subtype': row['Sub type'],
-                         'line': row['Line'],
-                         'direct': row['Direct/Indirect'],
-                         'inheritance': row['Inheritance Related'],
-                         'innerclass': row['Inner Class Related'],
-                         'origin': file_name,
+            sub_links = [link_specs]
+            link_dict = {'source': '/'.join(link['Dependency from'].split('.')),
+                         'target': '/'.join(link['Dependency to'].split('.')),
+                         'linkID': '/'.join(link_id.split('.')),
                          'dataType': "Static",
-                         'count': int(messages.count(row['Used Entity (variable or method)']))}
+                         'origin': file_name,
+                         'count': list_ids.count(link['linkID']),  # the number of times the link id exists
+                         'subLinks': sub_links}
 
-            # append the dictionary to the list of link dictionaries
-            list_links.append(link_dict)
+            dict_links[link_id] = link_dict
+
+        # if the link ID has been added to list_links already
+        else:
+            dict_links[link_id]["subLinks"].append(link_specs)
 
     # insert in mongodb
     # static_links_db.insert_many(list_links)
+    list_links = list(dict_links.values())
     return list_links
 
 
-# return a list of links
 def get_dynamic_links(dataset, file_name):
-    list_links = []
+    dict_links = {}
     unique_links = []
 
     # merge dependency from and to columns to one list
-    messages = dataset['Message'].tolist()
-    messages = [x for x in messages if x != "Is.Empty"]
+    dataset['linkID'] = dataset['Caller'] + dataset['Callee']
+    list_ids = dataset['linkID'].tolist()
+    list_msgs = dataset['Message'].tolist()
 
     # create a separate dictionary for all unique links
-    for index, row in dataset.iterrows():
-        link_id = row['Caller'] + row['Callee']
+    for index, link in dataset.iterrows():
+        # Calculate duration
+        start = datetime.strptime(link['Start Time'], '%H:%M:%S,%f')
+        end = datetime.strptime(link['End Time'], '%H:%M:%S,%f')
+        duration = datetime.combine(date.min, end.time()) - datetime.combine(date.min, start.time())
+
+        link_id = link['linkID']
+        message = link['Message']
+        if message != "Empty.field":
+            message_count = list_msgs.count(message)
+        else:
+            message_count = 0
+
+        link_specs = {'startDate': link['Start Date'],
+                      'startTime': link['Start Time'],
+                      'endDate': link['End Date'],
+                      'endTime': link['End Time'],
+                      'duration': duration.total_seconds(),  # get an integer
+                      'thread': link['Thread'],
+                      'callerID': link['Caller ID'],
+                      'calleeID': link['Callee ID'],
+                      'message': '/'.join(link['Message'].split('.')),
+                      'messageCount': message_count}
+
         if link_id not in unique_links:
             unique_links.append(link_id)
-            link_dict = {'startDate': row['Start Date'],
-                         'startTime': row['Start Time'],
-                         'endDate': row['End Date'],
-                         'endTime': row['End Time'],
-                         'thread': row['Thread'],
-                         'callerID': row['Caller ID'],
-                         'calleeID': row['Callee ID'],
-                         'source': '/'.join(row['Caller'].split('.')),
-                         'target': '/'.join(row['Callee'].split('.')),
-                         'message': '/'.join(row['Message'].split('.')),
+            sub_links = [link_specs]
+            link_dict = {'source': '/'.join(link['Caller'].split('.')),
+                         'target': '/'.join(link['Callee'].split('.')),
+                         'linkID': '/'.join(link_id.split('.')),
                          'origin': file_name,
                          'dataType': "Dynamic",
-                         'count': int(messages.count(row['Message']))}
+                         'count': list_ids.count(link['linkID']),
+                         'subLinks': sub_links}
 
             # append the dictionary to the list of link dictionaries
-            list_links.append(link_dict)
+            dict_links[link_id] = link_dict
+
+        # if the link ID has been added to list_links already
+        else:
+            dict_links[link_id]["subLinks"].append(link_specs)
 
     # insert in mongodb
     # dynamic_links_db.insert_many(list_links)
+    list_links = list(dict_links.values())
     return list_links
-
-
-

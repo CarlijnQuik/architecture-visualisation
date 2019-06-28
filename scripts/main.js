@@ -9,44 +9,67 @@ window.onload = function () {
     // Initialise the idioms
     barchartInit();
     networkInit();
-    treeInit();
-
+    // treeInit();
 };
 
 //----------------------------
 // Initial values of the user controls
 //----------------------------
-var useGroupInABox,
-    drawTemplate,
+var drawTemplate,
+    treemapTemplate,
     template,
-    abstraction,
     datasetName,        // the selected dataset's name: jabref, fish etc.
+    packageLevel,
+    datasetLevel,
+    dynamicData,
+    dataType,
     selectedNodes,
-    selectedData;       // the data selected within a dataset
+    selectedData, // the data filtered from a dataset
+    barchartData;
 
 function controlsInit(){
     // Define the initial settings
-    useGroupInABox = true;
     drawTemplate = false;
+    treemapTemplate = true;
     template = "treemap";
-    abstraction = "packageLevel";
-    datasetName = "static/FISH-dependencies-static.json";
+    datasetName = "fish";
+    packageLevel = true;
+    datasetLevel = 'package';
+    dynamicData = true;
+    dataType = "dynamic";
     selectedNodes = [];
+    barchartData = "class_occurrences";
 
     // Change the controls to the initialised values
-    d3.select("#checkGroupInABox").property("checked", useGroupInABox);
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
-    d3.select("#selectTemplate").property("value", template);
-    d3.select("#selectAbstraction").property("value", abstraction);
+    d3.select("#selectTemplate").property("checked", treemapTemplate);
     d3.select("#datasetName").property("value", datasetName);
+    d3.select("#selectAbstraction").property("checked", packageLevel);
+    d3.select("#selectDataType").property("checked", dynamicData);
+    d3.select("#selectBarchartData").property("value", barchartData);
 
     // ----------------------------
     // Define selected dataset (on change)
     // ----------------------------
     d3.select("#datasetName").on("change", function () {
         datasetName = d3.select("#datasetName").property("value");
+        document.getElementById("loader").style.display = "inline";
         loadDataset(datasetName);
     });
+
+    // Abstraction selection
+    d3.select("#selectAbstraction").on("change", function () {
+        packageLevel = d3.select("#selectAbstraction").property("checked");
+        loadDataset(datasetName);
+    });
+
+    // Data type selection
+    d3.select("#selectDataType").on("change", function () {
+        dynamicData = d3.select("#selectDataType").property("checked");
+        loadDataset(datasetName);
+    });
+
+    // Initial load of the dataset
     loadDataset(datasetName);
 
     // Dropdown filter behaviour
@@ -63,30 +86,61 @@ function controlsInit(){
 // Load the dataset
 //----------------------------
 function loadDataset(datasetName){
+
+    // Choose abstraction of dataset
+    if(packageLevel){
+        datasetLevel = 'package';
+    }
+    else{
+        datasetLevel = 'class';
+    }
+    if(dynamicData){
+        dataType = 'dynamic';
+        // STROKE_WIDTH.LINK_DEFAULT = d => linkStrength(d.count);
+    }
+    else{
+        dataType = 'static';
+    }
+
     // Load json data
-    d3.json(`datasets/${datasetName}`, function (error, selectedDataset) {
+    d3.json(`datasets/${dataType}/${dataType}-${datasetName}-${datasetLevel}.json`, function (error, selectedDataset) {
+        console.log("selected file:", `datasets/${dataType}/${dataType}-${datasetName}-${datasetLevel}.json`);
 
         // Initialize the tree (tree does not change)
-        treeDataInit(selectedDataset);
+        // treeDataInit(selectedDataset);
+        console.log(selectedDataset);
+        document.getElementById("loader").style.display = "none";
 
-        // ----------------------------
-        // Define abstraction level (on change)
-        // ----------------------------
-        d3.select("#selectAbstraction").on("change", function () {
-            abstraction = d3.select("#selectAbstraction").property("value");
-            selectAbstraction(selectedDataset, abstraction);
-        });
-        selectAbstraction(selectedDataset, abstraction);
+        // Remove the checkboxes in the filter
+        $("ul").empty();
 
-        // ----------------------------
+        // Update info box
+        d3.select("#totalNodes").text(selectedDataset.nodes.length);
+        d3.select("#totalLinks").text(selectedDataset.links.length);
+
         // Filter data on click
-        // ----------------------------
-        // Create checkboxes
         createCheckboxes(selectedDataset.nodes);
         d3.select("#filterButton").on("click", function () {
-            filterAndUpdate(selectedData);
+            selectedData = getFilteredData(selectedDataset);
+            updateIdioms(selectedData);
 
         });
+
+        // Bar chart data selection
+        d3.select("#selectBarchartData").on("change", function () {
+            barchartData = d3.select("#selectBarchartData").property("value");
+            selectedData = getFilteredData(selectedDataset);
+            updateIdioms(selectedData);
+        });
+
+        selectedData = getFilteredData(selectedDataset);
+        updateIdioms(selectedData);
+
+        // Depedency type on change
+        // d3.select("#filterType").on("change", function () {
+        //     barchartData = d3.select("#filterType").property("value");
+        //     filterAndUpdate(selectedData);
+        // });
 
     });
 }
@@ -95,62 +149,46 @@ function loadDataset(datasetName){
 // Update the idioms with new data
 //----------------------------
 function updateIdioms(data){
+    // Update info
+    d3.select("#selectedNodes").text(data.nodes.length);
+    d3.select("#selectedLinks").text(data.links.length);
 
-    updateBarchart(data);
+    // Update idioms
+    updateBarchart(data, "null");
     updateNetwork(data);
 
 }
-
-//----------------------------
-// Define the dataset according to the selected abstraction level
-//----------------------------
-function selectAbstraction(selectedDataset, abstraction) {
-    // Make a deep copy of the data to define the data sets
-    const classData = selectedDataset;
-    const dataCopy = JSON.parse(JSON.stringify(selectedDataset));
-    const packageData = getPackageData(dataCopy.nodes, dataCopy.links, -1);
-
-    if (abstraction === "classLevel") {
-        selectedData = JSON.parse(JSON.stringify(classData));
-    }
-    if (abstraction === "packageLevel") {
-        selectedData = JSON.parse(JSON.stringify(packageData));
-    }
-
-    filterAndUpdate(selectedData);
-
-}
-
-//----------------------------
-// When a node on the tree is clicked
-//----------------------------
-function click(d) {
-
-    if (d.children) {
-        d._children = d.children;
-        d.children = null;
-    } else {
-        d.children = d._children;
-        d._children = null;
-    }
-
-    // if(d.children){
-    //     d.children.map(value => {
-    //         if(!selectedNodes.includes(value.data.name.toString())) {
-    //             selectedNodes.push(value.data.name.toString());
-    //         }
-    //     });
-    // }
-
-    //filterDataset(selectedNodes);
-
-    updateTree(d);
-}
-
-
-
-
-
-
+//
+// //----------------------------
+// // When a node on the tree is clicked
+// //----------------------------
+// function click(d) {
+//
+//     if (d.children) {
+//         d._children = d.children;
+//         d.children = null;
+//     } else {
+//         d.children = d._children;
+//         d._children = null;
+//     }
+//
+//     // if(d.children){
+//     //     d.children.map(value => {
+//     //         if(!selectedNodes.includes(value.data.name.toString())) {
+//     //             selectedNodes.push(value.data.name.toString());
+//     //         }
+//     //     });
+//     // }
+//
+//     //filterDataset(selectedNodes);
+//
+//     updateTree(d);
+// }
+//
+//
+//
+//
+//
+//
 
 

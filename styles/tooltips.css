@@ -3,17 +3,13 @@
 /* ---------------------------- */
 #tooltip {
     position: absolute;
-    width: 300px;
+    width: auto;
     display: inline;
     word-wrap: break-word;
-    max-width: 500px;
     height: auto;
-    padding: 10px;
-    /*display: inline;*/
-    font-size: 20px;
-    /*    margin: 0;*/
-        line-height: 20px;
-    /* font-family: sans-serif; */
+    padding: 20px;
+    font-size: 30px;
+    line-height: 35px;
     background-color: #fff;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -22,19 +18,22 @@
     -moz-box-shadow: 2px 2px 5px rgba(131, 131, 131, 0.4);
     box-shadow: 2px 2px 5px rgba(167, 166, 166, 0.4);
     pointer-events: none;
-    z-index: 3;
-    /* Makes tooltip box appear above other elements on webpage. */
+    z-index: 3; /* Makes tooltip box appear above other elements on webpage. */
 }
 
 #tooltip.hidden {
     display: none;
 }
 
-#networkLinkTooltip.hidden {
+.tooltipTitle{
+    font-size: 25px;
+}
+
+#linkTooltip.hidden {
     display: none;
 }
 
-#networkNodeTooltip.hidden {
+#nodeTooltip.hidden {
     display: none;
 }
 

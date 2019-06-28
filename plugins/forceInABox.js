@@ -312,7 +312,7 @@
             // Delete the circle Template if it exists
             container.selectAll("circle.cell").remove();
             container.selectAll("line.cell").remove();
-            container
+            let cells = container
                 .selectAll("rect.cell")
                 .data(templateNodes)
                 .enter()
@@ -331,7 +331,52 @@
                     return d.y1 - d.y0;
                 });
 
-        }
+                // .style("stroke", function(d) {
+            //                 //     return color(d.data.id);
+            //                 // });
+
+            // Text on the treemap template
+            let nodes = d3.select('svg g')
+                .selectAll('g')
+                .data(templateNodes)
+                .enter()
+                .append('g')
+                .attr('transform', function(d) {return 'translate(' + [d.x0, d.y0] + ')'});
+
+            // Because SVG element cannot take an enter text element <br>, append two separate pieces of text
+            nodes
+                .append('text')
+                .attr('dx', 10)
+                .attr('dy', 14)
+                .attr('class', "text-small")
+                .text(function(d) {
+                    let cell_width = (d.x1 - d.x0);
+                    if(cell_width > 100){
+                        let title_parts = d.data.id.split('/');
+                        if(title_parts.length > 3){
+                            return title_parts.slice(0, 3).join('/');
+                        }
+                        else{
+                            return d.data.id;
+                        }
+                    }
+                });
+
+            nodes
+                .append('text')
+                .attr('dx', 10)
+                .attr('dy', 25)
+                .attr('class', "text-small")
+                .text(function(d) {
+                    let cell_width = (d.x1 - d.x0);
+                    if(cell_width > 100){
+                        let title_parts = d.data.id.split('/');
+                        if(title_parts.length > 3){
+                            return "/" + title_parts.slice(3).join('/');
+                        }
+                    }
+                });
+    }
 
         function drawGraph(container) {
             // Delete the treemap if any
@@ -392,6 +437,7 @@
         force.deleteTemplate = function(container) {
             // showingTemplate = false;
             container.selectAll(".cell").remove();
+            container.selectAll("g").remove(); // Remove text
 
             if (templateForce) {
                 templateForce

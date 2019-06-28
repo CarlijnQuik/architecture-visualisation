@@ -7,8 +7,7 @@ html {
 }
 
 body {
-    font: normal 14px/100% "Andale Mono", AndaleMono, monospace;
-    font-size: 12px;
+    font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
     background-color: #132226;  /* #16262E
     /*background-color: #fff;*/
     height:100%;
@@ -66,20 +65,22 @@ body {
 
 .vis-options{
     background-color: #484848;
-    border-radius: 10px 10px 0px 0px;
-    min-height: 50px;
+    border-radius: 10px 10px 10px 10px;
+    min-height: 40px;
 }
 
 .column {
-    width : 130px;
+    width : 200px;
     float : left;
     padding-left: 10px;
-    padding-top:2px;
+    align-content: center;
+    background: #484848;
 }
 
 .visualisation {
     position: relative;
     margin: 10px;
+    background: #484848;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 }
 
@@ -97,9 +98,37 @@ body {
 }
 
 .visualisation-title-text {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    font-size:15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size:20px;
+    /*font-weight: 900;*/
+}
+
+/* TODAL NUMEBERS BOX */
+.info-box {
+    position: relative;
+    line-height: 35px;
+    /*top: 50%;*/
+    padding: 15px;
+    color: #bfbfbf;
+    background-color: #fafafa;
+    border: 1px solid #919191;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
 }
 
 /* --------------------------- /
@@ -110,9 +139,9 @@ body {
     text-align: center;
     margin-top: 5px;
     margin-bottom: 5px;
-    color: white;
+    color: #fefefe;
     padding-left: 18px;
-    font-size: 15px;
+    font-size: 25px;
     padding-right: 4px;
     font-weight: 700;
     min-width: 180px;
@@ -120,8 +149,9 @@ body {
 
 text {
     fill: #000000;
-    font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
+    font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
     text-anchor: middle;
+    font-weight: 900;
 }
 
 /* tooltips bold text */
@@ -145,11 +175,12 @@ h2 {
 }
 
 h3 {
-    font-size: 10pt;
+    font-size: 25pt;
     text-align: center;
     padding-top: 10px;
     color: #fff;
 }
+
 
 
 

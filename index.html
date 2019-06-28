@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles/idioms.css" >
     <link rel="stylesheet" href="styles/tooltips.css" >
     <link rel="stylesheet" href="styles/reset.css">
-    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/controls.css">
     <link rel="stylesheet" href="styles/main.css">
 
     <!--JS plugins    -->
@@ -18,16 +18,16 @@
     <script type="text/javascript" src="plugins/forceInABox.js" charset="utf-8"></script>
 
     <!--JS scripts-->
-    <script type="text/javascript" src="scripts/colors.js"></script>
-    <script type="text/javascript" src="scripts/interaction.js"></script>
+    <script type="text/javascript" src="scripts/interaction/colors.js"></script>
+    <script type="text/javascript" src="scripts/interaction/tooltips.js"></script>
 
-    <script type="text/javascript" src="scripts/data_helper.js"></script>
-    <script type="text/javascript" src="scripts/treedata_init.js"></script>
-    <script type="text/javascript" src="scripts/filter.js"></script>
+    <script type="text/javascript" src="scripts/data_helpers/data_helper.js"></script>
+    <script type="text/javascript" src="scripts/data_helpers/treedata_init.js"></script>
+    <script type="text/javascript" src="scripts/data_helpers/filter.js"></script>
 
-    <script type="text/javascript" src="scripts/network.js"></script>
-    <script type="text/javascript" src="scripts/barchart.js"></script>
-    <script type="text/javascript" src="scripts/tree.js"></script>
+    <script type="text/javascript" src="scripts/idioms/network.js"></script>
+    <script type="text/javascript" src="scripts/idioms/barchart.js"></script>
+    <script type="text/javascript" src="scripts/idioms/tree.js"></script>
 
     <script type="text/javascript" src="scripts/main.js"></script>
 
@@ -38,25 +38,39 @@
     <!-- HIDDEN - tooltips  -->
     <div id="tooltip" class="hidden">
 
-        <div id="networkLinkTooltip" class="hidden">
-            <p> Name: <span class="bold" id="linkSource"> </span> - <span id="linkMessage"></span> -> <span class="bold" id="linkTarget"></span></p>
-            <p> Count: <span class="count"></span></p>
-            <p> Type: <span id="depType"></span></p>
-            <p> Subtype: <span id="depSubtype"></span></p>
-            <p> Direct/indirect: <span id="isDirect"></span></p>
-            <p> Inheritance related <span id="isInheritance"></span></p>
-            <p> Inner class related: <span id="isInnerClass"></span></p>
-            <p> Line: <span id="codeLine"></span></p>
-            <p> Origin: <span class="inputFile"></span></p>
-            <p> Data type: <span class="dataType"></span></p>
+        <div id="linkTooltip" class="hidden">
+            <p> <span  id="linkSourceTitle" class="tooltipTitle"></span><span id="linkSource"> </span> </p>
+            <p> <span  id="linkTargetTitle" class="tooltipTitle"></span><span id="linkTarget"></span></p>
+            <p> <span  id="linkCountTitle" class="tooltipTitle"></span><span id="countLink"></span></p>
+            <br />
+            <p> <span  id="showMessages" class="tooltipTitle">(Double click to show messages)</span>
+            <br />
+
+            <!-- Static -->
+            <div id="staticFields" class="hidden">
+                <p> <span  id="staticMsgTitle" class="tooltipTitle"></span> <span class="bold" id="staticMsg"></span></p>
+                <p> <span  id="depTypeTitle" class="tooltipTitle"></span> <span id="depType"> </span> </p>
+                <p> <span  id="depSubTypeTitle" class="tooltipTitle"></span> <span id="depSubtype"> </span> </p>
+                <p> <span  id="isDirectTitle" class="tooltipTitle"></span> <span id="isDirect"> </span> </p>
+                <p> <span  id="isInheritanceTitle" class="tooltipTitle"></span> <span id="isInheritance"></span></p>
+                <p> <span  id="isInnerClassTitle" class="tooltipTitle"></span> <span id="isInnerClass"></span></p>
+                <p> <span  id="codeLineTitle" class="tooltipTitle"></span> <span id="codeLine"></span></p>
+            </div>
+
+            <!-- Dynamic -->
+            <div id="dynamicFields" class="hidden">
+                <p> <span  id="dynamicMsgTitle" class="tooltipTitle"></span> <span class="bold" id="dynamicMsg"></span></p>
+                <p> <span  id="durationTitle" class="tooltipTitle"></span> <span class="bold" id="duration"></span></p>
+                <p> <span  id="threadTitle" class="tooltipTitle"></span> <span id="thread"></span></p>
+                <p> <span id="dates" class="tooltipTitle"></span></p>
+                <p>  <span id="times" class="tooltipTitle"></span></p>
+            </div>
         </div>
 
-        <div id="networkNodeTooltip" class="hidden">
-            <p> Name: <span class="name"></span> </p>
-            <p> Count: <span class="count"></span> </p>
-            <p> Parent: <span id="parent"></span> </p>
-            <p> Origin: <span class="inputFile"></span> </p>
-            <p> Data type: <span class="dataType"></span></p>
+        <div id="nodeTooltip" class="hidden">
+            <p> <span  id="nameTitle" class="tooltipTitle"></span> <span id="name" class="bold"></span></p>
+            <p> <span  id="parentTitle" class="tooltipTitle"></span>  <span id="parent"></span></p>
+            <p> <span  id="countNodeTitle" class="tooltipTitle"></span>  <span id="countNode"></span> </p>
         </div>
 
     </div>
@@ -80,71 +94,170 @@
         <!-- Main content -->
         <div class='flex-container'>
 
+            <!-- VIS OPTIONS-->
+            <div class='visualisation'>
+                <div class='visualisation-title'>
+                    <div class='visualisation-title-text'>
+                        Options
+                    </div>
+                </div>
+                <!-- Total numbers -->
+                <div class='info-box'>
+                    <table style="width:100%">
+
+                        <tr>
+                            <th> </th>
+                            <th>Total</th>
+                            <th>Selected</th>
+                        </tr>
+
+                        <tr>
+                            <td>Nodes</td>
+                            <td id='totalNodes' class="bold"></td>
+                            <td id='selectedNodes' class="bold"></td>
+                        </tr>
+
+                        <tr>
+                            <td>Links</td>
+                            <td id='totalLinks' class="bold"></td>
+                            <td id='selectedLinks' class="bold"></td>
+                        </tr>
+
+                    </table>
+                </div>
+
+                <!-- Option selections -->
+                <div class='vis-options'>
+
+                    <!-- Column start -->
+                    <div class="column">
+                        <!-- Select dataset drop down-->
+                        <div>
+                            <select id="datasetName">
+                                <option value="jabref">JabRef</option>
+                                <option value="fish">FISH</option>
+                            </select>
+                        </div>
+
+                        <div id="loader" style="display:none;"></div>
+
+                        <!-- Package or class level toggle -->
+                        <label class="switch">
+                            <input type="checkbox" id="selectAbstraction">
+                            <div class="slider round">
+                                <span class="on">Packages</span>
+                                <span class="off">Classes</span>
+                            </div>
+                        </label>
+
+                        <!-- Static or dynamic toggle -->
+                        <label class="switch">
+                            <input type="checkbox" id="selectDataType">
+                            <div class="slider round">
+                                <span class="on">Dynamic</span>
+                                <span class="off">Static</span>
+                            </div>
+                        </label>
+
+                        <!-- Filter type drop down -->
+<!--                        <div>-->
+<!--                            <dl class="dropdown" id="filterType">-->
+<!--                                <dt>-->
+<!--                                    <a>-->
+<!--                                        <span class="hida">Select data</span>-->
+<!--                                        <p class="multiSel"></p>-->
+<!--                                    </a>-->
+<!--                                </dt>-->
+<!--                                <dd>-->
+<!--                                    <div id="filterTypeSel" class="mutliSelect">-->
+<!--                                        <div class="boxes">-->
+<!--                                            <ul id="filterTypeUl">-->
+
+<!--                                                <input type="checkbox" id="access" value="access" checked>-->
+<!--                                                <label for="access">Access</label>-->
+<!--                                                <input type="checkbox" id="annotation" value="annotation" checked>-->
+<!--                                                <label for="annotation">Annotation</label>-->
+<!--                                                <input type="checkbox" id="call" value="call" checked>-->
+<!--                                                <label for="call">Call</label>-->
+<!--                                                <input type="checkbox" id="declaration" value="declaration" checked>-->
+<!--                                                <label for="declaration">Declaration</label>-->
+<!--                                                <input type="checkbox" id="import" value="import" checked>-->
+<!--                                                <label for="import">Import</label>-->
+<!--                                                <input type="checkbox" id="inheritance" value="inheritance" checked>-->
+<!--                                                <label for="inheritance">Inheritance</label>-->
+<!--                                                <input type="checkbox" id="reference" value="reference" checked>-->
+<!--                                                <label for="reference">Reference</label>-->
+
+<!--                                            </ul>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </dd>-->
+<!--                                <button id="filterTypeButton">Filter</button>-->
+<!--                            </dl>-->
+<!--                        </div>-->
+                        <!-- Filter type drop down -->
+
+
+                        <!-- Filter drop down -->
+                        <div>
+                            <dl class="dropdown" id="filterData">
+                                <dt>
+                                    <a>
+                                        <span class="hida">Select filters</span>
+                                        <p class="multiSel"></p>
+                                    </a>
+                                </dt>
+                                <dd>
+                                    <div class="mutliSelect">
+                                        <div class="boxes">
+                                            <ul id="filterDataUl">
+                                                <!--                                            Checkboxes created in network.js-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <button id="filterButton">Filter</button>
+                                </dd>
+                            </dl>
+                        </div>
+                        <!-- Filter drop down -->
+
+                    </div>
+                    <!-- Column end -->
+
+                </div>
+                <!-- VIS OPTIONS-->
+
+            </div>
+            <!-- VIS for VIS OPTIONS-->
+
             <!-- NETWORK VIS -->
             <div class='visualisation'>
                 <div class='visualisation-title'>
                     <div class='visualisation-title-text'>
-                        Relations between classes in the system
+                        Relations between classes/objects in the system
                     </div>
                 </div>
 
                 <!-- The options panel on top of the vis -->
                 <div class='vis-options'>
                     <div class="column">
-                        <div>
-                            <!-- Select abstraction drop down-->
-                            <select id="selectAbstraction">
-                                <option value="packageLevel">Package level</option>
-                                <option value="classLevel">Class level</option>
-                            </select>
+                        <!-- Treemap or force toggle -->
+                        <label class="switch">
+                            <input type="checkbox" id="selectTemplate">
+                            <div class="slider round">
+                                <span class="on">Treemap</span>
+                                <span class="off">Force</span>
+                            </div>
+                        </label>
 
-                        </div>
-
-                        <div>
-                            <!-- Select algorithm drop down-->
-                            <select id="selectTemplate">
-                                <option value="treemap">Treemap</option>
-                                <option value="force">Force</option>
-                            </select>
-                        </div>
                     </div>
 
+                    <!-- Checkbox show template-->
                     <div class="column">
-                        <!-- Filter drop down -->
-                        <dl class="dropdown" id="filterData">
-                            <dt>
-                                <a href="#">
-                                    <span class="hida">Select data</span>
-                                    <p class="multiSel"></p>
-                                </a>
-                            </dt>
-                            <dd>
-                                <div class="mutliSelect">
-                                    <div class="boxes">
-                                        <ul id="ul">
-<!--                                            Checkboxes created in network.js-->
-<!--                                            <input type="checkbox" id="all_values" checked>-->
-<!--                                            <label for="all_values">All</label>-->
-
-                                        </ul>
-                                    </div>
-                                </div>
-                            </dd>
-                            <button id="filterButton">Filter / Reset</button>
-                        </dl>
-                    </div>
-
-                    <div class="column">
-
-                        <!-- Checkboxes group in a box and show template-->
                         <div class="boxes">
-                            <input type="checkbox" id="checkGroupInABox">
-                            <label for="checkGroupInABox">Group in a Box</label>
-
                             <input type="checkbox" id="checkShowTemplate" checked>
                             <label for="checkShowTemplate">Show Template </label>
                         </div>
-
                     </div>
 
                 </div>
@@ -156,40 +269,37 @@
             <div class='visualisation'>
                 <div class='visualisation-title'>
                     <div class='visualisation-title-text'>
-                        Number of class occurrences
+                        Statistics on classes/objects and methods/relations
+                    </div>
+                </div>
+                <div class='vis-options'>
+                    <div class="column">
+                        <div>
+                            <!-- Select bar chart drop down-->
+                            <select id="selectBarchartData">
+                                <option value="class_occurrences">Class/object occurrences</option>
+                                <option value="method_occurrences">Method/relation occurrences</option>
+                                <option value="duration">Method duration (run-time)</option>
+                            </select>
+
+                        </div>
                     </div>
                 </div>
                 <div id='barchart' class='vis'></div>
             </div>
 
             <!-- TREE VIS -->
-            <div class='visualisation'>
-                <div class='visualisation-title'>
-                    <div class='visualisation-title-text'>
-                        Dataset structure
-                    </div>
-                </div>
-                <div class='vis-options'>
-                    <div class="column">
-                        <div>
-                            <!-- Select dataset drop down-->
-                            <select id="datasetName">
-                                <option value="static/JabRef-dependencies-static.json">JabRef dependencies</option>
-                                <option value="static/FISH-dependencies-static.json">FISH dependencies</option>
-                                <option value="dynamic/jabref-scenario-1-dynamic.json">JabRef scenario 1</option>
-                                <option value="dynamic/fish2-dynamic.json">FISH random clicks</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div id='tree' class='vis'></div>
-            </div>
-
-        </div>
+            <!--            <div class='visualisation'>-->
+            <!--                <div class='visualisation-title'>-->
+            <!--                    <div class='visualisation-title-text'>-->
+            <!--                        Dataset structure-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--                <div id='tree' class='vis'></div>-->
+            <!--            </div>-->
 
     </div>
-
+    <!-- MAIN -->
 
 </body>
 
