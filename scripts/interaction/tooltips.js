@@ -17,6 +17,9 @@ function tooltipOnOff(tooltip, hidden) {
 
 // Edit link tooltip values (must be a better way but haven't found it yet)
 function linkTooltip(d){
+    d3.select("#dynamicFields").classed("hidden", true);
+    d3.select("#staticFields").classed("hidden", true);
+
     // Count
     d3.select("#linkCountTitle").text("Count: ");
     d3.select("#countLink").text(d.count);
@@ -31,7 +34,19 @@ function linkTooltip(d){
 
 }
 
-function expandLinkToolTip(d){
+function messageTooltip(d){
+    // Count
+    d3.select("#linkCountTitle").text("Count: ");
+    d3.select("#countLink").text(d.count);
+
+    // Source
+    d3.select("#linkSourceTitle").text("Source: ");
+    d3.select("#linkSource").text(d.source);
+
+    // Target
+    d3.select("#linkTargetTitle").text("Target: ");
+    d3.select("#linkTarget").text(d.target);
+
     // Static
     if(d.dataType === "Static") {
         // Unhide static fields

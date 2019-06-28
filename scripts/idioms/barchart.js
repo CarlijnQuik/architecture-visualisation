@@ -77,7 +77,9 @@ function updateBarchart(inputData, selectedNode) {
         x_axis_text = "Classes";
         y_axis_text = "Number of class occurrences (logarithmic scale)";
 
-        data = data.filter(link => link.count > 0);
+        console.log("before >0", data);
+        data = data.filter(node => node.count > 0);
+        console.log("after >0", data);
     }
     else if(barchartData === "method_occurrences"){
         data = data.links;
@@ -89,11 +91,13 @@ function updateBarchart(inputData, selectedNode) {
         x_axis_text = "Links: source + target";
         y_axis_text = "Number of method occurrences (logarithmic scale)";
 
+        console.log("before >0", data);
         data = data.filter(link => link.count > 0);
+        console.log("after >0", data);
     }
     else if(barchartData === "duration"){
         data = data.links;
-        x_values = "linkID";
+        x_values = "message";
         function y_values(d){
             return d["duration"];
         }
@@ -103,7 +107,13 @@ function updateBarchart(inputData, selectedNode) {
         x_axis_text = "Methods";
         y_axis_text = "Method duration (seconds)";
 
-        data = data.filter(link => link.duration > 0);
+        let msgs = [];
+        data.map((link) => Array.prototype.push.apply(msgs,link['subLinks']));
+        data = msgs;
+
+        console.log("before >0 DURATION", data);
+        data = data.filter(msg => msg.duration > 0);
+        console.log("after >0", data);
     }
 
     console.log("bar chart data", data);
@@ -148,11 +158,14 @@ function updateBarchart(inputData, selectedNode) {
                 nodeTooltip(d);
                 tooltipOnOff("#nodeTooltip", false)
             }
-            else {
+            else if (barchartData === "method_occurrences"){
                 linkTooltip(d);
                 tooltipOnOff("#linkTooltip", false)
             }
-
+            else{
+                messageTooltip(d);
+                tooltipOnOff("#linkTooltip", false)
+            }
 
         })
         .on("mouseout", function (d) {

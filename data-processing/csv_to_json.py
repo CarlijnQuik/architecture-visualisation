@@ -64,7 +64,9 @@ def get_static_links(dataset, file_name):
             'direct': link['Direct/Indirect'],
             'inheritance': link['Inheritance Related'],
             'innerclass': link['Inner Class Related'],
-            'messageCount': message_count}  # the number of times the message exists in the dataset
+            'source': '/'.join(link['Dependency from'].split('.')),
+            'target': '/'.join(link['Dependency to'].split('.')),
+            'count': message_count}  # the number of times the message exists in the dataset
 
         # if this is the first time we encounter this specific link ID
         if link_id not in unique_links:
@@ -117,12 +119,14 @@ def get_dynamic_links(dataset, file_name):
                       'startTime': link['Start Time'],
                       'endDate': link['End Date'],
                       'endTime': link['End Time'],
+                      'source': '/'.join(link['Caller'].split('.')),
+                      'target': '/'.join(link['Callee'].split('.')),
                       'duration': duration.total_seconds(),  # get an integer
                       'thread': link['Thread'],
                       'callerID': link['Caller ID'],
                       'calleeID': link['Callee ID'],
                       'message': '/'.join(link['Message'].split('.')),
-                      'messageCount': message_count}
+                      'count': message_count}
 
         if link_id not in unique_links:
             unique_links.append(link_id)
