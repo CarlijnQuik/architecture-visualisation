@@ -25,16 +25,12 @@ def get_nodes(dataset, fr, to, file_name, data_type):
                      'dataType': data_type,
                      'count': int(nodes.count(node))}
 
-        # if the node is not already present in the db
-        # if not nodes_db.find_one({"name": '/'.join(node.split('.'))}):
-        # # insert in mongodb
-        # nodes_db.insert_one(node_dict)
-
         # append the dictionary to the list of node dictionaries
         list_nodes.append(node_dict)
 
     # insert in mongodb
     # nodes_db.insert_many(list_nodes)
+
     return list_nodes
 
 

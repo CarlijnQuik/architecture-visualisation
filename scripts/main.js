@@ -33,10 +33,10 @@ function controlsInit(){
     treemapTemplate = true;
     template = "treemap";
     datasetName = "fish";
-    packageLevel = true;
-    datasetLevel = 'package';
-    dynamicData = true;
-    dataType = "dynamic";
+    packageLevel = false;
+    datasetLevel = 'class';
+    dynamicData = false;
+    dataType = "static";
     selectedNodes = [];
     barchartData = "class_occurrences";
 
@@ -44,8 +44,8 @@ function controlsInit(){
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
     d3.select("#selectTemplate").property("checked", treemapTemplate);
     d3.select("#datasetName").property("value", datasetName);
-    d3.select("#selectAbstraction").property("checked", packageLevel);
-    d3.select("#selectDataType").property("checked", dynamicData);
+    d3.select("#selectAbstraction").property("unchecked", packageLevel);
+    d3.select("#selectDataType").property("unchecked", dynamicData);
     d3.select("#selectBarchartData").property("value", barchartData);
 
     // ----------------------------
@@ -114,7 +114,7 @@ function loadDataset(datasetName){
 
         // Initialize the tree (tree does not change)
         treeDataInit(selectedDataset);
-        console.log(selectedDataset);
+        console.log("SELECTED DATASET", selectedDataset);
 
         // Enable user interactions again
         document.getElementById("loader").style.display = "none";
@@ -169,6 +169,7 @@ function updateIdioms(data){
     // Update idioms
     updateBarchart(data, "null");
     updateNetwork(data);
+    treeDataInit(data);
 
 }
 //
@@ -185,13 +186,14 @@ function click(d) {
         d._children = null;
     }
 
-    // if(d.children){
-    //     d.children.map(value => {
-    //         if(!selectedNodes.includes(value.data.name.toString())) {
-    //             selectedNodes.push(value.data.name.toString());
-    //         }
-    //     });
-    // }
+    if(d.children){
+        d.children.map(value => {
+            if(!selectedNodes.includes(value.data.name.toString())) {
+                selectedNodes.push(value.data.name.toString());
+            }
+        });
+    }
+    console.log("SELECTED", selectedNodes);
 
     //filterDataset(selectedNodes);
 

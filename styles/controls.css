@@ -9,6 +9,7 @@ select {
     display: inline-block;
     /*padding: 8px 20px 5px 10px;*/
     text-align: center;
+    align-self: center;
     min-height: 4px;
     overflow: hidden;
     border: 0;

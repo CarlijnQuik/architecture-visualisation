@@ -15,7 +15,6 @@ function treeDataInit(treeData) {
     nodeNames = [];
     nodeObjects = [];
     treeData.nodes.map(node => getAllNodes(node.name, node));
-    console.log("node Objects", nodeObjects.length);
 
     // Convert the data to a tree format
     root = d3.stratify()

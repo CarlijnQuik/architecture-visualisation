@@ -31,16 +31,17 @@ def write_to_json(class_dict):
     print("class file written")
 
     # get package data
-    package_dict = {"nodes": ctp.get_package_nodes(class_dict["nodes"]),
-                    "links": ctp.get_package_links(class_dict["links"])}
+    # package_dict = {"nodes": ctp.get_package_nodes(class_dict["nodes"]),
+    #                 "links": ctp.get_package_links(class_dict["links"])}
 
-    print("package dict obtained")
+    # print("package dict obtained")
 
-    # write the dictionary to a JSON file
-    with open(file_name + "-package.json", 'w') as fp:
-        json.dump(package_dict, fp)
 
-    print("package file written")
+    # # write the dictionary to a JSON file
+    # with open(file_name + "-package.json", 'w') as fp:
+    #     json.dump(package_dict, fp)
+    #
+    # print("package file written")
 
 
 if extension == 'csv':

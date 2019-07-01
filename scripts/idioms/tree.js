@@ -4,15 +4,22 @@
 //----------------------------
 
 // set the dimensions and margins of the tree graph
-var tMargin = {top: 20, right: 90, bottom: 30, left: 90},
-    tWidth = 1000 - tMargin.left - tMargin.right,
-    tHeight = 500 - tMargin.top - tMargin.bottom;
+var tMargin = {top: 20, right: 20, bottom: 20, left: 20},
+    tWidth = 250 - tMargin.left - tMargin.right,
+    tHeight = 500 - tMargin.top - tMargin.bottom,
+    barHeight = 20,
+    barWidth = (tWidth - tMargin.left - tMargin.right) * 0.8;
 
 var treeSVG;
 var treemap;
 var i = 0,
     duration = 750,
     root;
+
+var diagonal = d3.linkHorizontal()
+    .x(function(d) { return d.y; })
+    .y(function(d) { return d.x; });
+
 
 function treeInit() {
     // Create the tree graphic
@@ -33,7 +40,7 @@ function treeInit() {
 //----------------------------
 function refreshTree(){
     treeSVG
-        .selectAll('.circle')
+        .selectAll('#tree g')
         .remove();
 
     treeSVG
@@ -56,147 +63,101 @@ function refreshTree(){
 
 function updateTree(source) {
 
-    // Assigns the x and y position for the nodes
-    var treeData = treemap(root);
+    // Compute the flattened node list.
+    let nodes = root.descendants();
 
-    // Compute the new tree layout.
-    var nodes = treeData.descendants(),
-        links = treeData.descendants().slice(1);
+    let tHeight = Math.max(500, nodes.length * barHeight + tMargin.top + tMargin.bottom);
 
-    // Normalize for fixed-depth.
-    nodes.forEach(function (d) {
-        d.y = d.depth * 180
+    treeSVG.transition()
+        .duration(duration)
+        .attr("height", tHeight);
+
+    d3.select(self.frameElement).transition()
+        .duration(duration)
+        .style("height", tHeight + "px");
+
+    // Compute the "layout"
+    let index = -1;
+    root.eachBefore(function(n) {
+        n.x = ++index * barHeight;
+        n.y = n.depth * 20;
     });
 
-    // ----------------------------
-    // Nodes
-    //----------------------------
+    // Update the nodes…
+    let node = treeSVG.selectAll(".node")
+        .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
-    // Update the nodes...
-    var node = treeSVG.selectAll('g.node')
-        .data(nodes, function (d) {
-            return d.id || (d.id = ++i);
-        });
+    let nodeEnter = node.enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+        .style("opacity", 0);
 
-    // Enter any new modes at the parent's previous position.
-    var nodeEnter = node.enter().append('g')
-        .attr('class', 'node')
-        .attr("transform", function (d) {
-            return "translate(" + source.y0 + "," + source.x0 + ")";
-        })
-        .on('click', click);
+    // Enter any new nodes at the parent's previous position.
+    nodeEnter.append("rect")
+        .attr("y", -barHeight / 2)
+        .attr("height", barHeight)
+        .attr("width", barWidth)
+        .on("click", click);
 
-    // Add Circle for the nodes
-    nodeEnter.append('circle')
-        .attr('class', 'node')
-        .attr('r', 1e-6)
-        .style("fill", function (d) {
-            return d._children ? "#6cc0e5" : "#fff";
-        });
+    nodeEnter.append("text")
+        .attr("dy", 3.5)
+        .attr("dx", 5.5)
+        .attr('class', "text-small")
+        .text(function(d) { return d.data.name; });
 
-    // Add labels for the nodes
-    nodeEnter.append('text')
-        .attr("dy", ".35em")
-        .attr("x", function (d) {
-            return d.children || d._children ? -13 : 13;
-        })
-        .attr("text-anchor", function (d) {
-            return d.children || d._children ? "end" : "start";
-        })
-        .text(function (d) {
-            return d.data.name;
-        });
-
-    // UPDATE
-    var nodeUpdate = nodeEnter.merge(node);
-
-    // Transition to the proper position for the node
-    nodeUpdate.transition()
+    // Transition nodes to their new position.
+    nodeEnter.transition()
         .duration(duration)
-        .attr("transform", function (d) {
-            return "translate(" + d.y + "," + d.x + ")";
-        });
+        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+        .style("opacity", 1);
 
-    // Update the node attributes and style
-    nodeUpdate.select('circle.node')
-        .attr('r', 10)
-        .style("fill", function (d) {
-            return d._children ? "lightsteelblue" : "#fff";
-        })
-        .attr('cursor', 'pointer');
-
-
-    // Remove any exiting nodes
-    var nodeExit = node.exit().transition()
+    node.transition()
         .duration(duration)
-        .attr("transform", function (d) {
-            return "translate(" + source.y + "," + source.x + ")";
-        })
+        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+        .style("opacity", 1)
+        .select("rect");
+
+    // Transition exiting nodes to the parent's new position.
+    node.exit().transition()
+        .duration(duration)
+        .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+        .style("opacity", 0)
         .remove();
 
-    // On exit reduce the node circles size to 0
-    nodeExit.select('circle')
-        .attr('r', 1e-6);
-
-    // On exit reduce the opacity of text labels
-    nodeExit.select('text')
-        .style('fill-opacity', 1e-6);
-
-    // ----------------------------
-    // Links
-    //----------------------------
-
-    // Update the links...
-    var link = treeSVG.selectAll('path.link')
-        .data(links, function (d) {
-            return d.id;
-        });
+    // Update the links…
+    let link = treeSVG.selectAll(".link")
+        .data(root.links(), function(d) { return d.target.id; });
 
     // Enter any new links at the parent's previous position.
-    var linkEnter = link.enter().insert('path', "g")
+    link.enter().insert("path", "g")
         .attr("class", "link")
-        .attr('d', function (d) {
-            var o = {x: source.x0, y: source.y0}
-            return diagonal(o, o)
-        });
-
-    // UPDATE
-    var linkUpdate = linkEnter.merge(link);
-
-    // Transition back to the parent element position
-    linkUpdate.transition()
+        .attr("d", function(d) {
+            let o = {x: source.x0, y: source.y0};
+            return diagonal({source: o, target: o});
+        })
+        .transition()
         .duration(duration)
-        .attr('d', function (d) {
-            return diagonal(d, d.parent)
-        });
+        .attr("d", diagonal);
 
-    // Remove any exiting links
-    var linkExit = link.exit().transition()
+    // Transition links to their new position.
+    link.transition()
         .duration(duration)
-        .attr('d', function (d) {
-            var o = {x: source.x, y: source.y}
-            return diagonal(o, o)
+        .attr("d", diagonal);
+
+    // Transition exiting nodes to the parent's new position.
+    link.exit().transition()
+        .duration(duration)
+        .attr("d", function(d) {
+            let o = {x: source.x, y: source.y};
+            return diagonal({source: o, target: o});
         })
         .remove();
 
-    // Store the old positions for transition.
-    nodes.forEach(function (d) {
+    // Stash the old positions for transition.
+    root.each(function(d) {
         d.x0 = d.x;
         d.y0 = d.y;
     });
-
-    // Creates a curved (diagonal) path from parent to the child nodes
-    function diagonal(s, d) {
-
-        path = `M ${s.y} ${s.x}
-    C ${(s.y + d.y) / 2} ${s.x},
-      ${(s.y + d.y) / 2} ${d.x},
-      ${d.y} ${d.x}`
-
-        return path
-    }
-
 }
-
 
 

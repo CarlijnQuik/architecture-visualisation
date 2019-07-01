@@ -336,7 +336,7 @@
             //                 // });
 
             // Text on the treemap template
-            let nodes = d3.select('svg g')
+            let cell_nodes = d3.select('#network g')
                 .selectAll('g')
                 .data(templateNodes)
                 .enter()
@@ -344,7 +344,7 @@
                 .attr('transform', function(d) {return 'translate(' + [d.x0, d.y0] + ')'});
 
             // Because SVG element cannot take an enter text element <br>, append two separate pieces of text
-            nodes
+            cell_nodes
                 .append('text')
                 .attr('dx', 10)
                 .attr('dy', 14)
@@ -362,7 +362,7 @@
                     }
                 });
 
-            nodes
+            cell_nodes
                 .append('text')
                 .attr('dx', 10)
                 .attr('dy', 25)

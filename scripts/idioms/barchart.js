@@ -6,7 +6,7 @@ var barChartSVG;
 
 // set the dimensions and margins of the graph
 var bMargin = {top: 20, right: 90, bottom: 30, left: 90},
-    bWidth = 1000 - bMargin.left - bMargin.right,
+    bWidth = 900 - bMargin.left - bMargin.right,
     bHeight = 600 - bMargin.top - bMargin.bottom;
 
 function barchartInit() {

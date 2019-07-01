@@ -4,8 +4,9 @@
 //----------------------------
 
 // Set the dimensions and margins of the chart
-var width = 1000;
-var height = 600;
+var nMargin = {top: 20, right: 20, bottom: 20, left: 20},
+    nWidth = 1000 - nMargin.top - nMargin.bottom,
+    nHeight = 800 - nMargin.top - nMargin.bottom;
 
 // Define the standard node radius and link width
 var nodeRadius = d3.scaleSqrt().range([4, 10]);
@@ -28,8 +29,8 @@ function networkInit() {
     networkSVG = d3
         .select("#network")
         .append('svg')
-        .attr('width', width)
-        .attr('height', height)
+        .attr('width', nWidth)
+        .attr('height', nHeight)
         .call(d3.zoom().on("zoom", function () {
             networkSVG.attr("transform", d3.event.transform) // Enable zooming in and out
         }))
@@ -44,7 +45,7 @@ function networkInit() {
         .enableGrouping(true)
         .forceCharge(-60) // Separation between nodes on the force template
         .nodeSize(4) // Used to compute the size of the template nodes, think of it as the radius the node uses, including its padding
-        .size([width, height]); // Size of the diagram
+        .size([nWidth, nHeight]); // Size of the diagram
 
     // Adjust the position and velocity of elements
     forceSim = d3.forceSimulation()
@@ -54,7 +55,7 @@ function networkInit() {
             .strength(groupingForce.getLinkStrength)
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
-        .force('center', d3.forceCenter(width / 2, height / 2)) // setting the center of gravity of the system;
+        .force('center', d3.forceCenter(nWidth / 2, nHeight / 2)) // setting the center of gravity of the system;
     // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
     // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
     // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
@@ -290,23 +291,3 @@ function dragging(d) {
 //     // d.fx = null;
 //     // d.fy = null;
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
