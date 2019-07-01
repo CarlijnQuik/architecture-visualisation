@@ -9,7 +9,7 @@ window.onload = function () {
     // Initialise the idioms
     barchartInit();
     networkInit();
-    // treeInit();
+    treeInit();
 };
 
 //----------------------------
@@ -29,7 +29,7 @@ var drawTemplate,
 
 function controlsInit(){
     // Define the initial settings
-    drawTemplate = false;
+    drawTemplate = true;
     treemapTemplate = true;
     template = "treemap";
     datasetName = "fish";
@@ -113,7 +113,7 @@ function loadDataset(datasetName){
         console.log("selected file:", `datasets/${dataType}/${dataType}-${datasetName}-${datasetLevel}.json`);
 
         // Initialize the tree (tree does not change)
-        // treeDataInit(selectedDataset);
+        treeDataInit(selectedDataset);
         console.log(selectedDataset);
 
         // Enable user interactions again
@@ -175,33 +175,32 @@ function updateIdioms(data){
 // //----------------------------
 // // When a node on the tree is clicked
 // //----------------------------
-// function click(d) {
-//
-//     if (d.children) {
-//         d._children = d.children;
-//         d.children = null;
-//     } else {
-//         d.children = d._children;
-//         d._children = null;
-//     }
-//
-//     // if(d.children){
-//     //     d.children.map(value => {
-//     //         if(!selectedNodes.includes(value.data.name.toString())) {
-//     //             selectedNodes.push(value.data.name.toString());
-//     //         }
-//     //     });
-//     // }
-//
-//     //filterDataset(selectedNodes);
-//
-//     updateTree(d);
-// }
-//
-//
-//
-//
-//
-//
+function click(d) {
+
+    if (d.children) {
+        d._children = d.children;
+        d.children = null;
+    } else {
+        d.children = d._children;
+        d._children = null;
+    }
+
+    // if(d.children){
+    //     d.children.map(value => {
+    //         if(!selectedNodes.includes(value.data.name.toString())) {
+    //             selectedNodes.push(value.data.name.toString());
+    //         }
+    //     });
+    // }
+
+    //filterDataset(selectedNodes);
+
+    updateTree(d);
+}
+
+
+
+
+
 
 
