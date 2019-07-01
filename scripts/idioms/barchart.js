@@ -112,7 +112,7 @@ function updateBarchart(inputData, selectedNode) {
         data = msgs;
 
         console.log("before >0 DURATION", data);
-        data = data.filter(msg => msg.duration > 0);
+        data = data.filter(msg => msg.duration > 0.5);
         console.log("after >0", data);
     }
 

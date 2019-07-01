@@ -2,7 +2,7 @@
 import json
 import sys
 import csv_to_json as ctj
-import log_to_csv as ltc  # change for jabref (ajpolog edited since that log was created)
+import log_to_csv_jabref as ltc  # change for jabref (ajpolog edited since that log was created)
 import pandas as pd
 import classes_to_packages as ctp
 
