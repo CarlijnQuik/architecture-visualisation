@@ -4,6 +4,7 @@
 #tooltip {
     position: absolute;
     width: auto;
+    max-width: 1000px;
     display: inline;
     word-wrap: break-word;
     height: auto;
@@ -34,6 +35,10 @@
 }
 
 #nodeTooltip.hidden {
+     display: none;
+}
+
+#cellTooltip.hidden {
     display: none;
 }
 

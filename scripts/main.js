@@ -24,8 +24,7 @@ var drawTemplate,
     dynamicData,
     dataType,
     selectedNodes,
-    selectedData, // the data filtered from a dataset
-    barchartData;
+    selectedData; // the data filtered from a dataset
 
 function controlsInit(){
     // Define the initial settings
@@ -33,20 +32,18 @@ function controlsInit(){
     treemapTemplate = true;
     template = "treemap";
     datasetName = "fish";
-    packageLevel = false;
-    datasetLevel = 'class';
+    packageLevel = true;
+    datasetLevel = 'package';
     dynamicData = false;
     dataType = "static";
     selectedNodes = [];
-    barchartData = "class_occurrences";
 
     // Change the controls to the initialised values
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
     d3.select("#selectTemplate").property("checked", treemapTemplate);
     d3.select("#datasetName").property("value", datasetName);
-    d3.select("#selectAbstraction").property("unchecked", packageLevel);
+    d3.select("#selectAbstraction").property("checked", packageLevel);
     d3.select("#selectDataType").property("unchecked", dynamicData);
-    d3.select("#selectBarchartData").property("value", barchartData);
 
     // ----------------------------
     // Define selected dataset (on change)
@@ -90,22 +87,33 @@ function loadUI(){
 // Load the dataset
 //----------------------------
 function loadDataset(datasetName){
-    // Disable user interactions and show load icon
+    // show load icon
     loadUI();
+    d3.select("#linkInfo").text("Links");
+    d3.select("#cellInfo").text("Cells");
 
     // Choose abstraction of dataset
     if(packageLevel){
         datasetLevel = 'package';
+        d3.select("#nodeInfo").text("Packages");
+        d3.select("#networkTitle").text("Relations between packages in the system");
     }
     else{
         datasetLevel = 'class';
+        d3.select("#nodeInfo").text("Classes");
+        d3.select("#cellInfo").text("Packages");
+        d3.select("#networkTitle").text("Relations between classes in the system");
     }
     if(dynamicData){
         dataType = 'dynamic';
+        d3.select("#networkTitle").text("Relations between objects in the system");
+        d3.select("#nodeInfo").text("Objects");
+        d3.select("#linkInfo").text("Method calls");
         // STROKE_WIDTH.LINK_DEFAULT = d => linkStrength(d.count);
     }
     else{
         dataType = 'static';
+
     }
 
     // Load json data
@@ -113,7 +121,7 @@ function loadDataset(datasetName){
         console.log("selected file:", `datasets/${dataType}/${dataType}-${datasetName}-${datasetLevel}.json`);
 
         // Initialize the tree (tree does not change)
-        treeDataInit(selectedDataset);
+        // treeDataInit(selectedDataset);
         console.log("SELECTED DATASET", selectedDataset);
 
         // Enable user interactions again
@@ -135,13 +143,6 @@ function loadDataset(datasetName){
             selectedData = getFilteredData(selectedDataset);
             updateIdioms(selectedData);
 
-        });
-
-        // Bar chart data selection
-        d3.select("#selectBarchartData").on("change", function () {
-            barchartData = d3.select("#selectBarchartData").property("value");
-            selectedData = getFilteredData(selectedDataset);
-            updateIdioms(selectedData);
         });
 
         selectedData = getFilteredData(selectedDataset);
@@ -188,16 +189,22 @@ function click(d) {
 
     if(d.children){
         d.children.map(value => {
-            if(!selectedNodes.includes(value.data.name.toString())) {
-                selectedNodes.push(value.data.name.toString());
-            }
+            // if(!selectedNodes.includes(value.data.name.toString())) {
+            //     selectedNodes.push(value.data.name.toString());
+            //
+            console.log("SELECTED", value);
+
         });
     }
-    console.log("SELECTED", selectedNodes);
 
-    //filterDataset(selectedNodes);
 
     updateTree(d);
+
+    // if(selectedNodes){
+    //     filterData(selectedData, selectedNodes);
+    //
+    // }
+
 }
 
 

@@ -10,7 +10,7 @@ function getFilteredData(data) {
 
     // If filtervalues are present filter the data
     if (filterValues.length > 0) {
-        filterValues.map(value => filterData(data, value));
+        filterValues.map(value => excludeData(data, value));
         return data;
 
     } else {
@@ -21,15 +21,35 @@ function getFilteredData(data) {
 
 }
 
-// Filter the data
-function filterData(selectedData, filterValue) {
-    console.log("before filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
+// Filter the data by excluding values that start with
+function excludeData(selectedData, filterValue) {
+    console.log("before filtering:", filterValue, selectedData.links, selectedData.nodes.length, selectedData.links.length);
 
-    selectedData.nodes = selectedData.nodes.filter((node) => !node.name.toString().startsWith(filterValue));
-    selectedData.links = selectedData.links.filter((link) => !link.source.name.startsWith(filterValue) && !link.target.name.startsWith(filterValue));
+    selectedData.nodes = selectedData.nodes.filter(node => !node.name.toString().startsWith(filterValue));
+    console.log("after filtering nodes:", filterValue, selectedData.nodes.length, selectedData.nodes);
 
-    console.log("after filtering:", filterValue, selectedData.nodes.length, selectedData.links.length);
+    selectedData.links = selectedData.links.filter(link => !link.source.name.toString().startsWith(filterValue) && !link.target.name.toString().startsWith(filterValue));
+
+    console.log("after filtering links:", filterValue, selectedData.links.length, selectedData.links);
 }
+
+// Filter the data by including values that start with
+function filterData(selectedData, filterValues) {
+    let dataCopy = JSON.parse(JSON.stringify(selectedData));
+    console.log("before filtering:", filterValues, selectedData.nodes.length, selectedData.links.length);
+    let filteredData = {"nodes": [], "links": []};
+    filterValues.map(filterValue =>
+        {
+            filteredData.nodes = Array.prototype.concat(filteredData.nodes, dataCopy.nodes.filter((node) => node.name.toString().startsWith(filterValue)));
+            filteredData.links = Array.prototype.concat(filteredData.links, dataCopy.links.filter((link) => link.source.name.startsWith(filterValue) && link.target.name.startsWith(filterValue)));
+        }
+    );
+    console.log(filteredData);
+    updateIdioms(filteredData);
+
+    console.log("after filtering:", filterValues, selectedData, selectedData.nodes.length, selectedData.links.length);
+}
+
 
 // Get an array of selected values in filter
 function getSelectedValues() {
@@ -83,39 +103,3 @@ function addItem(checkboxName){
     // append list item with checkbox and label to drop down
     ul.appendChild(li);
 }
-
-// ----------------------------
-// Filter when tree??
-//----------------------------
-
-// function filterDataset(selectedNodes){
-//
-//     thisData = {"nodes":[], "links": []};
-//
-//     dataCopy.nodes = nodeObjects;
-//
-//     console.log(selectedNodes);
-//     selectedNodes.map(node => {
-//         getStartswith(dataCopy, node);
-//     });
-//
-//     //
-//     updateNetwork(thisData);
-//
-// }
-//
-// function getStartswith(filterdata, selector) {
-//     const sData = JSON.parse(JSON.stringify(filterdata));
-//
-//     // Filter only nodes and links that start with
-//     sData.nodes = filterdata.nodes.filter((node) => (node.parent.toString() === selector));
-//     sData.links = filterdata.links.filter((link) => (link.source.name === selector || link.target.name === selector));
-//     sData.nodes = getUniqueNodes(sData.nodes);
-//     sData.links = getUniqueNodes(sData.links);
-//     // data.links = getUniqueLinks(data.links);
-//
-//     thisData.nodes = thisData.nodes.concat(sData.nodes);
-//     thisData.links = thisData.links.concat(sData.links);
-//     console.log(thisData);
-//
-// }

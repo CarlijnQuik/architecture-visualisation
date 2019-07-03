@@ -6,7 +6,7 @@
 // Set the dimensions and margins of the chart
 var nMargin = {top: 20, right: 20, bottom: 20, left: 20},
     nWidth = 1000 - nMargin.top - nMargin.bottom,
-    nHeight = 800 - nMargin.top - nMargin.bottom;
+    nHeight = 550 - nMargin.top - nMargin.bottom;
 
 // Define the standard node radius and link width
 var nodeRadius = d3.scaleSqrt().range([4, 10]);
@@ -154,16 +154,12 @@ function updateNetwork(selectedData) {
 
     nodes
         .on("mouseenter", function (d) {
-            d3.select(this)
-                .style("stroke-width", STROKE_WIDTH.NODE_HIGHLIGHT);
-
             nodeTooltip(d);  // Edit tooltip values
             tooltipOnOff("#nodeTooltip", false);  // Show tooltip
 
         })
         .on("click", function (d) {
             if(d3.select(this).style("fill-opacity") == OPACITY.NODE_HIGHLIGHT){
-                console.log("click if", d3.select(this).style("fill-opacity"));
                 deHighlightConnected(d, links);
                 nodeDefaultStyle(d3.select(this));
                 updateBarchart(data, "null");
@@ -189,8 +185,20 @@ function updateNetwork(selectedData) {
     // ----------------------------
     // Define link interaction
     //----------------------------
+    // let nodeClicked = false;
+    // if(nodeClicked === true){
+    //
+    // }
+    // else{
+    //
+    // }
+    // nodeClicked = !nodeClicked;
 
     links
+        .on("click", function (d) {
+            updateBarchart(data, d)
+
+        })
         .on("mouseenter", function (d) {
             if(d3.select(this).style("stroke-opacity") == OPACITY.LINK_DEFAULT ) {
                 highLightLink(d3.select(this));
@@ -286,8 +294,4 @@ function dragging(d) {
 }
 
 // Uncomment for behaviour when drag end
-// function dragEnd(d) {
-//     // if (!d3.event.active) forceSim.alphaTarget(0);
-//     // d.fx = null;
-//     // d.fy = null;
-// }
+// f 

@@ -2,7 +2,7 @@
 import json
 import sys
 import csv_to_json as ctj
-import log_to_csv_jabref as ltc  # change for jabref (ajpolog edited since that log was created)
+import log_to_csv as ltc  # change for jabref (ajpolog edited since that log was created)
 import pandas as pd
 import classes_to_packages as ctp
 
@@ -31,17 +31,16 @@ def write_to_json(class_dict):
     print("class file written")
 
     # get package data
-    # package_dict = {"nodes": ctp.get_package_nodes(class_dict["nodes"]),
-    #                 "links": ctp.get_package_links(class_dict["links"])}
+    package_dict = {"nodes": ctp.get_package_nodes(class_dict["nodes"]),
+                    "links": ctp.get_package_links(class_dict["links"])}
 
-    # print("package dict obtained")
+    print("package dict obtained")
 
+    # write the dictionary to a JSON file
+    with open(file_name + "-package.json", 'w') as fp:
+        json.dump(package_dict, fp)
 
-    # # write the dictionary to a JSON file
-    # with open(file_name + "-package.json", 'w') as fp:
-    #     json.dump(package_dict, fp)
-    #
-    # print("package file written")
+    print("package file written")
 
 
 if extension == 'csv':
@@ -49,7 +48,7 @@ if extension == 'csv':
 
     # create a dictionary and put the nodes and links from the dataset in it
     static_dict = {"nodes": ctj.get_nodes(dataset, 'Dependency from', 'Dependency to', file_name, "Static"),
-                   "links": ctj.get_static_links(dataset, file_name)}
+                   "links": ctj.get_links(dataset, 'Dependency from', 'Dependency to', file_name, "Static", 'Used Entity (variable or method)')}
 
     print("static dict obtained")
 
@@ -63,8 +62,9 @@ elif extension == 'log':
 
     # create a dictionary and put the nodes and links from the dataset in it
     dynamic_dict = {"nodes": ctj.get_nodes(dataset, 'Caller', 'Callee', input_file, "Dynamic"),
-                    "links": ctj.get_dynamic_links(dataset, input_file)}
+                    "links": ctj.get_links(dataset, 'Caller', 'Callee', input_file, "Dynamic", 'Message')}
 
     print("dynamic dict obtained")
 
     write_to_json(dynamic_dict)
+

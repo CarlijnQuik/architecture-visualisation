@@ -6,7 +6,7 @@
 // set the dimensions and margins of the tree graph
 var tMargin = {top: 20, right: 20, bottom: 20, left: 20},
     tWidth = 250 - tMargin.left - tMargin.right,
-    tHeight = 500 - tMargin.top - tMargin.bottom,
+    tHeight = 250 - tMargin.top - tMargin.bottom,
     barHeight = 20,
     barWidth = (tWidth - tMargin.left - tMargin.right) * 0.8;
 
@@ -23,7 +23,8 @@ var diagonal = d3.linkHorizontal()
 
 function treeInit() {
     // Create the tree graphic
-    treeSVG = d3.select("#tree").append("svg")
+    treeSVG = d3.select("#tree")
+        .append("svg")
         .attr("width", tWidth + tMargin.right + tMargin.left)
         .attr("height", tHeight + tMargin.top + tMargin.bottom)
         .call(d3.zoom().on("zoom", function () {
@@ -97,13 +98,23 @@ function updateTree(source) {
         .attr("y", -barHeight / 2)
         .attr("height", barHeight)
         .attr("width", barWidth)
-        .on("click", click);
+        .on("click", click)
+        .style("fill", function(d) {
+            return d._children ? "#fff": "lightsteelblue";
+        });
 
     nodeEnter.append("text")
         .attr("dy", 3.5)
         .attr("dx", 5.5)
         .attr('class', "text-small")
-        .text(function(d) { return d.data.name; });
+        .text(function(d) {
+            if(d.data.name.split("/").slice(0, -1).join('/')){
+                return d.data.name.split(d.parent.data.name).join(" ");
+            }
+            else{
+                return d.data.name;
+            }
+        });
 
     // Transition nodes to their new position.
     nodeEnter.transition()

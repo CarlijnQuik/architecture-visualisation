@@ -6,7 +6,7 @@
 function tooltipOnOff(tooltip, hidden) {
     // Find mouse position and unhide general tooltip
     d3.select("#tooltip")
-        .style("top", (d3.event.pageY) + 20 + "px")
+        .style("top", (d3.event.pageY) - 100 + "px")
         .style("left", (d3.event.pageX) + 20 + "px")
         .classed("hidden", hidden);
 
@@ -15,7 +15,6 @@ function tooltipOnOff(tooltip, hidden) {
 
 }
 
-// Edit link tooltip values (must be a better way but haven't found it yet)
 function linkTooltip(d){
     d3.select("#dynamicFields").classed("hidden", true);
     d3.select("#staticFields").classed("hidden", true);
@@ -24,31 +23,22 @@ function linkTooltip(d){
     d3.select("#linkCountTitle").text("Count: ");
     d3.select("#countLink").text(d.count);
 
-    // Source
+    // Source and target titles
     d3.select("#linkSourceTitle").text("Source: ");
-    d3.select("#linkSource").text(d.source.name);
-
-    // Target
     d3.select("#linkTargetTitle").text("Target: ");
-    d3.select("#linkTarget").text(d.target.name);
 
-}
-
-function messageTooltip(d){
-    // Count
-    d3.select("#linkCountTitle").text("Count: ");
-    d3.select("#countLink").text(d.count);
-
-    // Source
-    d3.select("#linkSourceTitle").text("Source: ");
-    d3.select("#linkSource").text(d.source);
-
-    // Target
-    d3.select("#linkTargetTitle").text("Target: ");
-    d3.select("#linkTarget").text(d.target);
+    // .split('/').slice(-1).toString()
+    if(d.source.name){
+        d3.select("#linkSource").text(d.source.name);
+        d3.select("#linkTarget").text(d.target.name);
+    }
+    else{
+        d3.select("#linkSource").text(d.source);
+        d3.select("#linkTarget").text(d.target);
+    }
 
     // Static
-    if(d.dataType === "Static") {
+    if(d.type) {
         // Unhide static fields
         d3.select("#staticFields").classed("hidden", false);
         d3.select("#dynamicFields").classed("hidden", true);
@@ -83,8 +73,8 @@ function messageTooltip(d){
 
     }
     //Dynamic
-    else {
-        // Unhide static fields
+    else if(d.startDate) {
+        // Unhide dynamic fields
         d3.select("#dynamicFields").classed("hidden", false);
         d3.select("#staticFields").classed("hidden", true);
 
@@ -95,7 +85,7 @@ function messageTooltip(d){
 
         // Method duration
         d3.select("#durationTitle").text("Duration: ");
-        d3.select("#duration").text(d.duration + " s");
+        d3.select("#duration").text((d.duration/1000000).toFixed(3) + " s"); //  " / " + (d.duration/1000000 * d.count).toFixed(3) + " s total" )
 
         // Thread
         d3.select("#threadTitle").text("Thread: ");
@@ -124,7 +114,7 @@ function nodeTooltip(d){
     // Static
     if(d.dataType === "Static") {
         // Name
-        d3.select("#nameTitle").text("Class: ");
+        d3.select("#nameTitle").text("Name: ");
         d3.select("#name").text(d.name.split("/").pop()); // node name
     }
     //Dynamic
