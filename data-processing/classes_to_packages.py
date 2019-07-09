@@ -7,8 +7,8 @@ def get_package_nodes(nodes):
 
     # Rename name and parent to one abstraction level higher
     for node in nodes:
-        node['name'] = node['parent']
-        node['parent'] = '/'.join(node['parent'].split('/')[:-1])
+        node['name'] = '/'.join(str(node['name']).split('/')[:-1])
+        node['parent'] = '/'.join(str(node['parent']).split('/')[:-1])
 
     df_nodes = pd.DataFrame(nodes)  # create dataframe
     nodes_list = df_nodes['name'].tolist()

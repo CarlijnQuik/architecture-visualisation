@@ -51,7 +51,7 @@ function networkInit() {
     forceSim = d3.forceSimulation()
         .force('link', d3.forceLink() // creating a fixed distance between connected elements
             .id(d => d.name)
-            // .distance(5)
+            .distance(5)
             .strength(groupingForce.getLinkStrength)
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
@@ -75,6 +75,10 @@ function refreshNetwork(){
     networkSVG
         .selectAll('.node')
         .remove();
+
+    // networkSVG
+    //     .selectAll('.node')
+    //     .remove();
 
 }
 
@@ -106,20 +110,14 @@ function updateNetwork(selectedData) {
     //----------------------------
     // Draw network
     //----------------------------
-
-    // Update the element positions
-    forceSim
-        .nodes(data.nodes)
-        .force('parent', groupingForce)
-        .force('link').links(data.links);
-
     // Define link properties
     let links = networkSVG
         .selectAll(".link")
         .data(data.links)
         .enter()
         .append("line")
-        .attr("class", "link");
+        .attr("class", "link")
+        .attr('marker-end','url(#arrowhead)');
 
     // Define node properties
     let nodes = networkSVG
@@ -146,7 +144,20 @@ function updateNetwork(selectedData) {
         nodes
             .attr('cx', d => d.x)
             .attr('cy', d => d.y);
+
     });
+
+    // Update the element positions
+    forceSim
+        .nodes(data.nodes)
+        .force('parent', groupingForce)
+        .force('link')
+        .links(data.links);
+
+    // remove nodes without links
+    // forceSim.stop();
+    // forceSim.nodes().filter(function(d){d.weight==0});
+    // forceSim.alphaTarget(0.5).restart();
 
     // ----------------------------
     // Define node interaction
@@ -185,15 +196,6 @@ function updateNetwork(selectedData) {
     // ----------------------------
     // Define link interaction
     //----------------------------
-    // let nodeClicked = false;
-    // if(nodeClicked === true){
-    //
-    // }
-    // else{
-    //
-    // }
-    // nodeClicked = !nodeClicked;
-
     links
         .on("click", function (d) {
             updateBarchart(data, d)

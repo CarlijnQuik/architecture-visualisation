@@ -33,6 +33,17 @@ function excludeData(selectedData, filterValue) {
     console.log("after filtering links:", filterValue, selectedData.links.length, selectedData.links);
 }
 
+function filterType(selectedData, filterType){
+    console.log("before filtering type", filterType, selectedData);
+
+    selectedData.map((link) => link['subLinks'] = link['subLinks'].filter(msg => msg.type !== filterType));
+    selectedData = selectedData.filter(link => link.subLinks.length > 0);
+
+    console.log("after filtering type", selectedData);
+
+    return selectedData;
+}
+
 // Filter the data by including values that start with
 function filterData(selectedData, filterValues) {
     let dataCopy = JSON.parse(JSON.stringify(selectedData));

@@ -22,14 +22,6 @@
     cursor: pointer;
 }
 
-.node:hover{
-    -moz-transition: all 0.2s;
-    -webkit-transition: all 0.2s;
-    -o-transition: all 0.2s;
-    transition: all 0.2s;
-    stroke: #040C0E;
-}
-
  /*Treemap template boxes*/
 rect.cell {
     fill: none;
@@ -59,7 +51,7 @@ circle {
     font: bold 10px/100% "Andale Mono", AndaleMono, monospace;
     max-width: fit-content;
     text-anchor: start;
-    cursor: pointer;
+    /*cursor: pointer;*/
     /*word-wrap: break-word;*/
     background-color: #dddddd;
 }
@@ -75,7 +67,6 @@ circle {
 
 .bar{
     cursor: pointer;
-    opacity: 1;
     -moz-transition: all 0.3s;
     -webkit-transition: all 0.3s;
     -o-transition: all 0.3s;
@@ -96,13 +87,16 @@ circle {
     font: bold 10px/100% "Andale Mono", AndaleMono, monospace;
 }
 
-/*.axis path,*/
-/*.axis line {*/
-/*    fill: none;*/
-/*    stroke-width: 1px;*/
-/*    stroke: #000;*/
-/*    shape-rendering: crispEdges;*/
-/*}*/
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.x.axis path {
+    display: none;
+}
 
 /* --------------------------- /
 /* Treemap styles
@@ -112,6 +106,7 @@ circle {
     fill: none;
     stroke: #ccc;
     stroke-width: 2px;
+
 }
 
 .node rect {

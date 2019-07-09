@@ -1,0 +1,90 @@
+﻿Dependency from;Dependency to;Dependency type;Sub type;Line;Direct/Indirect;Inheritance Related;Inner Class Related;Used Entity (variable or method)
+org.architecturemining.program.example.band.BandMember;org.architecturemining.program.example.band.Song;Declaration;Parameter;20;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;org.architecturemining.program.example.band.Song;Reference;Type of Variable;32;Direct;false;false;org.architecturemining.program.example.band.BandMember.play(Song).song
+org.architecturemining.program.example.band.BandMember;org.architecturemining.program.example.band.instruments.Drums;Reference;Type Cast;23;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;org.architecturemining.program.example.band.instruments.Drums;Import;;5;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;org.architecturemining.program.example.band.instruments.Instrument;Reference;Type;15;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;org.architecturemining.program.example.band.instruments.Instrument;Declaration;Local Variable;31;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;org.architecturemining.program.example.band.instruments.Instrument;Call;Interface Method;32;Direct;false;false;org.architecturemining.program.example.band.instruments.Instrument.makeMusic(Song)
+org.architecturemining.program.example.band.BandMember;org.architecturemining.program.example.band.instruments.Instrument;Import;;6;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;org.architecturemining.program.example.band.instruments.Instrument;Reference;Type;9;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;xLibraries.java.util.Map;Declaration;Parameter;15;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;xLibraries.java.util.Map;Reference;Type of Variable;17;Direct;false;false;org.architecturemining.program.example.band.BandMember.instruments
+org.architecturemining.program.example.band.BandMember;xLibraries.java.util.Map;Call;Library Method;23;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;xLibraries.java.util.Map;Call;Library Method;31;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;xLibraries.java.util.Map;Call;Library Method;39;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;xLibraries.java.util.Map;Import;;3;Direct;false;false;
+org.architecturemining.program.example.band.BandMember;xLibraries.java.util.Map;Declaration;Instance Variable;9;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.Band;Call;Constructor;37;Direct;false;false;org.architecturemining.program.example.band.Band.Band(List,Set)
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.Band;Declaration;Local Variable;37;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.Band;Call;Instance Method;39;Direct;false;false;org.architecturemining.program.example.band.Band.practice()
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.BandMember;Reference;Type;24;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.BandMember;Call;Constructor;29;Direct;false;false;org.architecturemining.program.example.band.BandMember.BandMember(Map)
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.BandMember;Call;Constructor;35;Direct;false;false;org.architecturemining.program.example.band.BandMember.BandMember(Map)
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.Song;Reference;Type;17;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.Song;Call;Constructor;20;Direct;false;false;org.architecturemining.program.example.band.Song.Song(int,String)
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.Song;Call;Constructor;21;Direct;false;false;org.architecturemining.program.example.band.Song.Song(int,String)
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.Song;Call;Constructor;22;Direct;false;false;org.architecturemining.program.example.band.Song.Song(int,String)
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.instruments.Bass;Call;Constructor;32;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.instruments.Bass;Import;;7;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.instruments.Drums;Call;Constructor;27;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.instruments.Drums;Import;;8;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.instruments.Instrument;Reference;Type;26;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.instruments.Instrument;Reference;Type;31;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.instruments.Instrument;Import;;9;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.instruments.Vocals;Import;;10;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;org.architecturemining.program.example.band.instruments.Vocals;Call;Constructor;33;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.ArrayList;Call;Library Method;17;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.ArrayList;Declaration;Local Variable;17;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.ArrayList;Call;Library Method;20;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.ArrayList;Call;Library Method;21;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.ArrayList;Call;Library Method;22;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.ArrayList;Reference;Type of Variable;37;Direct;false;false;org.architecturemining.program.example.band.BandPractice.main(String).songs
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.ArrayList;Import;;3;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashMap;Call;Library Method;26;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashMap;Declaration;Local Variable;26;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashMap;Call;Library Method;27;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashMap;Reference;Type of Variable;29;Direct;false;false;org.architecturemining.program.example.band.BandPractice.main(String).aliceInstruments
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashMap;Call;Library Method;31;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashMap;Declaration;Local Variable;31;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashMap;Call;Library Method;32;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashMap;Call;Library Method;33;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashMap;Reference;Type of Variable;35;Direct;false;false;org.architecturemining.program.example.band.BandPractice.main(String).bobInstruments
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashMap;Import;;4;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashSet;Call;Library Method;24;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashSet;Declaration;Local Variable;24;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashSet;Call;Library Method;29;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashSet;Call;Library Method;35;Direct;false;false;
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashSet;Reference;Type of Variable;37;Direct;false;false;org.architecturemining.program.example.band.BandPractice.main(String).bandmembers
+org.architecturemining.program.example.band.BandPractice;xLibraries.java.util.HashSet;Import;;5;Direct;false;false;
+org.architecturemining.program.example.band.Band;org.architecturemining.program.example.band.BandMember;Reference;Type;14;Direct;false;false;
+org.architecturemining.program.example.band.Band;org.architecturemining.program.example.band.BandMember;Declaration;Local Variable;23;Direct;false;false;
+org.architecturemining.program.example.band.Band;org.architecturemining.program.example.band.BandMember;Call;Instance Method;24;Direct;false;false;org.architecturemining.program.example.band.BandMember.play(Song)
+org.architecturemining.program.example.band.Band;org.architecturemining.program.example.band.BandMember;Reference;Type;8;Direct;false;false;
+org.architecturemining.program.example.band.Band;org.architecturemining.program.example.band.Song;Reference;Type;14;Direct;false;false;
+org.architecturemining.program.example.band.Band;org.architecturemining.program.example.band.Song;Declaration;Local Variable;21;Direct;false;false;
+org.architecturemining.program.example.band.Band;org.architecturemining.program.example.band.Song;Call;Instance Method;22;Direct;false;false;org.architecturemining.program.example.band.Song.getName()
+org.architecturemining.program.example.band.Band;org.architecturemining.program.example.band.Song;Reference;Type of Variable;24;Direct;false;false;org.architecturemining.program.example.band.Band.practice().song
+org.architecturemining.program.example.band.Band;org.architecturemining.program.example.band.Song;Reference;Type;7;Direct;false;false;
+org.architecturemining.program.example.band.Band;xLibraries.java.util.List;Declaration;Parameter;14;Direct;false;false;
+org.architecturemining.program.example.band.Band;xLibraries.java.util.List;Reference;Type of Variable;16;Direct;false;false;org.architecturemining.program.example.band.Band.knownSongs
+org.architecturemining.program.example.band.Band;xLibraries.java.util.List;Reference;Type of Variable;21;Direct;false;false;org.architecturemining.program.example.band.Band.knownSongs
+org.architecturemining.program.example.band.Band;xLibraries.java.util.List;Import;;3;Direct;false;false;
+org.architecturemining.program.example.band.Band;xLibraries.java.util.List;Declaration;Instance Variable;7;Direct;false;false;
+org.architecturemining.program.example.band.Band;xLibraries.java.util.Set;Declaration;Parameter;14;Direct;false;false;
+org.architecturemining.program.example.band.Band;xLibraries.java.util.Set;Reference;Type of Variable;17;Direct;false;false;org.architecturemining.program.example.band.Band.members
+org.architecturemining.program.example.band.Band;xLibraries.java.util.Set;Reference;Type of Variable;23;Direct;false;false;org.architecturemining.program.example.band.Band.members
+org.architecturemining.program.example.band.Band;xLibraries.java.util.Set;Import;;4;Direct;false;false;
+org.architecturemining.program.example.band.Band;xLibraries.java.util.Set;Declaration;Instance Variable;8;Direct;false;false;
+org.architecturemining.program.example.band.instruments.Bass;org.architecturemining.program.example.band.Song;Import;;3;Direct;false;false;
+org.architecturemining.program.example.band.instruments.Bass;org.architecturemining.program.example.band.Song;Declaration;Parameter;8;Direct;false;false;
+org.architecturemining.program.example.band.instruments.Bass;org.architecturemining.program.example.band.Song;Call;Instance Method;9;Direct;false;false;org.architecturemining.program.example.band.Song.getLyrics()
+org.architecturemining.program.example.band.instruments.Bass;org.architecturemining.program.example.band.instruments.Instrument;Inheritance;Implements Interface;5;Direct;true;false;
+org.architecturemining.program.example.band.instruments.Drums;org.architecturemining.program.example.band.Song;Import;;3;Direct;false;false;
+org.architecturemining.program.example.band.instruments.Drums;org.architecturemining.program.example.band.Song;Declaration;Parameter;8;Direct;false;false;
+org.architecturemining.program.example.band.instruments.Drums;org.architecturemining.program.example.band.instruments.Instrument;Inheritance;Implements Interface;5;Direct;true;false;
+org.architecturemining.program.example.band.instruments.Instrument;org.architecturemining.program.example.band.Song;Import;;3;Direct;false;false;
+org.architecturemining.program.example.band.instruments.Instrument;org.architecturemining.program.example.band.Song;Declaration;Parameter;6;Direct;false;false;
+org.architecturemining.program.example.band.instruments.Vocals;org.architecturemining.program.example.band.Song;Import;;3;Direct;false;false;
+org.architecturemining.program.example.band.instruments.Vocals;org.architecturemining.program.example.band.Song;Declaration;Parameter;8;Direct;false;false;
+org.architecturemining.program.example.band.instruments.Vocals;org.architecturemining.program.example.band.instruments.Instrument;Inheritance;Implements Interface;5;Direct;true;false;

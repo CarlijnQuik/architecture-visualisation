@@ -60,8 +60,13 @@ def get_links(dataset, fr, to, file_name, data_type, msg):
     list_ids = dataset['linkID'].tolist()
     list_msgs = dataset[msg].tolist()
 
+    if data_type == "Dynamic":
+        dataset['threadM'] = dataset['Thread'] + dataset['Message']
+        list_thread_m = dataset['threadM'].tolist()
+
     # create a separate dictionary for all unique links
     for index, link in dataset.iterrows():
+        print(index, len(dataset.index))
         if link[fr] and link[to]:
             link_id = link['linkID']
             message = link[msg]
@@ -73,7 +78,7 @@ def get_links(dataset, fr, to, file_name, data_type, msg):
             if data_type == 'Static':
                 link_specs = get_static_specs(link, message_count)
             else:  # dynamic
-                link_specs = get_dynamic_specs(link, message_count, dataset, msg)
+                link_specs = get_dynamic_specs(link, message_count, list_thread_m)
 
             # if this is the first time we encounter this specific link ID
             if link_id not in unique_links:
@@ -115,15 +120,13 @@ def get_static_specs(link, message_count):
     return link_specs
 
 
-def get_dynamic_specs(link, message_count, dataset, msg):
+def get_dynamic_specs(link, message_count, list_thread_m):
     # Calculate duration
     start = datetime.strptime(link['Start Time'], '%H:%M:%S,%f')
     end = datetime.strptime(link['End Time'], '%H:%M:%S,%f')
-    duration = datetime.combine(date.min, end.time()) - datetime.combine(date.min, start.time())
+    duration = end - start
 
-    dataset['threadM'] = dataset['Thread'] + dataset['Message']
     link_thread_m = link['Thread'] + link['Message']
-    list_thread_m = dataset['threadM'].tolist()
 
     link_specs = {'startDate': link['Start Date'],
                   'startTime': link['Start Time'],
@@ -131,13 +134,13 @@ def get_dynamic_specs(link, message_count, dataset, msg):
                   'endTime': link['End Time'],
                   'source': '/'.join(link['Caller'].split('.')),
                   'target': '/'.join(link['Callee'].split('.')),
-                  'duration': duration.microseconds,  # get an integer
+                  'duration': duration.total_seconds(),  # get an integer
                   'thread': link['Thread'],
                   'callerID': link['Caller ID'],
                   'calleeID': link['Callee ID'],
                   'message': '/'.join(link['Message'].split('.')),
                   'count': message_count,
-                  'thread_count': list_thread_m.count(str(link_thread_m))}
+                  'thread_count': list_thread_m.count(link_thread_m)}
 
     return link_specs
 

@@ -2,6 +2,9 @@
 // Colors
 // ----------------------------
 
+var t = d3.transition()
+    .duration(750);
+
 var COLOR = {
     NODE_DEFAULT_FILL: d => color(d.parent), // Node color
     NODE_DEFAULT_STROKE: "#fff", // Color of node border

@@ -5,9 +5,8 @@
 var barChartSVG;
 
 // set the dimensions and margins of the graph
-var bMargin = {top: 20, right: 90, bottom: 30, left: 90},
-    bWidth = 1330 - bMargin.left - bMargin.right,
-    bHeight = 300 - bMargin.top - bMargin.bottom;
+var bMargin = {top: 20, right: 175, bottom: 60, left: 70}, bWidth = 1500 - bMargin.left - bMargin.right,
+    bHeight = 400 - bMargin.top - bMargin.bottom;
 
 function barchartInit() {
 
@@ -55,6 +54,8 @@ function updateBarchart(inputData, selectedElement) {
     let category;
     let x_axis_text;
     let y_axis_text;
+    let xScale;
+    let yScale;
 
     // Make a copy of the data
     current_data = JSON.parse(JSON.stringify(inputData));
@@ -77,6 +78,8 @@ function updateBarchart(inputData, selectedElement) {
             // return d["count"];
             return d["count"];
         }
+        standardAxes();
+
     }
 
     //----------------------------
@@ -89,9 +92,8 @@ function updateBarchart(inputData, selectedElement) {
         y_axis_text = "Number of method occurrences";
 
         // define data x values and y values
-        category = "type";
+        // category = "source";
         x_values = "linkID";
-
         function y_values(d) {
             // return d["count"];
             return d["count"];
@@ -99,7 +101,8 @@ function updateBarchart(inputData, selectedElement) {
 
         // filter
         current_data = current_data.links.filter(link => link.source.name === selectedElement.name || link.target.name === selectedElement.name);
-        // data = data.filter(link => Math.log(link.count) > 0.1);
+        standardAxes();
+
     }
 
     //----------------------------
@@ -113,15 +116,17 @@ function updateBarchart(inputData, selectedElement) {
 
         // define data and x and y values
         current_data = current_data.links;
-        category = "type";  // Color of bars
+        // category = "source";  // Color of bars
         x_values = "linkID";
         function y_values(d){
             // return d["count"];
-            return Math.log(d["count"]);
+            return d["count"];
         }
 
         // filter
-        current_data = current_data.filter(link => Math.log(link.count) > 0);
+        // current_data = current_data.filter(link => link.count > 0);
+        logAxes();
+
     }
 
     //----------------------------
@@ -129,7 +134,7 @@ function updateBarchart(inputData, selectedElement) {
     //----------------------------
     else if(dynamicData === true){
         // axes labels
-        d3.select("#barchartTitle").text("Method duration");
+        d3.select("#barchartTitle").text("Method sequence and duration");
         x_axis_text = "Methods";
         y_axis_text = "Method duration (s)";
 
@@ -138,7 +143,7 @@ function updateBarchart(inputData, selectedElement) {
         category = "thread";
         x_values = "startTime";
         function y_values(d){
-            return (d["duration"]/1000000); //* d['count']
+            return d["duration"]; //* d['count']
         }
 
         // get msgs from link
@@ -146,24 +151,44 @@ function updateBarchart(inputData, selectedElement) {
         current_data.map((link) => Array.prototype.push.apply(msgs,link['subLinks']));
         current_data = msgs;
 
-        // filter
-        current_data = current_data.filter(msg => msg.thread !== "[localhost-startStop-1]" && msg.duration > 1000);
+        current_data.sort((a,b) => (a.startTime > b.startTime) ? 1 : -1);
+        console.log("DAA", current_data);
+
+        current_data = current_data.filter(msg =>  msg.duration > 0.1);
+        standardAxes();
+
     }
 
-    // Scale the range of the data in the domains
-    let xScale = d3.scaleBand()
-        .range([0, bWidth])
-        .padding(0.03)
-        .domain(current_data.map(d => d[x_values]));
+    // Scales for the axes
+    function standardAxes(){
+        xScale = d3.scaleBand()
+            .range([0, bWidth])
+            .domain(current_data.map(d => d[x_values]))
+            .padding([0.2]);
 
-    let yScale = d3.scaleLinear()
-        .range([bHeight,0])
-        .domain([0, d3.max(current_data, d => y_values(d))]);
+        yScale = d3.scaleLinear()
+            .range([bHeight,0])
+            .domain([0, d3.max(current_data, d => y_values(d))]);
+    }
 
-    // X and y axes
+    // Scales for the axes
+    function logAxes(){
+        xScale = d3.scaleBand()
+            .range([0, bWidth])
+            .domain(current_data.map(d => d[x_values]));
+
+        yScale = d3.scaleLog()
+            .domain([1, d3.max(current_data, d => y_values(d))])         // This is what is written on the Axis: from 0 to 100
+            .range([bHeight, 0]);       // This is where the axis is placed: from 100 px to 800px
+
+    }
+
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale);
 
+    //----------------------------
+    // Refresh and draw bar chart
+    //----------------------------
     // Refresh view
     refreshBarchart();
 
@@ -212,7 +237,6 @@ function updateBarchart(inputData, selectedElement) {
      //----------------------------
     // Draw x-axis title, y-axes title, and grid
     //----------------------------
-
     // Y axes labels e.g. count
     barChartSVG
         .call(yAxis)
@@ -221,16 +245,17 @@ function updateBarchart(inputData, selectedElement) {
         .attr("transform", "translate(-15,0)");
 
     // X axes labels for time
-    if(dynamicData === true){
-        barChartSVG.append("g")
+    if(dynamicData === true && selectedElement === "null") {
+        barChartSVG
+            .append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + (bHeight) + ")")
             .call(xAxis)
-            .selectAll("text")
+            .selectAll('text')
             .attr("class", "text-small")
-            // .attr("dy", ".35em")
             .attr("transform", "rotate(45)")
             .style("text-anchor", "start");
+
     }
 
     // y-axis title
@@ -248,7 +273,7 @@ function updateBarchart(inputData, selectedElement) {
     //     .append('text')
     //     .attr('class', 'x axis')
     //     .attr('x', bWidth/2)
-    //     .attr('y', bHeight+25)
+    //     .attr('y', bHeight-320)
     //     .attr('text-anchor', 'middle')
     //     .text(x_axis_text);
 
@@ -258,7 +283,45 @@ function updateBarchart(inputData, selectedElement) {
         .call(d3.axisLeft()
             .scale(yScale)
             .tickSize(-bWidth, 0, 0)
-            .tickFormat(''))
+            .tickFormat(''));
+
+    //----------------------------
+    // Legend
+    //----------------------------
+
+    let legendData = d3.values(current_data.map(function (d) { return d[category]; }));
+    let unique = legendData.filter(function (elem, pos) {
+        return legendData.indexOf(elem) === pos; });
+
+    // add legend
+    let legend = barChartSVG.append("g")
+        .attr("class", "legend")
+        .attr("height", 100)
+        .attr("width", 100)
+        .attr('transform', 'translate(-20,50)');
+
+    legend.selectAll('rect')
+        .data(unique)
+        .enter()
+        .append("rect")
+        .attr("x", bWidth + 30)
+        .attr("y", (d,i) => i*20)
+        .attr("width", 10)
+        .attr("height", 10)
+        .style("fill", function(d) {
+            return color(d);
+        });
+
+    legend.selectAll('text')
+        .data(unique)
+        .enter()
+        .append("text")
+        .attr("class", "text-small")
+        .attr("x", bWidth + 50)
+        .attr("y", (d,i) => i * 20 + 9)
+        .text(function(d) {
+            return d;
+        });
 
 }
 

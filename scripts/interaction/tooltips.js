@@ -79,20 +79,20 @@ function linkTooltip(d){
         d3.select("#staticFields").classed("hidden", true);
 
         // Method called
-        let method = d.message.split(' ').slice(-1).toString();
+        //let method = d.message.split(' ').slice(-3); // method.replace(d.target.name, "")method.replace(d.target.name, "")
         d3.select("#dynamicMsgTitle").text("Method: ");
-        d3.select("#dynamicMsg").text(method.replace(d.target.name, ""));
+        d3.select("#dynamicMsg").text(d.message);
 
         // Method duration
         d3.select("#durationTitle").text("Duration: ");
-        d3.select("#duration").text((d.duration/1000000).toFixed(3) + " s"); //  " / " + (d.duration/1000000 * d.count).toFixed(3) + " s total" )
+        d3.select("#duration").text((d.duration) + " s"); //  " / " + (d.duration/1000000 * d.count).toFixed(3) + " s total" )
 
         // Thread
-        d3.select("#threadTitle").text("Thread: ");
-        d3.select("#thread").text(d.thread);
+        // d3.select("#threadTitle").text("Thread: ");
+        // d3.select("#thread").text(d.thread);
 
         // Dates
-        d3.select("#dates").text("Start Date: " + d.startDate + " - End Date: " + d.endDate);
+        // d3.select("#dates").text("Start Date: " + d.startDate + " - End Date: " + d.endDate);
 
         // Times
         d3.select("#times").text("Start Time: " + d.startTime + " - End Time: " + d.endTime);

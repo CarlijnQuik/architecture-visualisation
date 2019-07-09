@@ -31,11 +31,11 @@ function controlsInit(){
     drawTemplate = true;
     treemapTemplate = true;
     template = "treemap";
-    datasetName = "fish";
-    packageLevel = true;
-    datasetLevel = 'package';
-    dynamicData = false;
-    dataType = "static";
+    datasetName = "jabref";
+    packageLevel = false;
+    datasetLevel = 'class';
+    dynamicData = true;
+    dataType = "dynamic";
     selectedNodes = [];
 
     // Change the controls to the initialised values
@@ -43,7 +43,7 @@ function controlsInit(){
     d3.select("#selectTemplate").property("checked", treemapTemplate);
     d3.select("#datasetName").property("value", datasetName);
     d3.select("#selectAbstraction").property("checked", packageLevel);
-    d3.select("#selectDataType").property("unchecked", dynamicData);
+    d3.select("#selectDataType").property("checked", dynamicData);
 
     // ----------------------------
     // Define selected dataset (on change)
@@ -123,6 +123,15 @@ function loadDataset(datasetName){
         // Initialize the tree (tree does not change)
         // treeDataInit(selectedDataset);
         console.log("SELECTED DATASET", selectedDataset);
+        if(dataType === 'static'){
+            selectedDataset.links = filterType(selectedDataset.links, "Inheritance");
+            selectedDataset.links = filterType(selectedDataset.links, "Import");
+            selectedDataset.links = filterType(selectedDataset.links, "Access");
+            selectedDataset.links = filterType(selectedDataset.links, "Declaration");
+            selectedDataset.links = filterType(selectedDataset.links, "Annotation");
+            selectedDataset.links = filterType(selectedDataset.links, "Reference");
+
+        }
 
         // Enable user interactions again
         document.getElementById("loader").style.display = "none";
@@ -192,7 +201,7 @@ function click(d) {
             // if(!selectedNodes.includes(value.data.name.toString())) {
             //     selectedNodes.push(value.data.name.toString());
             //
-            console.log("SELECTED", value);
+            // console.log("SELECTED", value);
 
         });
     }
