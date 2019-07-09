@@ -43,27 +43,27 @@ def get_csv(input_file, output_file):
                 elif row['Type'] == 'Exit':
                     callee = fix_null_callee(row['Callee'], row['Message'])
                     entry = stacks[row['Thread']].pop()
-                    writer.writerow([entry['Timestamp'].split(' ')[0], entry['Timestamp'].split(' ')[1],
-                                     row['Timestamp'].split(' ')[0], row['Timestamp'].split(' ')[1],
+                    writer.writerow([entry['Timestamp'].split('T')[0], entry['Timestamp'].split('T')[1],
+                                     row['Timestamp'].split('T')[0], row['Timestamp'].split('T')[1],
                                      row['Thread'],
-                                     ''.join(row['Caller ID'].split('.')),  # callerID
+                                     '.'.join(row['Caller ID'].split('.')),  # callerID
                                      '.'.join(row['Caller'].split('.')),  # caller
                                      row['Callee ID'],  # calleeID
-                                     '.'.join(callee.split('.')),  # callee
+                                     '.'.join(row['Callee ID'].split('.')),  # callee
                                      row['Message']])
                 # else:
                     # print(row)
 
             for thread_name, thread in stacks.items():
                 if len(thread) > 0:
-                    # print('Incomplete log for thread {}, flushing'.format(thread_name))
+                    print('Incomplete log for thread {}, flushing'.format(thread_name))
                     while len(thread) > 0:
                         row = thread.pop()
-                        # print(row)
-                        writer.writerow([row['Timestamp'].split(' ')[0], row['Timestamp'].split(' ')[1],
-                                         row['Timestamp'].split(' ')[0], row['Timestamp'].split(' ')[1],
+                        print(row)
+                        writer.writerow([row['Timestamp'].split('T')[0], row['Timestamp'].split('T')[1],
+                                         row['Timestamp'].split('T')[0], row['Timestamp'].split('T')[1],
                                          row['Thread'],
-                                         ''.join(row['Caller ID'].split('.')),  # callerID
+                                         '.'.join(row['Caller ID'].split('.')),  # callerID
                                          '.'.join(row['Caller'].split('.')),  # caller
                                          row['Callee ID'],  # calleeID
                                          '.'.join(row['Callee'].split('.')),  # callee

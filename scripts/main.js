@@ -24,21 +24,19 @@ var drawTemplate,
     dynamicData,
     dataType,
     selectedNodes,
-    selectedData, // the data filtered from a dataset
-    barchartData;
+    selectedData; // the data filtered from a dataset
 
 function controlsInit(){
     // Define the initial settings
     drawTemplate = true;
     treemapTemplate = true;
     template = "treemap";
-    datasetName = "fish";
-    packageLevel = true;
-    datasetLevel = 'package';
+    datasetName = "jabref";
+    packageLevel = false;
+    datasetLevel = 'class';
     dynamicData = true;
     dataType = "dynamic";
     selectedNodes = [];
-    barchartData = "class_occurrences";
 
     // Change the controls to the initialised values
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
@@ -46,7 +44,6 @@ function controlsInit(){
     d3.select("#datasetName").property("value", datasetName);
     d3.select("#selectAbstraction").property("checked", packageLevel);
     d3.select("#selectDataType").property("checked", dynamicData);
-    d3.select("#selectBarchartData").property("value", barchartData);
 
     // ----------------------------
     // Define selected dataset (on change)
@@ -90,22 +87,33 @@ function loadUI(){
 // Load the dataset
 //----------------------------
 function loadDataset(datasetName){
-    // Disable user interactions and show load icon
+    // show load icon
     loadUI();
+    d3.select("#linkInfo").text("Links");
+    d3.select("#cellInfo").text("Cells");
 
     // Choose abstraction of dataset
     if(packageLevel){
         datasetLevel = 'package';
+        d3.select("#nodeInfo").text("Packages");
+        d3.select("#networkTitle").text("Relations between packages in the system");
     }
     else{
         datasetLevel = 'class';
+        d3.select("#nodeInfo").text("Classes");
+        d3.select("#cellInfo").text("Packages");
+        d3.select("#networkTitle").text("Relations between classes in the system");
     }
     if(dynamicData){
         dataType = 'dynamic';
+        d3.select("#networkTitle").text("Relations between objects in the system");
+        d3.select("#nodeInfo").text("Objects");
+        d3.select("#linkInfo").text("Method calls");
         // STROKE_WIDTH.LINK_DEFAULT = d => linkStrength(d.count);
     }
     else{
         dataType = 'static';
+
     }
 
     // Load json data
@@ -113,8 +121,17 @@ function loadDataset(datasetName){
         console.log("selected file:", `datasets/${dataType}/${dataType}-${datasetName}-${datasetLevel}.json`);
 
         // Initialize the tree (tree does not change)
-        treeDataInit(selectedDataset);
-        console.log(selectedDataset);
+        // treeDataInit(selectedDataset);
+        console.log("SELECTED DATASET", selectedDataset);
+        if(dataType === 'static'){
+            selectedDataset.links = filterType(selectedDataset.links, "Inheritance");
+            selectedDataset.links = filterType(selectedDataset.links, "Import");
+            selectedDataset.links = filterType(selectedDataset.links, "Access");
+            selectedDataset.links = filterType(selectedDataset.links, "Declaration");
+            selectedDataset.links = filterType(selectedDataset.links, "Annotation");
+            selectedDataset.links = filterType(selectedDataset.links, "Reference");
+
+        }
 
         // Enable user interactions again
         document.getElementById("loader").style.display = "none";
@@ -135,13 +152,6 @@ function loadDataset(datasetName){
             selectedData = getFilteredData(selectedDataset);
             updateIdioms(selectedData);
 
-        });
-
-        // Bar chart data selection
-        d3.select("#selectBarchartData").on("change", function () {
-            barchartData = d3.select("#selectBarchartData").property("value");
-            selectedData = getFilteredData(selectedDataset);
-            updateIdioms(selectedData);
         });
 
         selectedData = getFilteredData(selectedDataset);
@@ -169,6 +179,7 @@ function updateIdioms(data){
     // Update idioms
     updateBarchart(data, "null");
     updateNetwork(data);
+    treeDataInit(data);
 
 }
 //
@@ -185,17 +196,24 @@ function click(d) {
         d._children = null;
     }
 
-    // if(d.children){
-    //     d.children.map(value => {
-    //         if(!selectedNodes.includes(value.data.name.toString())) {
-    //             selectedNodes.push(value.data.name.toString());
-    //         }
-    //     });
-    // }
+    if(d.children){
+        d.children.map(value => {
+            // if(!selectedNodes.includes(value.data.name.toString())) {
+            //     selectedNodes.push(value.data.name.toString());
+            //
+            // console.log("SELECTED", value);
 
-    //filterDataset(selectedNodes);
+        });
+    }
+
 
     updateTree(d);
+
+    // if(selectedNodes){
+    //     filterData(selectedData, selectedNodes);
+    //
+    // }
+
 }
 
 

@@ -48,7 +48,7 @@ if extension == 'csv':
 
     # create a dictionary and put the nodes and links from the dataset in it
     static_dict = {"nodes": ctj.get_nodes(dataset, 'Dependency from', 'Dependency to', file_name, "Static"),
-                   "links": ctj.get_static_links(dataset, file_name)}
+                   "links": ctj.get_links(dataset, 'Dependency from', 'Dependency to', file_name, "Static", 'Used Entity (variable or method)')}
 
     print("static dict obtained")
 
@@ -62,8 +62,9 @@ elif extension == 'log':
 
     # create a dictionary and put the nodes and links from the dataset in it
     dynamic_dict = {"nodes": ctj.get_nodes(dataset, 'Caller', 'Callee', input_file, "Dynamic"),
-                    "links": ctj.get_dynamic_links(dataset, input_file)}
+                    "links": ctj.get_links(dataset, 'Caller', 'Callee', input_file, "Dynamic", 'Message')}
 
     print("dynamic dict obtained")
 
     write_to_json(dynamic_dict)
+

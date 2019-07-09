@@ -7,8 +7,8 @@ html {
 }
 
 body {
-    font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
-    background-color: #132226;  /* #16262E
+    font: normal 15px/100% "Andale Mono", AndaleMono, monospace;
+    background-color: rgba(22, 38, 46, 0.78);  /* #16262E
     /*background-color: #fff;*/
     height:100%;
     /* color: #bfbfbf; */
@@ -52,6 +52,14 @@ body {
      opacity: 0.9;
 }
 
+.column {
+    width : 200px;
+    float : left;
+    padding-left: 10px;
+    align-content: center;
+    background: #484848;
+}
+
 /* --------------------------- /
 /* Visualisations
 /* ---------------------------- */
@@ -69,19 +77,11 @@ body {
     min-height: 40px;
 }
 
-.column {
-    width : 200px;
-    float : left;
-    padding-left: 10px;
-    align-content: center;
-    background: #484848;
-}
-
 .visualisation {
     position: relative;
     margin: 10px;
-    background: #484848;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    /*background: #fefefe;*/
+    /*box-shadow: 0 10px 20px rgba(156, 155, 156, 0.19), 0 6px 6px rgba(150, 150, 150, 0.23);*/
 }
 
 .visualisation-title {
@@ -94,29 +94,29 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .visualisation-title-text {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    font-size:20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size:15px;
     /*font-weight: 900;*/
 }
 
 /* TODAL NUMEBERS BOX */
 .info-box {
     position: relative;
-    line-height: 35px;
+    line-height: 25px;
     /*top: 50%;*/
-    padding: 15px;
+    padding: 5px;
     color: #bfbfbf;
     background-color: #fafafa;
     border: 1px solid #919191;
 }
 
 table {
-    font-family: arial, sans-serif;
+    font: normal 15px/100% "Andale Mono", AndaleMono, monospace;
     border-collapse: collapse;
     width: 100%;
 }
@@ -139,9 +139,9 @@ tr:nth-child(even) {
     text-align: center;
     margin-top: 5px;
     margin-bottom: 5px;
-    color: #fefefe;
+    color: #000000;
     padding-left: 18px;
-    font-size: 25px;
+    font-size: 20px;
     padding-right: 4px;
     font-weight: 700;
     min-width: 180px;
@@ -149,7 +149,7 @@ tr:nth-child(even) {
 
 text {
     fill: #000000;
-    font: normal 20px/100% "Andale Mono", AndaleMono, monospace;
+    font: normal 15px/100% "Andale Mono", AndaleMono, monospace;
     text-anchor: middle;
     font-weight: 900;
 }
@@ -175,7 +175,7 @@ h2 {
 }
 
 h3 {
-    font-size: 25pt;
+    font-size: 20pt;
     text-align: center;
     padding-top: 10px;
     color: #fff;

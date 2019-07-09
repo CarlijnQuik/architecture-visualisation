@@ -312,7 +312,7 @@
             // Delete the circle Template if it exists
             container.selectAll("circle.cell").remove();
             container.selectAll("line.cell").remove();
-            let cells = container
+            container
                 .selectAll("rect.cell")
                 .data(templateNodes)
                 .enter()
@@ -331,12 +331,24 @@
                     return d.y1 - d.y0;
                 });
 
-                // .style("stroke", function(d) {
-            //                 //     return color(d.data.id);
-            //                 // });
+            // On hover over a cell
+            container
+                .selectAll('#network rect.cell')
+                .on("mouseover", function(d){
+                    tooltipOnOff("#cellTooltip", false);
+                    d3.select("#cellName").text(d.data.id);
+                    d3.select("#cellTitle").text("Cell: ");
+                    d3.select(this).style("stroke", function(d) {
+                        return color(d.data.id);
+                    });
+                })
+                .on("mouseout", function(d){
+                    tooltipOnOff("#cellTooltip", true);
+                    d3.select(this).style("stroke", "#ddd");
+                });
 
             // Text on the treemap template
-            let nodes = d3.select('svg g')
+            let cell_nodes = d3.select('#network g')
                 .selectAll('g')
                 .data(templateNodes)
                 .enter()
@@ -344,7 +356,7 @@
                 .attr('transform', function(d) {return 'translate(' + [d.x0, d.y0] + ')'});
 
             // Because SVG element cannot take an enter text element <br>, append two separate pieces of text
-            nodes
+            cell_nodes
                 .append('text')
                 .attr('dx', 10)
                 .attr('dy', 14)
@@ -362,7 +374,7 @@
                     }
                 });
 
-            nodes
+            cell_nodes
                 .append('text')
                 .attr('dx', 10)
                 .attr('dy', 25)
@@ -376,6 +388,10 @@
                         }
                     }
                 });
+
+            // cell_nodes.on("mouseenter", function (d) {
+            //     console.log("hovered over cell")
+            // });
     }
 
         function drawGraph(container) {

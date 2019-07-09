@@ -10,8 +10,15 @@
     cursor: pointer;
 }
 
+.link:hover{
+    -moz-transition: all 0.2s;
+    -webkit-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
 .node {
-    stroke-width: 2px;
+    /*stroke-width: 2px;*/
     cursor: pointer;
 }
 
@@ -23,8 +30,13 @@ rect.cell {
     cursor: pointer;
 }
 
-rect.cell:hover{
-    stroke-width: 5px;
+rect.cell:hover {
+    stroke-width: 3px;
+    -moz-transition: all 0.2s;
+    -webkit-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    transition: all 0.2s;
+    /*stroke: #040C0E;*/
 }
 
  /*Force template circles*/
@@ -39,12 +51,9 @@ circle {
     font: bold 10px/100% "Andale Mono", AndaleMono, monospace;
     max-width: fit-content;
     text-anchor: start;
-    cursor: pointer;
+    /*cursor: pointer;*/
     /*word-wrap: break-word;*/
     background-color: #dddddd;
-}
-.text-small:hover {
-    font: bold 20px/100% "Andale Mono", AndaleMono, monospace;
 }
 
 /* --------------------------- /
@@ -58,57 +67,55 @@ circle {
 
 .bar{
     cursor: pointer;
-    opacity: 1;
-    stroke-width: 0.01px;
-    stroke: white;
+    -moz-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
 }
 
+/*Also affects axes*/
 .grid path {
-    stroke-width: 3px;
+    stroke-width: 1px;
 }
 
 .grid .tick line {
     stroke: #60676b;
-    stroke-opacity: 0.2;
+    stroke-opacity: 0.5;
+}
+
+.axis {
+    font: bold 10px/100% "Andale Mono", AndaleMono, monospace;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.x.axis path {
+    display: none;
 }
 
 /* --------------------------- /
 /* Treemap styles
 /* ---------------------------- */
-#tree {
-    float: right;
-}
-
-.node circle {
-    fill: #fff;
-    stroke: #403f40;
-    stroke-width: 3px;
-}
-
 /*! Be careful since these are also the network links*/
 .link {
     fill: none;
     stroke: #ccc;
     stroke-width: 2px;
-}
 
-/* --------------------------- /
-/* Bi sankey
-/* ---------------------------- */
+}
 
 .node rect {
-    cursor: move;
-    shape-rendering: crispEdges;
+    cursor: pointer;
+    fill: #fff;
+    fill-opacity: 0.5;
+    stroke: #6cc0e5;
+    stroke-width: 1.5px;
 }
 
-.node text {
-    pointer-events: none;
-    text-shadow: 1px 1px 2px #fff;
-    font-size: 0.8em;
-    font-family: sans-serif;
-}
 
-.value {
-    white-space: pre-line;
-    margin: 0;
-}
+

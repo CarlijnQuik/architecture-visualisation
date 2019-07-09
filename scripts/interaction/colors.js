@@ -2,12 +2,17 @@
 // Colors
 // ----------------------------
 
+var t = d3.transition()
+    .duration(750);
+
 var COLOR = {
     NODE_DEFAULT_FILL: d => color(d.parent), // Node color
     NODE_DEFAULT_STROKE: "#fff", // Color of node border
     NODE_HIGHLIGHT_STROKE: "#000000",
     LINK_DEFAULT_STROKE: "#b3b3b3", // Color of links  #525B56"#b8c4bf" b3b3b3 #969696
     LINK_HIGHLIGHT: "#000000",
+    BAR_DEFAULT_STROKE: "#fff",
+    BAR_HIGHLIGHT_STROKE: "#000",
     INCOMING: "#2ca02c", // "#1b9e77"
     OUTGOING: "#d62728", // "#D63028"
     TIE: "#ff7f0e", //   "#d66409"
@@ -29,6 +34,8 @@ var STROKE_WIDTH = {
     LINK_DEFAULT: "0.5px",      // Line width
     NODE_HIGHLIGHT: "2px",
     LINK_HIGHLIGHT: d => linkStrength(d.count), // width according to count
+    BAR_DEFAULT: "0.01px",
+    BAR_HIGHLIGHT: "2px",
 
 };
 
@@ -54,7 +61,7 @@ var color = d3.scaleOrdinal(d3_category50);
 // var colorScale = d3.scaleOrdinal(d3_category50);
 
 // ----------------------------
-// Network Diagram
+// Default styles for nodes, links and bars
 // ----------------------------
 function linkDefaultStyle(link) {
     link
@@ -69,6 +76,21 @@ function nodeDefaultStyle(node){
         .style("fill", COLOR.NODE_DEFAULT_FILL)
         .style("stroke-width", STROKE_WIDTH.NODE_DEFAULT)
         .style("fill-opacity", OPACITY.NODE_DEFAULT);
+}
+
+function barDefaultStyle(bar){
+    bar
+        .style("stroke", COLOR.BAR_DEFAULT_STROKE)
+        .style("stroke-width", STROKE_WIDTH.BAR_DEFAULT);
+}
+
+// ----------------------------
+// Colors on interaction (bar chart)
+// ----------------------------
+function barHighlightStyle(bar){
+    bar
+        .style("stroke", COLOR.BAR_HIGHLIGHT_STROKE)
+        .style("stroke-width", STROKE_WIDTH.BAR_HIGHLIGHT);
 }
 
 // ----------------------------
