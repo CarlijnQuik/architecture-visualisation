@@ -12,24 +12,20 @@ function getFilteredData(data) {
     if (filterValues.length > 0) {
         filterValues.map(value => excludeData(data, value));
         return data;
-
     } else {
 
         return data;
-
     }
-
 }
 
 // Filter the data by excluding values that start with
 function excludeData(selectedData, filterValue) {
-    console.log("before filtering:", filterValue, selectedData.links, selectedData.nodes.length, selectedData.links.length);
+    console.log("before filtering:", filterValue, selectedData.links, selectedData.nodes, selectedData.nodes.length, selectedData.links.length);
 
     selectedData.nodes = selectedData.nodes.filter(node => !node.name.toString().startsWith(filterValue));
     console.log("after filtering nodes:", filterValue, selectedData.nodes.length, selectedData.nodes);
 
     selectedData.links = selectedData.links.filter(link => !link.source.name.toString().startsWith(filterValue) && !link.target.name.toString().startsWith(filterValue));
-
     console.log("after filtering links:", filterValue, selectedData.links.length, selectedData.links);
 }
 
@@ -85,7 +81,6 @@ function createCheckboxes(nodes){
         if(!nodeNames.includes(root)) {
             nodeNames.push(root);
             addItem(root);
-
         }
     });
 }
@@ -101,7 +96,9 @@ function addItem(checkboxName){
     checkbox.type = "checkbox";
     checkbox.id = checkboxName;
     checkbox.value = checkboxName;
-
+    // if(checkboxName === "java" || checkboxName === "javax"){
+    //     checkbox.checked = true;
+    // }
     // append the checkbox to a list item
     li.appendChild(checkbox);
 

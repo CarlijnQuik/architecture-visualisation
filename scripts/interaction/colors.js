@@ -41,19 +41,28 @@ var STROKE_WIDTH = {
 
 // Color scale
 var d3_category50= [
-    "#b2a4ff",    "#61a727",    "#4b41b3",    "#b8e262",    "#012c8f",
-    "#8ce982",    "#310c68",    "#149c35",    "#b553c4",    "#2e7200",
-    "#9e6ce4",    "#778f00",    "#688bff",    "#f4d15a",    "#005dc1",
-    "#b6e27f",    "#4a0062",    "#00a55e",    "#d44db4",    "#005e20",
-    "#ff8bee",    "#315000",    "#e83c86",    "#72e9c4",    "#c20057",
-    "#646c00",    "#01408b",    "#ffa757",    "#0162a5",    "#ff7c4c",
-    "#99b5ff",    "#a12900",    "#e4b6fc",    "#b46200",    "#8760a0",
-    "#f5d079",    "#85005d",    "#dbd385",    "#770036",    "#ffc47d",
-    "#630013",    "#8b8139",    "#ff7db9",    "#685b00",    "#ff6176",
-    "#854f00",    "#ff9897",    "#96000f",    "#ff8b5b",    "#d12d40"];
+    "#b2a4ff",    "#61a727",    "#4b41b3",    "#b8e262",
+    "#012c8f",    "#8ce982",    "#310c68",    "#149c35",
+    "#b553c4",    "#2e7200",    "#9e6ce4",    "#778f00",
+    "#688bff",    "#f4d15a",    "#005dc1",    "#b6e27f",
+    "#4a0062",    "#00a55e",    "#d44db4",    "#005e20",
+    "#ff8bee",    "#315000",    "#e83c86",    "#72e9c4",
+    "#c20057",    "#646c00",    "#01408b",    "#ffa757",
+    "#0162a5",    "#ff7c4c",    "#99b5ff",    "#a12900",
+    "#e4b6fc",    "#b46200",    "#8760a0",    "#f5d079",
+    "#85005d",    "#dbd385",    "#770036",    "#ffc47d",
+    "#630013",    "#8b8139",    "#ff7db9",    "#685b00",
+    "#ff6176",    "#854f00",    "#ff9897",    "#96000f",
+    "#ff8b5b",    "#d12d40"];
+
+var d3_category8= [
+    "#4b41b3",  "#149c35", "#ff8b5b", "#96000f",
+    "#f4d15a",  "#e83c86", "#72e9c4", "#4a0062",
+];
 
 // Define the color scale of the visualisations
 var color = d3.scaleOrdinal(d3_category50);
+var colorCell = d3.scaleOrdinal(d3_category8);
 //let greyScale = d3.scaleOrdinal(d3.schemeGreys[d => linkStrength(d.count)]);
 
 // colorScale = d3.scaleOrdinal().domain(TYPES).range(TYPE_COLORS),
@@ -148,3 +157,45 @@ function colorNodeInOut(selectedNode, links) {
     }
 
 }
+
+// ----------------------------
+// Connection of the network diagram to the bar chart
+// ----------------------------
+function rerenderNetworkStyle(highlightedValue){
+    links
+        .style("stroke", function(d){
+            if(highlightedValue.linkID === d.linkID) {
+                return COLOR.LINK_HIGHLIGHT;
+            }
+            else{
+                return COLOR.LINK_DEFAULT_STROKE;
+            }
+        })
+        .style("stroke-width", function(d){
+            if(highlightedValue.linkID === d.linkID) {
+                return "5px";
+            }
+            else{
+                return STROKE_WIDTH.LINK_DEFAULT;
+            }
+        });
+
+    nodes
+        .style("stroke", function(d){
+            if(highlightedValue.source === d.name || highlightedValue.target === d.name){
+                return COLOR.NODE_HIGHLIGHT_STROKE;
+            }
+            else{
+                return COLOR.NODE_DEFAULT_STROKE;
+            }
+        })
+        .style("stroke-width", function(d){
+            if(highlightedValue.source === d.name || highlightedValue.target === d.name){
+                return STROKE_WIDTH.NODE_HIGHLIGHT;
+            }
+            else{
+                return STROKE_WIDTH.NODE_DEFAULT;
+            }
+        });
+}
+

@@ -5,17 +5,27 @@
 
 // Set the dimensions and margins of the chart
 var nMargin = {top: 20, right: 20, bottom: 20, left: 20},
-    nWidth = 1000 - nMargin.top - nMargin.bottom,
-    nHeight = 550 - nMargin.top - nMargin.bottom;
+    nWidth = 1250 - nMargin.top - nMargin.bottom,
+    nHeight = 600 - nMargin.top - nMargin.bottom;
 
 // Define the standard node radius and link width
-var nodeRadius = d3.scaleSqrt().range([4, 10]);
-var linkStrength = d3.scaleLinear().range([1, 2 * nodeRadius.range()[0]]);
+var nodeRadius = d3.scaleLog().range([4, 10]);
+var linkStrength = d3.scaleLog().range([1, 2 * nodeRadius.range()[0]]);
 
-// Define global variables
+// Define global variables and options
 var networkSVG;
+var nodes, links;
+
+// Algorithms
 var groupingForce;
 var forceSim;
+var groupby = "root";
+var groupInABox = true;
+
+// Selected options
+var drawTemplate;
+var treemapAlgorithm;
+var template;
 
 // Boolean to define whether node has been clicked before
 var clicked;
@@ -41,8 +51,8 @@ function networkInit() {
     groupingForce = forceInABox()
         .strength(0.1) // Strength to foci
         .template(template) // Either treemap or force
-        .groupBy('parent') // Setting package as the attribute to group by
-        .enableGrouping(true)
+        .groupBy(groupby) // Setting package as the attribute to group by
+        .enableGrouping(groupInABox)
         .forceCharge(-60) // Separation between nodes on the force template
         .nodeSize(4) // Used to compute the size of the template nodes, think of it as the radius the node uses, including its padding
         .size([nWidth, nHeight]); // Size of the diagram
@@ -61,7 +71,16 @@ function networkInit() {
     // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
 
     clicked = false; // Nothing clicked yet
+    networkOptionsInit();
+}
 
+function networkOptionsInit(){
+    // Change the controls to the initialised values
+    drawTemplate = true;
+    treemapAlgorithm = true;
+    template = "treemap";
+    d3.select("#checkShowTemplate").property("checked", drawTemplate);
+    d3.select("#selectAlgorithm").property("checked", treemapAlgorithm);
 }
 
 //----------------------------
@@ -75,11 +94,6 @@ function refreshNetwork(){
     networkSVG
         .selectAll('.node')
         .remove();
-
-    // networkSVG
-    //     .selectAll('.node')
-    //     .remove();
-
 }
 
 // ----------------------------
@@ -88,20 +102,17 @@ function refreshNetwork(){
 
 function updateNetwork(selectedData) {
 
-    // Refresh the view
     refreshNetwork();
-
     const data = {"nodes": [], "links": []};
-
     data.nodes = selectedData.nodes;
     data.links = selectedData.links;
 
     //----------------------------
     // Update data properties
     //----------------------------
-
     // Make sure small nodes are drawn on top of larger nodes
     data.nodes.sort((a, b) => b.count - a.count);
+    // data.links.sort((a, b) => b.count - a.count);
 
     // Define the node radius and link strength/color range
     nodeRadius.domain([data.nodes[data.nodes.length - 1].count, data.nodes[0].count]);
@@ -111,16 +122,15 @@ function updateNetwork(selectedData) {
     // Draw network
     //----------------------------
     // Define link properties
-    let links = networkSVG
+    links = networkSVG
         .selectAll(".link")
         .data(data.links)
         .enter()
         .append("line")
-        .attr("class", "link")
-        .attr('marker-end','url(#arrowhead)');
+        .attr("class", "link");
 
     // Define node properties
-    let nodes = networkSVG
+    nodes = networkSVG
         .selectAll(".node")
         .data(data.nodes)
         .enter()
@@ -150,24 +160,17 @@ function updateNetwork(selectedData) {
     // Update the element positions
     forceSim
         .nodes(data.nodes)
-        .force('parent', groupingForce)
+        .force(groupby, groupingForce)
         .force('link')
         .links(data.links);
-
-    // remove nodes without links
-    // forceSim.stop();
-    // forceSim.nodes().filter(function(d){d.weight==0});
-    // forceSim.alphaTarget(0.5).restart();
 
     // ----------------------------
     // Define node interaction
     //----------------------------
-
     nodes
         .on("mouseenter", function (d) {
             nodeTooltip(d);  // Edit tooltip values
             tooltipOnOff("#nodeTooltip", false);  // Show tooltip
-
         })
         .on("click", function (d) {
             if(d3.select(this).style("fill-opacity") == OPACITY.NODE_HIGHLIGHT){
@@ -183,14 +186,11 @@ function updateNetwork(selectedData) {
                 highlightConnected(d, links);  // Highlight connected
 
                 tooltipOnOff("#nodeTooltip", true);    // Hide tooltip
-
             }
-
         })
         .on("mouseout", function (d) {
             // deHighlightConnected(d, links);
             tooltipOnOff("#nodeTooltip", true);  // Hide tooltip
-
         });
 
     // ----------------------------
@@ -199,44 +199,36 @@ function updateNetwork(selectedData) {
     links
         .on("click", function (d) {
             updateBarchart(data, d)
-
         })
         .on("mouseenter", function (d) {
             if(d3.select(this).style("stroke-opacity") == OPACITY.LINK_DEFAULT ) {
                 highLightLink(d3.select(this));
             }
-
             linkTooltip(d);  // Load data into tooltip
             tooltipOnOff("#linkTooltip", false);    // Show tooltip
-
         })
         .on("mouseout", function (d) {
             if(d3.select(this).style("stroke-opacity") == OPACITY.LINK_DEFAULT ) {
                 linkDefaultStyle(d3.select(this));
             }
             tooltipOnOff("#linkTooltip", true); // Hide tooltip
-
         });
 
     // ----------------------------
     // Template and group-in-a-box
     //----------------------------
-
-    // Refresh template
     refreshTemplate();
     checkTemplate();
-
-    // Template user controls
-    defineOnChange();
+    defineOnChange(); // Template user controls
 
 }
 
 // ----------------------------
-// Define template and group-in-a-box behaviour
+// Define template and force/group-in-a-box behaviour
 //----------------------------
 function defineOnChange(){
     // Change the template
-    d3.select("#selectTemplate").on("change", function () {
+    d3.select("#selectAlgorithm").on("change", function () {
         refreshTemplate();
         checkTemplate();
     });
@@ -252,24 +244,24 @@ function defineOnChange(){
 // Check whether the template is checked
 function checkTemplate(){
     if (drawTemplate) {
-        forceSim.force("parent").drawTemplate(networkSVG);
+        forceSim.force(groupby).drawTemplate(networkSVG);
     } else {
-        forceSim.force("parent").deleteTemplate(networkSVG);
+        forceSim.force(groupby).deleteTemplate(networkSVG);
     }
 }
 
 // Refresh the template
 function refreshTemplate(){
-    forceSim.force("parent").deleteTemplate(networkSVG);
-    treemapTemplate = d3.select("#selectTemplate").property("checked");
-    if(treemapTemplate){
+    forceSim.force(groupby).deleteTemplate(networkSVG);
+    treemapAlgorithm = d3.select("#selectAlgorithm").property("checked");
+    if(treemapAlgorithm){
         template = 'treemap';
     }
     else{
         template = 'force'
     }
     forceSim.stop();
-    forceSim.force("parent").template(template);
+    forceSim.force(groupby).template(template);
     forceSim.alphaTarget(0.5).restart();
 
 }
@@ -295,5 +287,3 @@ function dragging(d) {
     d.fy = d3.event.y;
 }
 
-// Uncomment for behaviour when drag end
-// f 

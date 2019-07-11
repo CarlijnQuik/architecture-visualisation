@@ -154,6 +154,21 @@ text {
     font-weight: 900;
 }
 
+/*Text in the treemap template (forceInABox line 338 and 422*/
+.text-small{
+    font: bold 10px/100% "Andale Mono", AndaleMono, monospace;
+    max-width: fit-content;
+    text-anchor: start;
+    /*cursor: pointer;*/
+    /*word-wrap: break-word;*/
+    background-color: #dddddd;
+}
+.text-mini{
+    font: bold 8px/100% "Andale Mono", AndaleMono, monospace;
+    max-width: fit-content;
+    text-anchor: start;
+}
+
 /* tooltips bold text */
 .bold {
     font-weight: 900;

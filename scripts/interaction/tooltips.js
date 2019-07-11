@@ -4,15 +4,23 @@
 
 // Show the tooltip with info about the selected item
 function tooltipOnOff(tooltip, hidden) {
+
     // Find mouse position and unhide general tooltip
-    d3.select("#tooltip")
-        .style("top", (d3.event.pageY) - 100 + "px")
-        .style("left", (d3.event.pageX) + 20 + "px")
-        .classed("hidden", hidden);
+    let w = window.innerWidth;
+    if (w / 3 * 2 < d3.event.pageX) {
+        d3.select("#tooltip")
+            .style("top", (d3.event.pageY) + 20 + "px")
+            .style("left", (d3.event.pageX) - 240 + "px")
+            .classed("hidden", hidden);
+    } else {
+        d3.select("#tooltip")
+            .style("top", (d3.event.pageY) - 200 + "px")
+            .style("left", (d3.event.pageX) + 20 + "px")
+            .classed("hidden", hidden);
+    }
 
     // Unhide specific tooltip
     d3.select(tooltip).classed("hidden", hidden);
-
 }
 
 function linkTooltip(d){
@@ -111,6 +119,10 @@ function nodeTooltip(d){
     d3.select("#countNodeTitle").text("Count: ");
     d3.select("#countNode").text(d.count); // no. of occurrences
 
+    // Grouped by
+    d3.select("#labelTitle").text("LCA: ");
+    d3.select("#label").text(d.root); // no. of occurrences
+
     // Static
     if(d.dataType === "Static") {
         // Name
@@ -123,5 +135,4 @@ function nodeTooltip(d){
         d3.select("#nameTitle").text("Object: ");
         d3.select("#name").text(d.name.split("/").pop()); // node name
     }
-
 }

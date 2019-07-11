@@ -2,9 +2,7 @@
 // Window onload
 // ----------------------------
 window.onload = function () {
-
-    // Initialise the global user controls
-    controlsInit();
+    optionsInit(); // Initialise the global user controls
 
     // Initialise the idioms
     barchartInit();
@@ -15,35 +13,28 @@ window.onload = function () {
 //----------------------------
 // Initial values of the user controls
 //----------------------------
-var drawTemplate,
-    treemapTemplate,
-    template,
-    datasetName,        // the selected dataset's name: jabref, fish etc.
+var datasetName,        // the selected dataset's name: jabref, fish etc.
     packageLevel,
     datasetLevel,
     dynamicData,
     dataType,
     selectedNodes,
     selectedData; // the data filtered from a dataset
+var clusterDepth;
 
-function controlsInit(){
+function optionsInit(){
     // Define the initial settings
-    drawTemplate = true;
-    treemapTemplate = true;
-    template = "treemap";
-    datasetName = "jabref";
+    datasetName = "fish";
     packageLevel = false;
     datasetLevel = 'class';
     dynamicData = true;
     dataType = "dynamic";
     selectedNodes = [];
-
-    // Change the controls to the initialised values
-    d3.select("#checkShowTemplate").property("checked", drawTemplate);
-    d3.select("#selectTemplate").property("checked", treemapTemplate);
+    clusterDepth = 3;
     d3.select("#datasetName").property("value", datasetName);
     d3.select("#selectAbstraction").property("checked", packageLevel);
     d3.select("#selectDataType").property("checked", dynamicData);
+    d3.select("#clusterDepth").property("value", clusterDepth);
 
     // ----------------------------
     // Define selected dataset (on change)
@@ -52,13 +43,11 @@ function controlsInit(){
         datasetName = d3.select("#datasetName").property("value");
         loadDataset(datasetName);
     });
-
     // Abstraction selection
     d3.select("#selectAbstraction").on("change", function () {
         packageLevel = d3.select("#selectAbstraction").property("checked");
         loadDataset(datasetName);
     });
-
     // Data type selection
     d3.select("#selectDataType").on("change", function () {
         dynamicData = d3.select("#selectDataType").property("checked");
@@ -108,32 +97,46 @@ function loadDataset(datasetName){
         dataType = 'dynamic';
         d3.select("#networkTitle").text("Relations between objects in the system");
         d3.select("#nodeInfo").text("Objects");
-        d3.select("#linkInfo").text("Method calls");
+        d3.select("#linkInfo").text("Calls");
         // STROKE_WIDTH.LINK_DEFAULT = d => linkStrength(d.count);
     }
     else{
         dataType = 'static';
-
     }
 
     // Load json data
-    d3.json(`datasets/${dataType}/${dataType}-${datasetName}-${datasetLevel}.json`, function (error, selectedDataset) {
+    d3.json(`datasets/${dataType}/${dataType}-${datasetName}-${datasetLevel}.json`, function (error, jsonData) {
         console.log("selected file:", `datasets/${dataType}/${dataType}-${datasetName}-${datasetLevel}.json`);
 
         // Initialize the tree (tree does not change)
-        // treeDataInit(selectedDataset);
-        console.log("SELECTED DATASET", selectedDataset);
-        if(dataType === 'static'){
-            selectedDataset.links = filterType(selectedDataset.links, "Inheritance");
-            selectedDataset.links = filterType(selectedDataset.links, "Import");
-            selectedDataset.links = filterType(selectedDataset.links, "Access");
-            selectedDataset.links = filterType(selectedDataset.links, "Declaration");
-            selectedDataset.links = filterType(selectedDataset.links, "Annotation");
-            selectedDataset.links = filterType(selectedDataset.links, "Reference");
+        let selectedDataset = JSON.parse(JSON.stringify(jsonData));
+        const treeData = treeDataInit(jsonData);
+        // Map the LCA's for the network vis
+        mapLCAs(treeData.children, selectedDataset, parseInt(clusterDepth));
 
-        }
+        console.log("SELECTED DATASET", selectedDataset, parseInt(clusterDepth));
 
-        // Enable user interactions again
+        // Check which bar chart view is toggled
+        d3.select("#clusterDepth").on("change", function () {
+            clusterDepth = d3.select("#clusterDepth").property("value");
+            console.log("DEPTH:", parseInt(clusterDepth));
+            selectedDataset = JSON.parse(JSON.stringify(jsonData));
+            mapLCAs(treeData.children, selectedDataset, parseInt(clusterDepth));
+            selectedData = getFilteredData(selectedDataset);
+            updateIdioms(selectedData);
+        });
+
+        // if(dataType === 'static'){
+        //     selectedDataset.links = filterType(selectedDataset.links, "Inheritance");
+        //     selectedDataset.links = filterType(selectedDataset.links, "Import");
+        //     selectedDataset.links = filterType(selectedDataset.links, "Access");
+        //     selectedDataset.links = filterType(selectedDataset.links, "Declaration");
+        //     selectedDataset.links = filterType(selectedDataset.links, "Annotation");
+        //     selectedDataset.links = filterType(selectedDataset.links, "Reference");
+        //
+        // }
+
+        // Hide the loading bar
         document.getElementById("loader").style.display = "none";
         // document.getElementById('main_id').style.userSelect = "auto";
 
@@ -151,7 +154,13 @@ function loadDataset(datasetName){
         d3.select("#filterButton").on("click", function () {
             selectedData = getFilteredData(selectedDataset);
             updateIdioms(selectedData);
+        });
 
+        // Check which bar chart view is toggled
+        d3.select("#nodeDuration").on("change", function () {
+            nodeDuration = d3.select("#nodeDuration").property("checked");
+            selectedData = getFilteredData(selectedDataset);
+            updateBarchart(selectedData, "null");
         });
 
         selectedData = getFilteredData(selectedDataset);
@@ -179,15 +188,13 @@ function updateIdioms(data){
     // Update idioms
     updateBarchart(data, "null");
     updateNetwork(data);
-    treeDataInit(data);
-
+    // treeDataInit(data);
 }
 //
 // //----------------------------
 // // When a node on the tree is clicked
 // //----------------------------
 function click(d) {
-
     if (d.children) {
         d._children = d.children;
         d.children = null;
@@ -205,10 +212,7 @@ function click(d) {
 
         });
     }
-
-
     updateTree(d);
-
     // if(selectedNodes){
     //     filterData(selectedData, selectedNodes);
     //

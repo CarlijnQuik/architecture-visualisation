@@ -49,7 +49,7 @@ def get_csv(input_file, output_file):
                                      '.'.join(row['Caller ID'].split('.')),  # callerID
                                      '.'.join(row['Caller'].split('.')),  # caller
                                      row['Callee ID'],  # calleeID
-                                     '.'.join(row['Callee ID'].split('.')),  # callee
+                                     '.'.join(callee.split('.')),  # callee
                                      row['Message']])
                 # else:
                     # print(row)
