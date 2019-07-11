@@ -8,6 +8,9 @@ var barChartSVG;
 var bMargin = {top: 20, right: 175, bottom: 60, left: 70}, bWidth = 1500 - bMargin.left - bMargin.right,
     bHeight = 400 - bMargin.top - bMargin.bottom;
 
+// Options
+var nodeDuration;
+
 function barchartInit() {
 
     // Create the bar chart svg
@@ -20,6 +23,10 @@ function barchartInit() {
         }))
         .append("g")
         .attr("transform", "translate(" + bMargin.left + "," + bMargin.top + ")"); // Move the axis from the edges of the vis
+
+    // Options init
+    nodeDuration = false;
+    d3.select("#nodeDuration").property("unchecked", nodeDuration);
 }
 
 //----------------------------
@@ -59,12 +66,12 @@ function updateBarchart(inputData, selectedElement) {
 
     // Make a copy of the data
     current_data = JSON.parse(JSON.stringify(inputData));
-    console.log("selected element", selectedElement, "bar chart input:", current_data);
+    console.log("selected element", selectedElement, "bar chart input:", current_data, "node Duration", nodeDuration);
 
     //----------------------------
-    // If a bar/link is clicked
+    // If a bar/node/link is clicked
     //----------------------------
-    if(selectedElement.linkID){
+    if(selectedElement !== "null" && selectedElement.origin && selectedElement.source){ // If a link in the network is clicked
         // axes labels
         d3.select("#barchartTitle").text("Messages over channel " + selectedElement.source.name + " -> " +  selectedElement.target.name);
         x_axis_text = "Messages";
@@ -79,13 +86,10 @@ function updateBarchart(inputData, selectedElement) {
             return d["count"];
         }
         standardAxes();
-
+        // current_data = current_data.filter(link => link.count > 0);
     }
-
-    //----------------------------
-    // If a node in the network is clicked
-    //----------------------------
-    else if(selectedElement.name) {
+    // If a node/bar is clicked
+    else if(selectedElement !== "null" && selectedElement.name) {
         // axes labels
         d3.select("#barchartTitle").text("Links connected to " + selectedElement.name);
         x_axis_text = "Links: source + target";
@@ -98,21 +102,19 @@ function updateBarchart(inputData, selectedElement) {
             // return d["count"];
             return d["count"];
         }
-
         // filter
         current_data = current_data.links.filter(link => link.source.name === selectedElement.name || link.target.name === selectedElement.name);
+        // current_data = current_data.filter(link => link.count > 0);
         standardAxes();
-
     }
-
     //----------------------------
     // Standard static view
     //----------------------------
-    else if(dynamicData === false){
+    else if(nodeDuration === false){
         // axes labels
         d3.select("#barchartTitle").text("Number of link occurrences");
         x_axis_text = "Links: source + target";
-        y_axis_text = "Number of method occurrences >1 (logarithmic scale)";
+        y_axis_text = "Number of link occurrences >1 (logarithmic scale)";
 
         // define data and x and y values
         current_data = current_data.links;
@@ -126,17 +128,15 @@ function updateBarchart(inputData, selectedElement) {
         // filter
         // current_data = current_data.filter(link => link.count > 0);
         logAxes();
-
     }
-
     //----------------------------
     // Standard dynamic view
     //----------------------------
-    else if(dynamicData === true){
+    else if(nodeDuration === true){
         // axes labels
-        d3.select("#barchartTitle").text("Method sequence and duration");
-        x_axis_text = "Methods";
-        y_axis_text = "Method duration (s)";
+        d3.select("#barchartTitle").text("Call sequence and duration");
+        x_axis_text = "Calls";
+        y_axis_text = "Call duration (s)";
 
         // define data and x and y values
         current_data = current_data.links;
@@ -152,11 +152,8 @@ function updateBarchart(inputData, selectedElement) {
         current_data = msgs;
 
         current_data.sort((a,b) => (a.startTime > b.startTime) ? 1 : -1);
-        console.log("DAA", current_data);
-
-        current_data = current_data.filter(msg =>  msg.duration > 0.1);
+        current_data = current_data.filter(msg =>  msg.duration > 0.1 && msg.duration < 70);
         standardAxes();
-
     }
 
     // Scales for the axes
@@ -214,6 +211,7 @@ function updateBarchart(inputData, selectedElement) {
         .on("mouseenter", function (d) {
             // Highlight selected bar
             barHighlightStyle(d3.select(this));
+            rerenderNetworkStyle(d);
 
             // Edit tooltip values and show tooltip
             linkTooltip(d);
@@ -230,6 +228,7 @@ function updateBarchart(inputData, selectedElement) {
         .on("mouseout", function (d) {
             // De-highlight selected bar
             barDefaultStyle(bar);
+            rerenderNetworkStyle("null");
             tooltipOnOff("#linkTooltip", true);
 
         });
@@ -245,7 +244,7 @@ function updateBarchart(inputData, selectedElement) {
         .attr("transform", "translate(-15,0)");
 
     // X axes labels for time
-    if(dynamicData === true && selectedElement === "null") {
+    if(nodeDuration === true && selectedElement === "null") {
         barChartSVG
             .append("g")
             .attr("class", "x axis")

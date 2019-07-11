@@ -46,16 +46,6 @@ circle {
     stroke-width: 2px;
 }
 
-/*Text in the treemap template (forceInABox line 338 and 422*/
-.text-small{
-    font: bold 10px/100% "Andale Mono", AndaleMono, monospace;
-    max-width: fit-content;
-    text-anchor: start;
-    /*cursor: pointer;*/
-    /*word-wrap: break-word;*/
-    background-color: #dddddd;
-}
-
 /* --------------------------- /
 /* Bar chart styles
 /* ---------------------------- */
@@ -105,8 +95,6 @@ circle {
 .link {
     fill: none;
     stroke: #ccc;
-    stroke-width: 2px;
-
 }
 
 .node rect {
@@ -114,7 +102,7 @@ circle {
     fill: #fff;
     fill-opacity: 0.5;
     stroke: #6cc0e5;
-    stroke-width: 1.5px;
+    /*stroke-width: 1.5px;*/
 }
 
 

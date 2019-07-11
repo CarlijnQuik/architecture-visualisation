@@ -329,7 +329,8 @@
                 })
                 .attr("height", function(d) {
                     return d.y1 - d.y0;
-                });
+                })
+                .style("stroke", "#ddd");
 
             // On hover over a cell
             container
@@ -338,9 +339,7 @@
                     tooltipOnOff("#cellTooltip", false);
                     d3.select("#cellName").text(d.data.id);
                     d3.select("#cellTitle").text("Cell: ");
-                    d3.select(this).style("stroke", function(d) {
-                        return color(d.data.id);
-                    });
+                    d3.select(this).style("stroke", d => colorCell(d.data.id.split("/").slice(0,-1).join("/")));
                 })
                 .on("mouseout", function(d){
                     tooltipOnOff("#cellTooltip", true);
@@ -358,40 +357,57 @@
             // Because SVG element cannot take an enter text element <br>, append two separate pieces of text
             cell_nodes
                 .append('text')
-                .attr('dx', 10)
+                .attr('dx', 5)
                 .attr('dy', 14)
-                .attr('class', "text-small")
+                .attr('class', function(d) {
+                    let cell_width = (d.x1 - d.x0);
+                    if (cell_width > 100) {
+                        return "text-small";
+                    }
+                    else{
+                        return "text-mini";
+                    }
+                })
                 .text(function(d) {
                     let cell_width = (d.x1 - d.x0);
-                    if(cell_width > 100){
+                    // if(cell_width > 100){
                         let title_parts = d.data.id.split('/');
-                        if(title_parts.length > 3){
-                            return title_parts.slice(0, 3).join('/');
+                        if(title_parts.length > 2){
+                            return title_parts.slice(0, 2).join('/');
                         }
                         else{
                             return d.data.id;
                         }
-                    }
+                    // }
                 });
 
             cell_nodes
                 .append('text')
-                .attr('dx', 10)
+                .attr('dx', 5)
                 .attr('dy', 25)
-                .attr('class', "text-small")
+                .attr('class', function(d) {
+                    let cell_width = (d.x1 - d.x0);
+                    if (cell_width > 100) {
+                        return "text-small";
+                    }
+                    else{
+                        return "text-mini";
+                    }
+                })
                 .text(function(d) {
                     let cell_width = (d.x1 - d.x0);
-                    if(cell_width > 100){
-                        let title_parts = d.data.id.split('/');
-                        if(title_parts.length > 3){
-                            return "/" + title_parts.slice(3).join('/');
-                        }
+                    let title_parts = d.data.id.split('/');
+                    if(cell_width > 100 && title_parts.length > 2){
+                        return "/" + title_parts.slice(2).join('/');
+                    }
+                    else if(title_parts.length > 3){
+                        return "/" + title_parts.slice(2,3).join('/') + "...";
+                    }
+                    else if(title_parts.length === 3){
+                        return "/" + title_parts.slice(2,3).join('/');
                     }
                 });
 
-            // cell_nodes.on("mouseenter", function (d) {
-            //     console.log("hovered over cell")
-            // });
     }
 
         function drawGraph(container) {

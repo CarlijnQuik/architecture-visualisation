@@ -21,7 +21,6 @@
     <script type="text/javascript" src="scripts/interaction/colors.js"></script>
     <script type="text/javascript" src="scripts/interaction/tooltips.js"></script>
 
-    <script type="text/javascript" src="scripts/data_helpers/data_helper.js"></script>
     <script type="text/javascript" src="scripts/data_helpers/treedata_init.js"></script>
     <script type="text/javascript" src="scripts/data_helpers/filter.js"></script>
 
@@ -73,6 +72,7 @@
             <p> <span  id="nameTitle" class="tooltipTitle"></span> <span id="name" class="bold"></span></p>
             <p> <span  id="parentTitle" class="tooltipTitle"></span>  <span id="parent"></span></p>
             <p> <span  id="countNodeTitle" class="tooltipTitle"></span>  <span id="countNode"></span> </p>
+            <p> <span  id="labelTitle" class="tooltipTitle"></span>  <span id="label"></span> </p>
             <p> <span  id="showDetails" class="hidden">(Click)</span></p>
         </div>
 
@@ -141,12 +141,12 @@
                             </select>
                         </div>
 
+                    <div id="loader" style="display:none;"></div>
                 </div>
 
                 <div class='vis-options'>
-                    <div id="loader" style="display:none;"></div>
 
-                    <!-- Package or class level toggle -->
+<!--                     Package or class level toggle-->
                     <label class="switch">
                         <input type="checkbox" id="selectAbstraction">
                         <div class="slider round">
@@ -155,7 +155,7 @@
                         </div>
                     </label>
 
-                    <!-- Static or dynamic toggle -->
+<!--                     Static or dynamic toggle-->
                     <label class="switch">
                         <input type="checkbox" id="selectDataType">
                         <div class="slider round">
@@ -247,7 +247,7 @@
                     <div class="column">
                         <!-- Treemap or force toggle -->
                         <label class="switch">
-                            <input type="checkbox" id="selectTemplate">
+                            <input type="checkbox" id="selectAlgorithm">
                             <div class="slider round">
                                 <span class="on">Treemap</span>
                                 <span class="off">Force</span>
@@ -262,6 +262,17 @@
                             <label for="checkShowTemplate">Show Template </label>
                         </div>
                     </div>
+
+                    <!-- Select cluster depth -->
+                    <div class="column">
+                        <select id="clusterDepth">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <div id='network' class='vis'></div>
@@ -272,6 +283,18 @@
                 <div class='visualisation-title'>
                     <div class='visualisation-title-text'>
                         <span  id="barchartTitle"></span>
+                    </div>
+                </div>
+                <div class='vis-options'>
+                    <div class="column">
+                        <!-- Bar chart toggle -->
+                        <label class="switch">
+                            <input type="checkbox" id="nodeDuration">
+                            <div class="slider round">
+                                <span class="on">Duration</span>
+                                <span class="off">Number</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
                 <div id='barchart' class='vis'></div>

@@ -33,6 +33,7 @@ def get_nodes(dataset, fr, to, file_name, data_type):
                      'origin': file_name,
                      'parent': '/'.join(node.split('.')[:-1]),
                      'dataType': data_type,
+                     'root': '/'.join(node.split('.')[:1]),
                      'count': sum([True for n in nodes if n.startswith(node)])}
 
         # append the dictionary to the list of node dictionaries
@@ -115,6 +116,7 @@ def get_static_specs(link, message_count):
         'innerclass': link['Inner Class Related'],
         'source': '/'.join(link['Dependency from'].split('.')),
         'target': '/'.join(link['Dependency to'].split('.')),
+        'linkID': '/'.join(link['linkID'].split('.')),
         'count': message_count}  # the number of times the message exists in the dataset
 
     return link_specs
@@ -138,6 +140,7 @@ def get_dynamic_specs(link, message_count, list_thread_m):
                   'thread': link['Thread'],
                   'callerID': link['Caller ID'],
                   'calleeID': link['Callee ID'],
+                  'linkID': '/'.join(link['linkID'].split('.')),
                   'message': '/'.join(link['Message'].split('.')),
                   'count': message_count,
                   'thread_count': list_thread_m.count(link_thread_m)}
