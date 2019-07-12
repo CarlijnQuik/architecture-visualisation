@@ -15,11 +15,13 @@
     <script type="text/javascript" src="plugins/underscore.js" charset="utf-8"></script>
     <script type="text/javascript" src="plugins/d3-scale-chromatic.js" charset="utf-8"></script>
     <script type="text/javascript" src="plugins/jquery.3.3.1.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="plugins/moment.js" charset="utf-8"></script>
     <script type="text/javascript" src="plugins/forceInABox.js" charset="utf-8"></script>
 
     <!--JS scripts-->
     <script type="text/javascript" src="scripts/interaction/colors.js"></script>
     <script type="text/javascript" src="scripts/interaction/tooltips.js"></script>
+    <script type="text/javascript" src="scripts/interaction/timeline.js"></script>
 
     <script type="text/javascript" src="scripts/data_helpers/treedata_init.js"></script>
     <script type="text/javascript" src="scripts/data_helpers/filter.js"></script>
@@ -88,9 +90,10 @@
         <!-- Slider + title -->
         <div class='slider-container'>
             <div class='title'>
-                <p> Visualising Software Dynamics through Architecture Mining</p>
+                <p> Architecture Mining</p>
+                <span class="play-button" id="play">Play</span>
             </div>
-            <div id='slider'></div>
+            <div id='timeline'></div>
         </div>
         <!-- Slider + title -->
 

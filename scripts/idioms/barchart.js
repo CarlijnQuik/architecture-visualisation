@@ -5,7 +5,8 @@
 var barChartSVG;
 
 // set the dimensions and margins of the graph
-var bMargin = {top: 20, right: 175, bottom: 60, left: 70}, bWidth = 1500 - bMargin.left - bMargin.right,
+var bMargin = {top: 20, right: 175, bottom: 60, left: 70},
+    bWidth = 1500 - bMargin.left - bMargin.right,
     bHeight = 400 - bMargin.top - bMargin.bottom;
 
 // Options
@@ -25,8 +26,8 @@ function barchartInit() {
         .attr("transform", "translate(" + bMargin.left + "," + bMargin.top + ")"); // Move the axis from the edges of the vis
 
     // Options init
-    nodeDuration = false;
-    d3.select("#nodeDuration").property("unchecked", nodeDuration);
+    nodeDuration = true;
+    d3.select("#nodeDuration").property("checked", nodeDuration);
 }
 
 //----------------------------

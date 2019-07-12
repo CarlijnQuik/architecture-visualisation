@@ -188,6 +188,7 @@ function updateIdioms(data){
     // Update idioms
     updateBarchart(data, "null");
     updateNetwork(data);
+    timelineInit(data);
     // treeDataInit(data);
 }
 //

@@ -199,3 +199,50 @@ function rerenderNetworkStyle(highlightedValue){
         });
 }
 
+// ----------------------------
+// Connection of the network diagram to the timeline
+// ----------------------------
+function highlightByTime(selectedLinkIDs, selectedSources, selectedTargets){
+    links
+        .transition()
+        .duration(50)
+        .delay(5)
+        .style("stroke", function(d){
+            if(Object.values(selectedLinkIDs).indexOf(d.linkID) > -1) {
+                return COLOR.LINK_HIGHLIGHT;
+            }
+            else{
+                return COLOR.LINK_DEFAULT_STROKE;
+            }
+        })
+        .style("stroke-width", function(d){
+            if(Object.values(selectedLinkIDs).indexOf(d.linkID) > -1) {
+                return "5px";
+            }
+            else{
+                return STROKE_WIDTH.LINK_DEFAULT;
+            }
+        });
+
+    nodes
+        .transition()
+        .duration(50)
+        .delay(5)
+        .style("stroke", function(d){
+            if(Object.values(selectedSources).indexOf(d.name) > -1 || Object.values(selectedTargets).indexOf(d.name) > -1){
+                return COLOR.NODE_HIGHLIGHT_STROKE;
+            }
+            else{
+                return COLOR.NODE_DEFAULT_STROKE;
+            }
+        })
+        .style("stroke-width", function(d){
+            if(Object.values(selectedSources).indexOf(d.name) > -1 || Object.values(selectedTargets).indexOf(d.name) > -1){
+                return STROKE_WIDTH.NODE_HIGHLIGHT;
+            }
+            else{
+                return STROKE_WIDTH.NODE_DEFAULT;
+            }
+        });
+
+}
