@@ -2,9 +2,11 @@
 import json
 import sys
 import csv_to_json as ctj
-import log_to_csv_jabref as ltc  # change for jabref (ajpolog edited since that log was created)
+import log_to_csv_fish as ltc  # change for jabref (ajpolog edited since that log was created)
 import pandas as pd
-import classes_to_packages as ctp
+import threading
+from datetime import datetime
+import numpy as np
 
 # get input files from command prompt
 if len(sys.argv) > 1:
@@ -23,32 +25,32 @@ def read_and_clean(file):
     return chosen_dataset
 
 
+class myThread (threading.Thread):
+    def __init__(self, threadID, df_part, df):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.df_part = df_part
+        self.df = df
+    def run(self):
+        result = ctj.get_links(self.df, self.df_part, 'Caller', 'Callee', input_file, "Dynamic", 'Message')
+        self.result = result
+
+
 def write_to_json(class_dict):
     # write the dictionary to a JSON file
     with open(file_name + "-class.json", 'w') as fp:
-        json.dump(class_dict, fp)
+        json.dump(class_dict, fp, indent=4, sort_keys=True, default=str)
 
     print("class file written")
 
-    # get package data
-    package_dict = {"nodes": ctp.get_package_nodes(class_dict["nodes"]),
-                    "links": ctp.get_package_links(class_dict["links"])}
-
-    print("package dict obtained")
-
-    # write the dictionary to a JSON file
-    with open(file_name + "-package.json", 'w') as fp:
-        json.dump(package_dict, fp)
-
-    print("package file written")
-
-
 if extension == 'csv':
     dataset = read_and_clean(input_file)  # read input file as pandas data frame
+    df = pd.DataFrame(dataset)
+    df['linkID'] = df['Dependency from'] + df['Dependency to']
 
     # create a dictionary and put the nodes and links from the dataset in it
-    static_dict = {"nodes": ctj.get_nodes(dataset, 'Dependency from', 'Dependency to', file_name, "Static"),
-                   "links": ctj.get_links(dataset, 'Dependency from', 'Dependency to', file_name, "Static", 'Used Entity (variable or method)')}
+    static_dict = {"nodes": ctj.get_nodes(df, df, 'Dependency from', 'Dependency to', file_name, "Static"),
+                   "links": ctj.get_links(df, df, 'Dependency from', 'Dependency to', file_name, "Static", 'Used Entity (variable or method)')}
 
     print("static dict obtained")
 
@@ -60,9 +62,38 @@ elif extension == 'log':
 
     print("csv obtained")
 
+    df = pd.DataFrame(dataset)
+    df['linkID'] = df['Caller'] + df['Callee']
+    df['threadM'] = df['Thread'] + df['Message']
+    df['Start Time'] = pd.to_datetime(df['Start Time'], format='%H:%M:%S,%f')
+    df['End Time'] = pd.to_datetime(df['End Time'], format='%H:%M:%S,%f')
+    df['duration'] = df['End Time'] - df['Start Time']
+
+    # Run on multiple threads to reduce processing time
+    number_of_df_parts = 50
+    df_parts = np.array_split(df,number_of_df_parts)
+    
+    threads = []
+    for part in range (0,number_of_df_parts):
+        print(part)
+        threadName = str("thread") + str(part)
+        threadName = myThread(part+1, df_parts[part], df)
+        threads.append(threadName)
+    
+    all_links = []
+    for thread in threads:
+        start = datetime.now()
+        print("started: ", thread.threadID, "at: ", start)
+        thread.start()
+
+    for thread in threads:    
+        thread.join()
+        print("finished", thread.threadID, "duration: ", (datetime.now() - start))
+        all_links = all_links + thread.result
+
     # create a dictionary and put the nodes and links from the dataset in it
     dynamic_dict = {"nodes": ctj.get_nodes(dataset, 'Caller', 'Callee', input_file, "Dynamic"),
-                    "links": ctj.get_links(dataset, 'Caller', 'Callee', input_file, "Dynamic", 'Message')}
+                    "links": all_links}
 
     print("dynamic dict obtained")
 

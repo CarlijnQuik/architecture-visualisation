@@ -1,6 +1,9 @@
 import pymongo
-from datetime import datetime, date
+from datetime import datetime, date, time
 import pandas as pd
+import threading
+import time
+import numpy as np
 
 # client = pymongo.MongoClient('mongodb://localhost:27017/')
 # db = client["archvis"]
@@ -16,25 +19,16 @@ def get_nodes(dataset, fr, to, file_name, data_type):
     nodes = dataset[fr].tolist() + dataset[to].tolist()
     unique_nodes = list(dict.fromkeys(nodes))
 
-    # create a list of all nodes
-    # for node_name in unique_nodes:
-    #     # if node_name.startswith("xLibraries"):
-    #     #     node_name = '/'.join(node_name.split('.')[1:])
-    #     node_name = node_name + ".class"
-    #     # get_all_nodes(node_name)
-
-    # unique_node_names = list(dict.fromkeys(list_node_names))
-    # print(unique_node_names)
-
     # create a separate dictionary for all unique nodes
     for node in unique_nodes:
+        name = '.'.join(node.split('.'))
         # if '/'.join(node.split('.')[:-1]):
-        node_dict = {'name': '/'.join(node.split('.')),  # fullname
+        node_dict = {'name': name,  # fullname
                      'origin': file_name,
-                     'parent': '/'.join(node.split('.')[:-1]),
+                     'parent': '.'.join(node.split('.')[:-1]),
                      'dataType': data_type,
-                     'root': '/'.join(node.split('.')[:1]),
-                     'count': sum([True for n in nodes if n.startswith(node)])}
+                     'root': '.'.join(node.split('.')[:1]),
+                     'count': sum([True for n in nodes if n == name])}
 
         # append the dictionary to the list of node dictionaries
         list_nodes.append(node_dict)
@@ -45,29 +39,27 @@ def get_nodes(dataset, fr, to, file_name, data_type):
 
 
 def get_all_nodes(node_name):
-    node_parent = '/'.join(node_name.split('.')[:-1])
+    node_parent = '.'.join(node_name.split('.')[:-1])
     if node_name not in list_node_names:
         list_node_names.append(node_name)
         if node_parent:
             get_all_nodes(node_parent)
 
 
-def get_links(dataset, fr, to, file_name, data_type, msg):
+def get_links(dataset, dataset_part, fr, to, file_name, data_type, msg):
     dict_links = {}
     unique_links = []
 
     # create link ID column and lists to count from
-    dataset['linkID'] = dataset[fr] + dataset[to]
     list_ids = dataset['linkID'].tolist()
     list_msgs = dataset[msg].tolist()
+    list_thread_m = dataset['threadM'].tolist()
 
-    if data_type == "Dynamic":
-        dataset['threadM'] = dataset['Thread'] + dataset['Message']
-        list_thread_m = dataset['threadM'].tolist()
-
+    counter = 0
     # create a separate dictionary for all unique links
-    for index, link in dataset.iterrows():
-        print(index, len(dataset.index))
+    for index, link in dataset_part.iterrows():
+        counter = counter+1
+        print(counter/len(dataset_part))
         if link[fr] and link[to]:
             link_id = link['linkID']
             message = link[msg]
@@ -79,15 +71,15 @@ def get_links(dataset, fr, to, file_name, data_type, msg):
             if data_type == 'Static':
                 link_specs = get_static_specs(link, message_count)
             else:  # dynamic
-                link_specs = get_dynamic_specs(link, message_count, list_thread_m)
+                link_specs = get_dynamic_specs(link, message_count, list_thread_m, dataset)
 
             # if this is the first time we encounter this specific link ID
             if link_id not in unique_links:
                 unique_links.append(link_id)
                 sub_links = [link_specs]
-                link_dict = {'source': '/'.join(link[fr].split('.')),
-                             'target': '/'.join(link[to].split('.')),
-                             'linkID': '/'.join(link_id.split('.')),
+                link_dict = {'source': '.'.join(link[fr].split('.')),
+                             'target': '.'.join(link[to].split('.')),
+                             'linkID': '.'.join(link_id.split('.')),
                              'dataType': data_type,
                              'origin': file_name,
                              'count': list_ids.count(link['linkID']),  # the number of times the link id exists
@@ -107,45 +99,47 @@ def get_links(dataset, fr, to, file_name, data_type, msg):
 
 def get_static_specs(link, message_count):
     link_specs = {
-        'message': '/'.join(link['Used Entity (variable or method)'].split('.')),
+        'message': '.'.join(link['Used Entity (variable or method)'].split('.')),
         'type': link['Dependency type'],
         'subtype': link['Sub type'],
         'line': link['Line'],
         'direct': link['Direct/Indirect'],
         'inheritance': link['Inheritance Related'],
         'innerclass': link['Inner Class Related'],
-        'source': '/'.join(link['Dependency from'].split('.')),
-        'target': '/'.join(link['Dependency to'].split('.')),
-        'linkID': '/'.join(link['linkID'].split('.')),
+        'source': '.'.join(link['Dependency from'].split('.')),
+        'target': '.'.join(link['Dependency to'].split('.')),
+        'linkID': '.'.join(link['linkID'].split('.')),
         'count': message_count}  # the number of times the message exists in the dataset
 
     return link_specs
 
 
-def get_dynamic_specs(link, message_count, list_thread_m):
-    # Calculate duration
-    start = datetime.strptime(link['Start Time'], '%H:%M:%S,%f')
-    end = datetime.strptime(link['End Time'], '%H:%M:%S,%f')
-    duration = end - start
-
+def get_dynamic_specs(link, message_count, list_thread_m, dataset):
     link_thread_m = link['Thread'] + link['Message']
+
+    sub_calls = []
+    sub_calls = dataset.loc[(dataset['Thread']==link['Thread']) & (dataset['duration'] < link['duration']) & (dataset['Start Time'] >= link['Start Time']) & (dataset['Message'] != link['Message'])]
 
     link_specs = {'startDate': link['Start Date'],
                   'startTime': link['Start Time'],
                   'endDate': link['End Date'],
                   'endTime': link['End Time'],
-                  'source': '/'.join(link['Caller'].split('.')),
-                  'target': '/'.join(link['Callee'].split('.')),
-                  'duration': duration.total_seconds(),  # get an integer
+                  'source': '.'.join(link['Caller'].split('.')),
+                  'target': '.'.join(link['Callee'].split('.')),
+                  'duration': link['duration'].total_seconds(),  # get an integer
                   'thread': link['Thread'],
                   'callerID': link['Caller ID'],
                   'calleeID': link['Callee ID'],
-                  'linkID': '/'.join(link['linkID'].split('.')),
-                  'message': '/'.join(link['Message'].split('.')),
+                  'linkID': '.'.join(link['linkID'].split('.')),
+                  'message': '.'.join(link['Message'].split('.')),
                   'count': message_count,
-                  'thread_count': list_thread_m.count(link_thread_m)}
+                  'msg_on_thread_count': list_thread_m.count(link_thread_m),
+                  'sub_calls': sub_calls['Message'].tolist()}
 
     return link_specs
+
+
+
 
 
 

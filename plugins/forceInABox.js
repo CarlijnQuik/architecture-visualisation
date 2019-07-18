@@ -330,7 +330,22 @@
                 .attr("height", function(d) {
                     return d.y1 - d.y0;
                 })
-                .style("stroke", "#ddd");
+                .style("stroke", function(d) {
+                    if(!d.data.id.startsWith("net") && !d.data.id.startsWith("nl")){
+                        return "#6770dd";
+                    }
+                    else{
+                        return "#ddd";
+                    }
+                })
+                .style("stroke-width", function(d){
+                    if(!d.data.id.startsWith("net") && !d.data.id.startsWith("nl")){
+                        return "3px";
+                    }
+                    else{
+                        return "2px";
+                    }
+                });
 
             // On hover over a cell
             container
@@ -339,11 +354,25 @@
                     tooltipOnOff("#cellTooltip", false);
                     d3.select("#cellName").text(d.data.id);
                     d3.select("#cellTitle").text("Cell: ");
-                    d3.select(this).style("stroke", d => colorCell(d.data.id.split("/").slice(0,-1).join("/")));
+                    d3.select(this).style("stroke-width", "4px")
+                    // d3.select(this).style("stroke", d => colorCell(d.data.id.split(".").slice(0,-1).join(".")));
                 })
                 .on("mouseout", function(d){
                     tooltipOnOff("#cellTooltip", true);
-                    d3.select(this).style("stroke", "#ddd");
+                    d3.select(this).style("stroke-width", function(d){
+                        if(!d.data.id.startsWith("net") && !d.data.id.startsWith("nl")){
+                            return "3px";
+                        }
+                        else{
+                            return "2px";
+                        }
+                    });
+                    // if(!d.data.id.startsWith("net") && !d.data.id.startsWith("nl")){
+                    //     return "#6770dd";
+                    // }
+                    // else{
+                    //     return "#ddd";
+                    // }
                 });
 
             // Text on the treemap template
@@ -371,9 +400,9 @@
                 .text(function(d) {
                     let cell_width = (d.x1 - d.x0);
                     // if(cell_width > 100){
-                        let title_parts = d.data.id.split('/');
+                        let title_parts = d.data.id.split('.');
                         if(title_parts.length > 2){
-                            return title_parts.slice(0, 2).join('/');
+                            return title_parts.slice(0, 2).join('.');
                         }
                         else{
                             return d.data.id;
@@ -396,15 +425,15 @@
                 })
                 .text(function(d) {
                     let cell_width = (d.x1 - d.x0);
-                    let title_parts = d.data.id.split('/');
+                    let title_parts = d.data.id.split('.');
                     if(cell_width > 100 && title_parts.length > 2){
-                        return "/" + title_parts.slice(2).join('/');
+                        return "." + title_parts.slice(2).join('.');
                     }
                     else if(title_parts.length > 3){
-                        return "/" + title_parts.slice(2,3).join('/') + "...";
+                        return "." + title_parts.slice(2,3).join('.') + "...";
                     }
                     else if(title_parts.length === 3){
-                        return "/" + title_parts.slice(2,3).join('/');
+                        return "." + title_parts.slice(2,3).join('.');
                     }
                 });
 

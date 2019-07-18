@@ -8,6 +8,7 @@ window.onload = function () {
     barchartInit();
     networkInit();
     treeInit();
+    timelineInit();
 };
 
 //----------------------------
@@ -24,7 +25,7 @@ var clusterDepth;
 
 function optionsInit(){
     // Define the initial settings
-    datasetName = "fish";
+    datasetName = "band";
     packageLevel = false;
     datasetLevel = 'class';
     dynamicData = true;
@@ -144,9 +145,16 @@ function loadDataset(datasetName){
         $("ul").empty();
 
         // Update info box
-        d3.select("#totalNodes").text(selectedDataset.nodes.length);
-        d3.select("#totalLinks").text(selectedDataset.links.length);
+        let totalCalls = selectedDataset.links.reduce(function (accumulator, link) {
+            return accumulator + link.count;
+        }, 0);
+        let totalObjects  = selectedDataset.nodes.reduce(function (accumulator, node) {
+            return accumulator + node.count;
+        }, 0);
         let noOfCells = selectedDataset.nodes.reduce( (acc, node) => (acc[node.parent] = (acc[node.parent] || 0)+1, acc), {} );
+
+        d3.select("#totalNodes").text(totalObjects);
+        d3.select("#totalLinks").text(totalCalls);
         d3.select("#totalCells").text(Object.keys(noOfCells).length);
 
         // Filter data on click
@@ -160,7 +168,9 @@ function loadDataset(datasetName){
         d3.select("#nodeDuration").on("change", function () {
             nodeDuration = d3.select("#nodeDuration").property("checked");
             selectedData = getFilteredData(selectedDataset);
-            updateBarchart(selectedData, "null");
+            updateBarchart(selectedData, "null", title = "Number of link occurrences", x_axis_text = "Links (source + target)", 
+            y_axis_text = "Number of link occurrences >1 (logarithmic scale)", 
+            category = "dataType", x_values = "linkID", y_attribute = ["count"]);
         });
 
         selectedData = getFilteredData(selectedDataset);
@@ -179,17 +189,43 @@ function loadDataset(datasetName){
 // Update the idioms with new data
 //----------------------------
 function updateIdioms(data){
-    // Update info
-    d3.select("#selectedNodes").text(data.nodes.length);
-    d3.select("#selectedLinks").text(data.links.length);
-    let selectedCells = data.nodes.reduce( (acc, node) => (acc[node.parent] = (acc[node.parent] || 0)+1, acc), {} );
-    d3.select("#selectedCells").text(Object.keys(selectedCells).length);
+    infoInit(data);
 
-    // Update idioms
-    updateBarchart(data, "null");
+    // Define bar chart axes 
+    if(dynamicData && nodeDuration){ 
+        updateBarchart(data, "null", title = "Call sequence and duration", x_axis_text = "Calls", 
+        y_axis_text = "Call duration (s)", 
+        category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+    }
+    else{
+        updateBarchart(data, "null", title = "Number of link occurrences", x_axis_text = "Links (source + target)", 
+        y_axis_text = "Number of link occurrences >1 (logarithmic scale)", 
+        category = "dataType", x_values = "linkID", y_attribute = ["count"]);
+    }
+
+     // Update idioms
     updateNetwork(data);
+    updateTimeline(data);
     // treeDataInit(data);
 }
+
+function infoInit(data){
+    // Update info
+    let totalCalls = data.links.reduce(function (accumulator, link) {
+        return accumulator + link.count;
+    }, 0);
+    let totalObjects  = data.nodes.reduce(function (accumulator, node) {
+        return accumulator + node.count;
+    }, 0);
+    let selectedCells = data.nodes.reduce( (acc, node) => (acc[node.root] = (acc[node.root] || 0)+1, acc), {} );
+
+    // Define info box contents
+    d3.select("#selectedNodes").text(totalObjects);
+    d3.select("#selectedLinks").text(totalCalls);
+    d3.select("#selectedCells").text(Object.keys(selectedCells).length);
+
+}
+
 //
 // //----------------------------
 // // When a node on the tree is clicked

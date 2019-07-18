@@ -7,8 +7,8 @@ def get_package_nodes(nodes):
 
     # Rename name and parent to one abstraction level higher
     for node in nodes:
-        node['name'] = '/'.join(str(node['name']).split('/')[:-1])
-        node['parent'] = '/'.join(str(node['parent']).split('/')[:-1])
+        node['name'] = '.'.join(str(node['name']).split('/')[:-1])
+        node['parent'] = '.'.join(str(node['parent']).split('/')[:-1])
 
     df_nodes = pd.DataFrame(nodes)  # create dataframe
     nodes_list = df_nodes['name'].tolist()
@@ -25,8 +25,8 @@ def get_package_nodes(nodes):
 def get_package_links(links):
     # Rename source and target to one abstraction level higher
     for link in links:
-        link['source'] = '/'.join(link['source'].split('/')[:-1])
-        link['target'] = '/'.join(link['target'].split('/')[:-1])
+        link['source'] = '.'.join(link['source'].split('/')[:-1])
+        link['target'] = '.'.join(link['target'].split('/')[:-1])
         link['linkID'] = link['source'] + link['target']
 
     df_links = pd.DataFrame(links)  # create dataframe

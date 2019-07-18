@@ -12,14 +12,14 @@ body {
     /*background-color: #fff;*/
     height:100%;
     /* color: #bfbfbf; */
-     padding: 10px;
+    padding: 10px;
     /* margin-top: 100px; */
     /* background-color: #1a1a1a; */
 }
 
 .main-container {
     height: 100%;
-    padding-top: 50px;
+    padding-top: 90px;
     position: relative;
 }
 
@@ -32,8 +32,9 @@ body {
 /* Fixed container with title */
 .slider-container {
     position: fixed;
+    width: 1500px;
     top: 10px;
-    left: 10px;
+    left: 15px;
     right: 10px;
     /*background-color: #16262E;*/
     background-color: #040C0E;
@@ -49,7 +50,7 @@ body {
 }
 
 #slider:hover {
-     opacity: 0.9;
+    opacity: 0.9;
 }
 
 .column {
@@ -58,6 +59,79 @@ body {
     padding-left: 10px;
     align-content: center;
     background: #484848;
+}
+
+/* --------------------------- /
+/* Timeline
+/* ---------------------------- */
+
+.ticks {
+    font-size: 10px;
+    color: #fff;
+}
+
+.track,
+.track-inset,
+.track-overlay {
+    stroke-linecap: round;
+}
+
+.track {
+    stroke: #bfbfbf;
+    stroke-opacity: 0.3;
+    stroke-width: 10px;
+}
+
+.track-inset {
+    stroke: #fff;
+    stroke-width: 8px;
+}
+
+.track-overlay {
+    pointer-events: stroke;
+    stroke-width: 50px;
+    stroke: transparent;
+    cursor: crosshair;
+}
+
+.handle {
+    fill: #fff;
+    stroke: #bfbfbf;
+    stroke-opacity: 0.5;
+    stroke-width: 1.25px;
+}
+
+/*Plat button*/
+.play-button {
+    background-color: #040C0E; /*#6BBE92*/
+    font: normal 15px/100% "Andale Mono", AndaleMono, monospace;
+    width: 60px;
+    margin-top:10px;
+    /*padding: 10px 0;*/
+    border: 1px solid #6cc0e5;
+    /*margin: 3px 0;*/
+    min-height: 5px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    color: #6cc0e5;
+    font-weight: bold;
+}
+
+.play-button.stop {
+    background-color: #fefefe; /*#6BBE92*/
+    font: normal 15px/100% "Andale Mono", AndaleMono, monospace;
+    width: 60px;
+    margin-top:10px;
+    /*padding: 10px 0;*/
+    border: 1px solid #6cc0e5;
+    /*margin: 3px 0;*/
+    min-height: 5px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    color: #6cc0e5;
+    font-weight: bold;
 }
 
 /* --------------------------- /
@@ -139,9 +213,9 @@ tr:nth-child(even) {
     text-align: center;
     margin-top: 5px;
     margin-bottom: 5px;
-    color: #000000;
+    color: #fefefe;
     padding-left: 18px;
-    font-size: 20px;
+    font-size: 15px;
     padding-right: 4px;
     font-weight: 700;
     min-width: 180px;
@@ -159,13 +233,15 @@ text {
     font: bold 10px/100% "Andale Mono", AndaleMono, monospace;
     max-width: fit-content;
     text-anchor: start;
-    /*cursor: pointer;*/
-    /*word-wrap: break-word;*/
-    background-color: #dddddd;
 }
-.text-mini{
+.text-mini {
     font: bold 8px/100% "Andale Mono", AndaleMono, monospace;
-    max-width: fit-content;
+    text-anchor: start;
+}
+
+.text-white {
+    font: bold 15px/100% "Andale Mono", AndaleMono, monospace;
+    fill: #fafafa;
     text-anchor: start;
 }
 
@@ -195,9 +271,3 @@ h3 {
     padding-top: 10px;
     color: #fff;
 }
-
-
-
-
-
-
