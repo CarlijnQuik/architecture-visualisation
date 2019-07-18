@@ -24,7 +24,19 @@ var currentSliderValue = 0,
 
 var timelineSVG;
 
-function timelineInit(selectedData) {
+function timelineInit() {
+
+    // Define timeline SVG
+    timelineSVG = d3
+        .select("#timeline")
+        .append("svg")
+        .attr("width", tlWidth + 200)
+        .attr("height", tlHeight)
+        .attr("style", "margin: 0 auto; display: block;"); // could be included in stylesheet, centering slider
+
+}
+
+function updateTimeline(selectedData){
 
     // get msgs from link
     let msgs = [];
@@ -53,14 +65,6 @@ function timelineInit(selectedData) {
     });
     highlightByTime(selectedLinkIDs, selectedSources, selectedTargets);
 
-    // Define timeline SVG
-    timelineSVG = d3
-        .select("#timeline")
-        .append("svg")
-        .attr("width", tlWidth + 200)
-        .attr("height", tlHeight)
-        .attr("style", "margin: 0 auto; display: block;"); // could be included in stylesheet, centering slider
-
     // Define xScale
     let xScale = d3
         .scalePoint()
@@ -71,6 +75,23 @@ function timelineInit(selectedData) {
         .append("g")
         .attr("class", "slider")
         .attr("transform", "translate(" + tlMargin.left + "," + tlHeight / 2 + ")");
+
+    slider
+        .selectAll('g')
+        .remove();
+
+    slider
+        .selectAll('.line')
+        .remove();
+
+    slider
+        .selectAll('.text')
+        .remove();
+
+    slider
+        .selectAll('.circle')
+        .remove();
+
 
     slider
         .append("line")
@@ -162,7 +183,7 @@ function timelineInit(selectedData) {
             timer = window.setInterval(function () {
                 moveSlider(xScale.invert(currentSliderValue + 1));
                 currentSliderValue += 1;
-            }, 200);
+            }, 30);
             document.getElementById("play").textContent = "Stop";
         }
     });

@@ -77,7 +77,7 @@ function getSelectedValues() {
 function createCheckboxes(nodes){
     const nodeNames = [];
     nodes.map(node => {
-        let root = node.name.split("/", 1).join("/").toString();
+        let root = node.name.split(".", 1).join(".").toString();
         if(!nodeNames.includes(root)) {
             nodeNames.push(root);
             addItem(root);

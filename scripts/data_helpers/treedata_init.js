@@ -42,7 +42,7 @@ function mapLCAs(rootChildren, selectedDataset, n){
             if(child._children.length > 1){
                 selectedDataset.nodes.map(node => {
                     if(node.name.startsWith(child.data.name)) {
-                        node['root'] = node.name.split("/").slice(0,n).join("/").toString();
+                        node['root'] = node.name.split(".").slice(0,n).join(".").toString();
                         if(node.parent.length < node.root.length){
                             node.root = node.parent;
                         }
@@ -56,7 +56,7 @@ function mapLCAs(rootChildren, selectedDataset, n){
         else{
             selectedDataset.nodes.map(node => {
                 if(node.name.startsWith(child.data.name)) {
-                    node['root'] = node.name.split("/").slice(0,n).join("/").toString();
+                    node['root'] = node.name.split(".").slice(0,n).join(".").toString();
                     if(node.parent.length < node.root.length){
                         node.root =  node.parent;
                     }
@@ -79,7 +79,7 @@ function collapse(d) {
 function getAllNodes(nodeName, nodeObject) {
     let node = {};
     node.name = nodeName;
-    node.parent = nodeName.split('/').slice(0, -1).join('/');
+    node.parent = nodeName.split('.').slice(0, -1).join('.');
 
     // If the node is not already present
     if (!nodeNames.includes(nodeName.toString())) {

@@ -6,7 +6,8 @@ var t = d3.transition()
     .duration(750);
 
 var COLOR = {
-    NODE_DEFAULT_FILL: d => color(d.parent), // Node color
+    NODE_DEFAULT_FILL: "#707070", // Node color d => color(d.root)
+    NODE_BRIGHTER_FILL: d => d3.hcl(color(d.root)).brighter(),
     NODE_DEFAULT_STROKE: "#fff", // Color of node border
     NODE_HIGHLIGHT_STROKE: "#000000",
     LINK_DEFAULT_STROKE: "#b3b3b3", // Color of links  #525B56"#b8c4bf" b3b3b3 #969696
@@ -60,14 +61,11 @@ var d3_category8= [
     "#f4d15a",  "#e83c86", "#72e9c4", "#4a0062",
 ];
 
+// var brightness= []
+
 // Define the color scale of the visualisations
 var color = d3.scaleOrdinal(d3_category50);
 var colorCell = d3.scaleOrdinal(d3_category8);
-//let greyScale = d3.scaleOrdinal(d3.schemeGreys[d => linkStrength(d.count)]);
-
-// colorScale = d3.scaleOrdinal().domain(TYPES).range(TYPE_COLORS),
-// var highlightColorScale = d3.scaleOrdinal(d3_category50);
-// var colorScale = d3.scaleOrdinal(d3_category50);
 
 // ----------------------------
 // Default styles for nodes, links and bars
@@ -83,8 +81,19 @@ function nodeDefaultStyle(node){
     node
         .style("stroke", COLOR.NODE_DEFAULT_STROKE) // The border around the node
         .style("fill", COLOR.NODE_DEFAULT_FILL)
-        .style("stroke-width", STROKE_WIDTH.NODE_DEFAULT)
-        .style("fill-opacity", OPACITY.NODE_DEFAULT);
+        .style("fill-opacity", OPACITY.NODE_DEFAULT)
+            //function(d) {
+            // if(d.name.split("/").length > 4){
+            //     return d3.hcl(color(d.root)).darker();
+            // }
+            // else if(d.name.split("/").length <= 4){
+            //     return d3.hcl(color(d.root)).brighter();
+            // }
+            // else{
+            //     // return color(d.root);
+            // }
+        //}) //[1 - (d.name.split("/").length/10) + 0.5]) d3.hcl(color(d.root)).darker([0.9])
+        .style("stroke-width", STROKE_WIDTH.NODE_DEFAULT);
 }
 
 function barDefaultStyle(bar){

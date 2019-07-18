@@ -87,9 +87,9 @@ function linkTooltip(d){
         d3.select("#staticFields").classed("hidden", true);
 
         // Method called
-        //let method = d.message.split(' ').slice(-3); // method.replace(d.target.name, "")method.replace(d.target.name, "")
+        let method = d.message.split(' ').slice(-3); // method.replace(d.target.name, "")method.replace(d.target.name, "")
         d3.select("#dynamicMsgTitle").text("Method: ");
-        d3.select("#dynamicMsg").text(d.message);
+        d3.select("#dynamicMsg").text(method);
 
         // Method duration
         d3.select("#durationTitle").text("Duration: ");
@@ -103,7 +103,7 @@ function linkTooltip(d){
         // d3.select("#dates").text("Start Date: " + d.startDate + " - End Date: " + d.endDate);
 
         // Times
-        d3.select("#times").text("Start Time: " + d.startTime + " - End Time: " + d.endTime);
+        // d3.select("#times").text("Start Time: " + d.startTime + " - End Time: " + d.endTime);
 
     }
 
@@ -112,15 +112,15 @@ function linkTooltip(d){
 // Edit node tooltip values
 function nodeTooltip(d){
     // Parent
-    d3.select("#parentTitle").text("Parent: ");
-    d3.select("#parent").text(d.parent);
+    // d3.select("#parentTitle").text("Parent: ");
+    // d3.select("#parent").text(d.parent);
 
     // Count
     d3.select("#countNodeTitle").text("Count: ");
     d3.select("#countNode").text(d.count); // no. of occurrences
 
     // Grouped by
-    d3.select("#labelTitle").text("LCA: ");
+    d3.select("#labelTitle").text("Package: ");
     d3.select("#label").text(d.root); // no. of occurrences
 
     // Static

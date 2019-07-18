@@ -13,7 +13,6 @@ var bMargin = {top: 20, right: 175, bottom: 60, left: 70},
 var nodeDuration;
 
 function barchartInit() {
-
     // Create the bar chart svg
     barChartSVG = d3.select("#barchart")
         .append("svg")
@@ -30,9 +29,7 @@ function barchartInit() {
     d3.select("#nodeDuration").property("checked", nodeDuration);
 }
 
-//----------------------------
 // Refresh view
-//----------------------------
 function refreshBarchart(){
     barChartSVG
         .selectAll('.text')
@@ -51,148 +48,91 @@ function refreshBarchart(){
         .remove();
 }
 
+// Get the calls highest in the call hierarchy
+function getHighest(barchartData, n){
+    barchartData = barchartData.filter(msg => Object.values(barchartData[n].sub_calls).indexOf(msg.message) === -1);
+    if(n < barchartData.length - 1){
+        getHighest(barchartData, n+1)
+    }
+    else{
+        return barchartData;
+    }
+}
+
+// Get messages from link (sublinks)
+function getMessages(links){
+    let msgs = [];
+    links.map((link) => Array.prototype.push.apply(msgs,link['subLinks']));
+    msgs.sort((a,b) => (a.startTime > b.startTime) ? 1 : -1);
+    msgs = msgs.filter(msg => msg.duration > 0.1);
+    return msgs;
+}
+
 //----------------------------
 // Draw barchart
 //----------------------------
-
-function updateBarchart(inputData, selectedElement) {
-
-    let current_data;
-    let x_values;
-    let category;
-    let x_axis_text;
-    let y_axis_text;
-    let xScale;
-    let yScale;
+function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute) {
 
     // Make a copy of the data
-    current_data = JSON.parse(JSON.stringify(inputData));
-    console.log("selected element", selectedElement, "bar chart input:", current_data, "node Duration", nodeDuration);
+    let barchartData = JSON.parse(JSON.stringify(inputData.links));
+    let messages = getMessages(barchartData); // get messages from link
 
-    //----------------------------
-    // If a bar/node/link is clicked
-    //----------------------------
-    if(selectedElement !== "null" && selectedElement.origin && selectedElement.source){ // If a link in the network is clicked
-        // axes labels
-        d3.select("#barchartTitle").text("Messages over channel " + selectedElement.source.name + " -> " +  selectedElement.target.name);
-        x_axis_text = "Messages";
-        y_axis_text = "Number of occurrences";
+    // Standard dynamic view with duration on the y-axes
+    if(nodeDuration && selectedElement === "null"){ 
+        barchartData = messages;
+        barchartData.filter(msg => msg.sub_calls.length > 0); 
 
-        // define data and x and y values
-        category = "source";
-        current_data = selectedElement.subLinks;
-        x_values = "message";
-        function y_values(d){
-            // return d["count"];
-            return d["count"];
+        let n = 0; // return current_data;
+        if(getHighest(barchartData, n)){
+            barchartData = getHighest(barchartData, n);
         }
-        standardAxes();
-        // current_data = current_data.filter(link => link.count > 0);
+        console.log("standard dynamic view", barchartData, "selected element", selectedElement);
     }
-    // If a node/bar is clicked
-    else if(selectedElement !== "null" && selectedElement.name) {
-        // axes labels
-        d3.select("#barchartTitle").text("Links connected to " + selectedElement.name);
-        x_axis_text = "Links: source + target";
-        y_axis_text = "Number of method occurrences";
-
-        // define data x values and y values
-        // category = "source";
-        x_values = "linkID";
-        function y_values(d) {
-            // return d["count"];
-            return d["count"];
-        }
-        // filter
-        current_data = current_data.links.filter(link => link.source.name === selectedElement.name || link.target.name === selectedElement.name);
-        // current_data = current_data.filter(link => link.count > 0);
-        standardAxes();
-    }
-    //----------------------------
-    // Standard static view
-    //----------------------------
-    else if(nodeDuration === false){
-        // axes labels
-        d3.select("#barchartTitle").text("Number of link occurrences");
-        x_axis_text = "Links: source + target";
-        y_axis_text = "Number of link occurrences >1 (logarithmic scale)";
-
-        // define data and x and y values
-        current_data = current_data.links;
-        // category = "source";  // Color of bars
-        x_values = "linkID";
-        function y_values(d){
-            // return d["count"];
-            return d["count"];
-        }
-
-        // filter
-        // current_data = current_data.filter(link => link.count > 0);
-        logAxes();
-    }
-    //----------------------------
-    // Standard dynamic view
-    //----------------------------
-    else if(nodeDuration === true){
-        // axes labels
-        d3.select("#barchartTitle").text("Call sequence and duration");
-        x_axis_text = "Calls";
-        y_axis_text = "Call duration (s)";
-
-        // define data and x and y values
-        current_data = current_data.links;
-        category = "thread";
-        x_values = "startTime";
-        function y_values(d){
-            return d["duration"]; //* d['count']
-        }
-
-        // get msgs from link
-        let msgs = [];
-        current_data.map((link) => Array.prototype.push.apply(msgs,link['subLinks']));
-        current_data = msgs;
-
-        current_data.sort((a,b) => (a.startTime > b.startTime) ? 1 : -1);
-        current_data = current_data.filter(msg =>  msg.duration > 0.1 && msg.duration < 70);
-        standardAxes();
+    else if(nodeDuration && selectedElement !== "null"){
+        barchartData = messages; // get msgs from link
+        barchartData = barchartData.filter(msg => Object.values(selectedElement.sub_calls).indexOf(msg.message) > -1);
+        console.log("selected view", barchartData, "selected element", selectedElement);
     }
 
-    // Scales for the axes
-    function standardAxes(){
+    //----------------------------
+    // Axes scales and y_values
+    //----------------------------
+    function y_values(d){
+            return d[y_attribute]; //* d['count']
+    };
+
+    // Standard axes
+    let xScale = d3.scaleBand()
+    .range([0, bWidth])
+    .domain(barchartData.map(d => d[x_values]))
+    .padding([0.2]);
+
+    let yScale = d3.scaleLinear()
+    .range([bHeight,0])
+    .domain([0, d3.max(barchartData, d => y_values(d))]);
+
+    if(!nodeDuration){
+        // logAxes;
         xScale = d3.scaleBand()
             .range([0, bWidth])
-            .domain(current_data.map(d => d[x_values]))
-            .padding([0.2]);
-
-        yScale = d3.scaleLinear()
-            .range([bHeight,0])
-            .domain([0, d3.max(current_data, d => y_values(d))]);
-    }
-
-    // Scales for the axes
-    function logAxes(){
-        xScale = d3.scaleBand()
-            .range([0, bWidth])
-            .domain(current_data.map(d => d[x_values]));
+            .domain(barchartData.map(d => d[x_values]));
 
         yScale = d3.scaleLog()
-            .domain([1, d3.max(current_data, d => y_values(d))])         // This is what is written on the Axis: from 0 to 100
+            .domain([1, d3.max(barchartData, d => y_values(d))])         // This is what is written on the Axis: from 0 to 100
             .range([bHeight, 0]);       // This is where the axis is placed: from 100 px to 800px
-
-    }
-
+    } 
+    
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale);
 
     //----------------------------
     // Refresh and draw bar chart
     //----------------------------
-    // Refresh view
-    refreshBarchart();
+    refreshBarchart(); // Refresh view
 
     // append the rectangles for the bar chart
     let bar = barChartSVG.selectAll(".bar")
-        .data(current_data)
+        .data(barchartData)
         .enter().append("rect")
         .attr("class", "bar")
         .attr("x", d => xScale(d[x_values]))
@@ -201,13 +141,11 @@ function updateBarchart(inputData, selectedElement) {
         .attr("height", d => (bHeight - (yScale(y_values(d)))))
         .attr("fill", d => color(d[category]));
 
-    // Styling
-    barDefaultStyle(bar);
+    barDefaultStyle(bar); // Styling
 
     // ----------------------------
     // Define bar interaction
     //----------------------------
-
     bar
         .on("mouseenter", function (d) {
             // Highlight selected bar
@@ -219,12 +157,20 @@ function updateBarchart(inputData, selectedElement) {
             tooltipOnOff("#linkTooltip", false);
         })
         .on("click", function(d){
-            if(d.linkID){
-                updateBarchart(inputData, d);
+            if(nodeDuration){
+                let sub_calls = messages.filter(msg => Object.values(d.sub_calls).indexOf(msg.message) > -1);
+                if(sub_calls.length > 0){
+                    updateBarchart(inputData, d, title = "Sub-calls of " + d.message, x_axis_text = "Messages", 
+                    y_axis_text = "Call duration", 
+                    category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+                }
+                else{
+                    updateBarchart(inputData, "null", title = "Call sequence and duration", x_axis_text = "Calls", 
+                    y_axis_text = "Call duration (s)", 
+                    category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+                }
             }
-            else{
-                updateBarchart(inputData, "null");
-            }
+        
         })
         .on("mouseout", function (d) {
             // De-highlight selected bar
@@ -237,6 +183,8 @@ function updateBarchart(inputData, selectedElement) {
      //----------------------------
     // Draw x-axis title, y-axes title, and grid
     //----------------------------
+    d3.select("#barchartTitle").text(title); // title
+
     // Y axes labels e.g. count
     barChartSVG
         .call(yAxis)
@@ -288,8 +236,7 @@ function updateBarchart(inputData, selectedElement) {
     //----------------------------
     // Legend
     //----------------------------
-
-    let legendData = d3.values(current_data.map(function (d) { return d[category]; }));
+    let legendData = d3.values(barchartData.map(function (d) { return d[category]; }));
     let unique = legendData.filter(function (elem, pos) {
         return legendData.indexOf(elem) === pos; });
 

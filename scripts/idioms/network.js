@@ -178,6 +178,7 @@ function updateNetwork(selectedData) {
                 nodeDefaultStyle(d3.select(this));
                 updateBarchart(data, "null");
             } else {
+                console.log("clicked", d);
                 updateBarchart(data, d);
                 d3.select(this)
                     .style("fill", colorNodeInOut(d, links))
