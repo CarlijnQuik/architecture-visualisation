@@ -39,7 +39,7 @@ class myThread (threading.Thread):
 def write_to_json(class_dict):
     # write the dictionary to a JSON file
     with open(file_name + "-class.json", 'w') as fp:
-        json.dump(class_dict, fp, indent=4, sort_keys=True, default=str)
+        json.dump(class_dict, fp)
 
     print("class file written")
 

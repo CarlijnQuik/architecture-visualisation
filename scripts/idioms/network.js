@@ -61,7 +61,7 @@ function networkInit() {
     forceSim = d3.forceSimulation()
         .force('link', d3.forceLink() // creating a fixed distance between connected elements
             .id(d => d.name)
-            .distance(5)
+            .distance(100)
             .strength(groupingForce.getLinkStrength)
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
@@ -176,12 +176,24 @@ function updateNetwork(selectedData) {
             if(d3.select(this).style("fill-opacity") == OPACITY.NODE_HIGHLIGHT){
                 deHighlightConnected(d, links);
                 nodeDefaultStyle(d3.select(this));
-                updateBarchart(data, "null");
+
+                // Define bar chart 
+                if(dynamicData && nodeDuration){ 
+                    updateBarchart(data, "null", title = "Call sequence and duration", x_axis_text = "Calls", 
+                    y_axis_text = "Call duration (s)", 
+                    category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+                }
+                else{
+                    updateBarchart(data, "null", title = "Number of link occurrences", x_axis_text = "Links (source + target)", 
+                    y_axis_text = "Number of link occurrences >1 (logarithmic scale)", 
+                    category = "thread", x_values = "linkID", y_attribute = ["count"]);
+                }
             } else {
                 console.log("clicked", d);
-                updateBarchart(data, d);
+                updateBarchart(data, d, title = "Links connected to " + d.name, x_axis_text = "Links: source + target", 
+                y_axis_text = "Number of call occurrences", category = "thread", x_values = "linkID", y_attribute = ["count"]);
                 d3.select(this)
-                    .style("fill", colorNodeInOut(d, links))
+                    .style("fill", colorNodeInOut(d, links)).style("fill", colorNodeInOut(d, links))
                     .style("stroke", COLOR.NODE_HIGHLIGHT_STROKE)
                     .style("fill-opacity", OPACITY.NODE_HIGHLIGHT);
                 highlightConnected(d, links);  // Highlight connected
@@ -199,7 +211,9 @@ function updateNetwork(selectedData) {
     //----------------------------
     links
         .on("click", function (d) {
-            updateBarchart(data, d)
+            console.log(data)
+            updateBarchart(data, d, title = "Calls over link" + d.source.name + d.target.name, x_axis_text = "Calls", 
+            y_axis_text = "Count of call", category = "thread", x_values = "startTime", y_attribute = ["count"]);
         })
         .on("mouseenter", function (d) {
             if(d3.select(this).style("stroke-opacity") == OPACITY.LINK_DEFAULT ) {

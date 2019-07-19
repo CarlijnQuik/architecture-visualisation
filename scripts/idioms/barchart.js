@@ -64,6 +64,7 @@ function getMessages(links){
     let msgs = [];
     links.map((link) => Array.prototype.push.apply(msgs,link['subLinks']));
     msgs.sort((a,b) => (a.startTime > b.startTime) ? 1 : -1);
+    console.log("dataset length: " + msgs.length);
     msgs = msgs.filter(msg => msg.duration > 0.1);
     return msgs;
 }
@@ -80,19 +81,30 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
     // Standard dynamic view with duration on the y-axes
     if(nodeDuration && selectedElement === "null"){ 
         barchartData = messages;
-        barchartData.filter(msg => msg.sub_calls.length > 0); 
 
         let n = 0; // return current_data;
         if(getHighest(barchartData, n)){
             barchartData = getHighest(barchartData, n);
         }
-        console.log("standard dynamic view", barchartData, "selected element", selectedElement);
+        console.log("standard dynamic view", barchartData, "none selected (duration)", selectedElement);
     }
-    else if(nodeDuration && selectedElement !== "null"){
+    else if(nodeDuration && selectedElement.sub_calls){
         barchartData = messages; // get msgs from link
         barchartData = barchartData.filter(msg => Object.values(selectedElement.sub_calls).indexOf(msg.message) > -1);
-        console.log("selected view", barchartData, "selected element", selectedElement);
+        console.log("selected view", barchartData, "selected bar (duration)", selectedElement);
     }
+    else if(selectedElement.subLinks){
+        barchartData = selectedElement.subLinks;
+        console.log(barchartData, "selected link in network diagram or bar (count)")
+    }
+    else if(selectedElement.name){
+        let selectedData = barchartData.filter(link => link.source.name === selectedElement.name || link.target.name === selectedElement.name);
+        if(selectedData){
+            barchartData = selectedData;
+        }
+        console.log(barchartData, "selected node in network diagram")
+    }
+
 
     //----------------------------
     // Axes scales and y_values
@@ -115,10 +127,11 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
         // logAxes;
         xScale = d3.scaleBand()
             .range([0, bWidth])
-            .domain(barchartData.map(d => d[x_values]));
+            .domain(barchartData.map(d => d[x_values]))
+            .padding([0.03]);;
 
         yScale = d3.scaleLog()
-            .domain([1, d3.max(barchartData, d => y_values(d))])         // This is what is written on the Axis: from 0 to 100
+            .domain([0.5, d3.max(barchartData, d => y_values(d))])         // This is what is written on the Axis: from 0 to 100
             .range([bHeight, 0]);       // This is where the axis is placed: from 100 px to 800px
     } 
     
@@ -157,7 +170,7 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
             tooltipOnOff("#linkTooltip", false);
         })
         .on("click", function(d){
-            if(nodeDuration){
+            if(nodeDuration && d.sub_calls){
                 let sub_calls = messages.filter(msg => Object.values(d.sub_calls).indexOf(msg.message) > -1);
                 if(sub_calls.length > 0){
                     updateBarchart(inputData, d, title = "Sub-calls of " + d.message, x_axis_text = "Messages", 
@@ -168,6 +181,18 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
                     updateBarchart(inputData, "null", title = "Call sequence and duration", x_axis_text = "Calls", 
                     y_axis_text = "Call duration (s)", 
                     category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+                }
+            }
+            else{
+                if(d.subLinks){
+                    updateBarchart(inputData, d, title = "Calls over link " + d.source.name + "->" + d.target.name, x_axis_text = "Calls", 
+                    y_axis_text = "Count of call", 
+                    category = "thread", x_values = "startTime", y_attribute = ["count"]);
+                }
+                else{
+                    updateBarchart(inputData, "null", title = "Number of link occurrences", x_axis_text = "Links (source + target)", 
+                    y_axis_text = "Number of link occurrences >1 (logarithmic scale)", 
+                    category = "thread", x_values = "linkID", y_attribute = ["count"]);
                 }
             }
         

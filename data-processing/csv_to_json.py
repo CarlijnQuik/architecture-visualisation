@@ -59,7 +59,7 @@ def get_links(dataset, dataset_part, fr, to, file_name, data_type, msg):
     # create a separate dictionary for all unique links
     for index, link in dataset_part.iterrows():
         counter = counter+1
-        print(counter/len(dataset_part))
+        print(counter, len(dataset_part))
         if link[fr] and link[to]:
             link_id = link['linkID']
             message = link[msg]
@@ -121,9 +121,9 @@ def get_dynamic_specs(link, message_count, list_thread_m, dataset):
     sub_calls = dataset.loc[(dataset['Thread']==link['Thread']) & (dataset['duration'] < link['duration']) & (dataset['Start Time'] >= link['Start Time']) & (dataset['Message'] != link['Message'])]
 
     link_specs = {'startDate': link['Start Date'],
-                  'startTime': link['Start Time'],
+                  'startTime': str(link['Start Time']).split(" ")[-1],
                   'endDate': link['End Date'],
-                  'endTime': link['End Time'],
+                  'endTime': str(link['End Time']).split(" ")[-1],
                   'source': '.'.join(link['Caller'].split('.')),
                   'target': '.'.join(link['Callee'].split('.')),
                   'duration': link['duration'].total_seconds(),  # get an integer

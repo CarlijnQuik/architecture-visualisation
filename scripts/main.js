@@ -1,3 +1,4 @@
+'use strict';
 // ----------------------------
 // Window onload
 // ----------------------------
@@ -168,9 +169,9 @@ function loadDataset(datasetName){
         d3.select("#nodeDuration").on("change", function () {
             nodeDuration = d3.select("#nodeDuration").property("checked");
             selectedData = getFilteredData(selectedDataset);
-            updateBarchart(selectedData, "null", title = "Number of link occurrences", x_axis_text = "Links (source + target)", 
-            y_axis_text = "Number of link occurrences >1 (logarithmic scale)", 
-            category = "dataType", x_values = "linkID", y_attribute = ["count"]);
+            updateBarchart(selectedData, "null", "Number of link occurrences", "Links (source + target)", 
+            "Number of link occurrences >1 (logarithmic scale)", 
+            "thread", "linkID", ["count"]);
         });
 
         selectedData = getFilteredData(selectedDataset);
@@ -191,16 +192,15 @@ function loadDataset(datasetName){
 function updateIdioms(data){
     infoInit(data);
 
-    // Define bar chart axes 
+    // Define bar chart  
     if(dynamicData && nodeDuration){ 
-        updateBarchart(data, "null", title = "Call sequence and duration", x_axis_text = "Calls", 
-        y_axis_text = "Call duration (s)", 
-        category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+        updateBarchart(data, "null", "Call sequence and duration", "Calls", 
+        "Call duration (s)", "thread","startTime",["duration"]);
     }
     else{
-        updateBarchart(data, "null", title = "Number of link occurrences", x_axis_text = "Links (source + target)", 
-        y_axis_text = "Number of link occurrences >1 (logarithmic scale)", 
-        category = "dataType", x_values = "linkID", y_attribute = ["count"]);
+        updateBarchart(data, "null", "Number of link occurrences", "Links (source + target)", 
+        "Number of link occurrences >1 (logarithmic scale)", 
+        "thread", "linkID", ["count"]);
     }
 
      // Update idioms
