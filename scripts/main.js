@@ -26,7 +26,7 @@ var clusterDepth;
 
 function optionsInit(){
     // Define the initial settings
-    datasetName = "band";
+    datasetName = "fish";
     packageLevel = false;
     datasetLevel = 'class';
     dynamicData = true;
@@ -146,9 +146,10 @@ function loadDataset(datasetName){
         $("ul").empty();
 
         // Update info box
-        let totalCalls = selectedDataset.links.reduce(function (accumulator, link) {
-            return accumulator + link.count;
-        }, 0);
+        // let totalCalls = selectedDataset.links.reduce(function (accumulator, link) {
+        //     return accumulator + link.count;
+        // }, 0);
+        let totalCalls = selectedDataset.links.length;
         let totalObjects  = selectedDataset.nodes.reduce(function (accumulator, node) {
             return accumulator + node.count;
         }, 0);
@@ -211,12 +212,14 @@ function updateIdioms(data){
 
 function infoInit(data){
     // Update info
-    let totalCalls = data.links.reduce(function (accumulator, link) {
-        return accumulator + link.count;
-    }, 0);
+    // let totalCalls = data.links.reduce(function (accumulator, link) {
+    //     return accumulator + link.count;
+    // }, 0);
+    let totalCalls = data.links.length;
     let totalObjects  = data.nodes.reduce(function (accumulator, node) {
         return accumulator + node.count;
     }, 0);
+    // let totalObjects = data.nodes.length;
     let selectedCells = data.nodes.reduce( (acc, node) => (acc[node.root] = (acc[node.root] || 0)+1, acc), {} );
 
     // Define info box contents

@@ -117,8 +117,7 @@ def get_static_specs(link, message_count):
 def get_dynamic_specs(link, message_count, list_thread_m, dataset):
     link_thread_m = link['Thread'] + link['Message']
 
-    sub_calls = []
-    sub_calls = dataset.loc[(dataset['Thread']==link['Thread']) & (dataset['duration'] < link['duration']) & (dataset['Start Time'] >= link['Start Time']) & (dataset['Message'] != link['Message'])]
+    # sub_calls = dataset.loc[(dataset['Thread'] == link['Thread']) & (dataset['duration'] < link['duration']) & (dataset['Start Time'] >= link['Start Time']) & (dataset['Message'] != link['Message'])]
 
     link_specs = {'startDate': link['Start Date'],
                   'startTime': str(link['Start Time']).split(" ")[-1],
@@ -134,7 +133,7 @@ def get_dynamic_specs(link, message_count, list_thread_m, dataset):
                   'message': '.'.join(link['Message'].split('.')),
                   'count': message_count,
                   'msg_on_thread_count': list_thread_m.count(link_thread_m),
-                  'sub_calls': sub_calls['Message'].tolist()}
+                  'sub_calls': []} #sub_calls['Message'].tolist()
 
     return link_specs
 

@@ -6,7 +6,7 @@ var t = d3.transition()
     .duration(750);
 
 var COLOR = {
-    NODE_DEFAULT_FILL: "#707070", // Node color d => color(d.root)
+    NODE_DEFAULT_FILL: d => color(d.root), // Node color d => color(d.root)
     NODE_BRIGHTER_FILL: d => d3.hcl(color(d.root)).brighter(),
     NODE_DEFAULT_STROKE: "#fff", // Color of node border
     NODE_HIGHLIGHT_STROKE: "#000000",

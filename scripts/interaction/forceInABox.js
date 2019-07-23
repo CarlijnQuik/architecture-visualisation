@@ -391,23 +391,38 @@
                 .attr('class', function(d) {
                     let cell_width = (d.x1 - d.x0);
                     if (cell_width > 100) {
-                        return "text-small";
+                        return "text";
                     }
                     else{
-                        return "text-mini";
+                        return "text";
                     }
                 })
                 .text(function(d) {
                     let cell_width = (d.x1 - d.x0);
-                    // if(cell_width > 100){
-                        let title_parts = d.data.id.split('.');
-                        if(title_parts.length > 2){
-                            return title_parts.slice(0, 2).join('.');
+                    let title_parts = d.data.id.split('.');
+                    let last_part = title_parts[title_parts.length-1];
+                    // console.log(last_part, cell_width, last_part.length);
+                    if(last_part.length > 11 && cell_width > 80){
+                        // Do not draw a - sign if there is no second part
+                        if(last_part[12]){
+                            return last_part.slice(0, 10) + "-";
                         }
                         else{
-                            return d.data.id;
+                            return last_part.slice(0, 10);
                         }
-                    // }
+                    }
+                    else if(cell_width <= 80){
+                        // Do not draw a - sign if there is no second part
+                        if(last_part[6]){
+                            return last_part.slice(0,5) + "-";
+                        }
+                        else{
+                            return last_part.slice(0,5);
+                        }
+                    }
+                    else {
+                        return last_part;
+                    }
                 });
 
             cell_nodes
@@ -416,24 +431,22 @@
                 .attr('dy', 25)
                 .attr('class', function(d) {
                     let cell_width = (d.x1 - d.x0);
-                    if (cell_width > 100) {
-                        return "text-small";
+                    if (cell_width > 80) {
+                        return "text";
                     }
                     else{
-                        return "text-mini";
+                        return "text";
                     }
                 })
                 .text(function(d) {
                     let cell_width = (d.x1 - d.x0);
                     let title_parts = d.data.id.split('.');
-                    if(cell_width > 100 && title_parts.length > 2){
-                        return "." + title_parts.slice(2).join('.');
+                    let last_part = title_parts[title_parts.length-1];
+                    if(last_part.length > 11 && cell_width > 80) {
+                        return last_part.slice(10);
                     }
-                    else if(title_parts.length > 3){
-                        return "." + title_parts.slice(2,3).join('.') + "...";
-                    }
-                    else if(title_parts.length === 3){
-                        return "." + title_parts.slice(2,3).join('.');
+                    else if( cell_width <= 80){
+                        return last_part.slice(5);
                     }
                 });
 

@@ -65,7 +65,17 @@ function getMessages(links){
     links.map((link) => Array.prototype.push.apply(msgs,link['subLinks']));
     msgs.sort((a,b) => (a.startTime > b.startTime) ? 1 : -1);
     console.log("dataset length: " + msgs.length);
+    let sub_calls = [];
+    msgs.map((msg) => Array.prototype.push.apply(sub_calls,msg['sub_calls']));
+
+    let totalDuration  = msgs.reduce(function (accumulator, msg) {
+        // if(sub_calls.includes(msg.message)){
+            return accumulator + msg.duration;
+        // }
+    }, 0);
+    console.log(totalDuration);
     msgs = msgs.filter(msg => msg.duration > 0.1);
+
     return msgs;
 }
 

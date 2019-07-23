@@ -2,7 +2,7 @@
 import json
 import sys
 import csv_to_json as ctj
-import log_to_csv_fish as ltc  # change for jabref (ajpolog edited since that log was created)
+import log_to_csv_jabref as ltc  # change for jabref (ajpolog edited since that log was created)
 import pandas as pd
 import threading
 from datetime import datetime
@@ -43,6 +43,7 @@ def write_to_json(class_dict):
 
     print("class file written")
 
+
 if extension == 'csv':
     dataset = read_and_clean(input_file)  # read input file as pandas data frame
     df = pd.DataFrame(dataset)
@@ -75,11 +76,10 @@ elif extension == 'log':
     
     threads = []
     for part in range (0,number_of_df_parts):
-        print(part)
         threadName = str("thread") + str(part)
         threadName = myThread(part+1, df_parts[part], df)
         threads.append(threadName)
-    
+
     all_links = []
     for thread in threads:
         start = datetime.now()

@@ -49,7 +49,7 @@ function networkInit() {
 
     // Initialize force in a box
     groupingForce = forceInABox()
-        .strength(0.1) // Strength to foci
+        .strength(0.2) // Strength to foci
         .template(template) // Either treemap or force
         .groupBy(groupby) // Setting package as the attribute to group by
         .enableGrouping(groupInABox)
@@ -61,7 +61,7 @@ function networkInit() {
     forceSim = d3.forceSimulation()
         .force('link', d3.forceLink() // creating a fixed distance between connected elements
             .id(d => d.name)
-            .distance(100)
+            .distance(5)
             .strength(groupingForce.getLinkStrength)
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
