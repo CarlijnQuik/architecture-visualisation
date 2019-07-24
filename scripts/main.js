@@ -97,7 +97,7 @@ function loadDataset(datasetName){
     }
     if(dynamicData){
         dataType = 'dynamic';
-        d3.select("#networkTitle").text("Relations between objects in the system");
+        d3.select("#networkTitle").text("Calls between objects in the system");
         d3.select("#nodeInfo").text("Objects");
         d3.select("#linkInfo").text("Calls");
         // STROKE_WIDTH.LINK_DEFAULT = d => linkStrength(d.count);
@@ -229,7 +229,6 @@ function infoInit(data){
 
 }
 
-//
 // //----------------------------
 // // When a node on the tree is clicked
 // //----------------------------

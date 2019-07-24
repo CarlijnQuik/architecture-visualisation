@@ -138,7 +138,7 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
         xScale = d3.scaleBand()
             .range([0, bWidth])
             .domain(barchartData.map(d => d[x_values]))
-            .padding([0.03]);;
+            .padding([0.03]);
 
         yScale = d3.scaleLog()
             .domain([0.5, d3.max(barchartData, d => y_values(d))])         // This is what is written on the Axis: from 0 to 100
@@ -183,7 +183,9 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
             if(nodeDuration && d.sub_calls){
                 let sub_calls = messages.filter(msg => Object.values(d.sub_calls).indexOf(msg.message) > -1);
                 if(sub_calls.length > 0){
-                    updateBarchart(inputData, d, title = "Sub-calls of " + d.message, x_axis_text = "Messages", 
+                    let msg = d.message.split('(')[0].split('.').pop();
+                    let methodType = d.message.split('.')[0].split(" ").slice(0,-1).join(" ");
+                    updateBarchart(inputData, d, title = "Sub-calls of " + methodType + " " + msg + "(..)", x_axis_text = "Messages",
                     y_axis_text = "Call duration", 
                     category = "thread", x_values = "startTime", y_attribute = ["duration"]);
                 }
@@ -195,9 +197,9 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
             }
             else{
                 if(d.subLinks){
-                    updateBarchart(inputData, d, title = "Calls over link " + d.source.name + "->" + d.target.name, x_axis_text = "Calls", 
+                    updateBarchart(inputData, d, title = "Calls over link " + d.source.name.split(d.source.parent).join("").split(".").join("") + "->" + d.target.name.split(d.target.parent).join("").split(".").join(""), x_axis_text = "Calls",
                     y_axis_text = "Count of call", 
-                    category = "thread", x_values = "startTime", y_attribute = ["count"]);
+                    category = "thread", x_values = "message", y_attribute = ["count"]);
                 }
                 else{
                     updateBarchart(inputData, "null", title = "Number of link occurrences", x_axis_text = "Links (source + target)", 

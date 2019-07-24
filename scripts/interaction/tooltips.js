@@ -32,17 +32,18 @@ function linkTooltip(d){
     d3.select("#countLink").text(d.count);
 
     // Source and target titles
-    d3.select("#linkSourceTitle").text("Source: ");
-    d3.select("#linkTargetTitle").text("Target: ");
+    // d3.select("#linkSourceTitle").text("Call by: ");
+    // d3.select("#linkTargetTitle").text("To: ");
 
-    // .split('/').slice(-1).toString()
-    if(d.source.name){
-        d3.select("#linkSource").text(d.source.name);
-        d3.select("#linkTarget").text(d.target.name);
+    if(d.source.name){ // dynamic view
+        d3.select("#linkSource").text(d.source.name.split(d.source.parent).join("").split(".").join(""));
+        d3.select("#linkTarget").text(d.target.name.split(d.target.parent).join("").split(".").join(""));
     }
     else{
-        d3.select("#linkSource").text(d.source);
-        d3.select("#linkTarget").text(d.target);
+        let source_parent = d.source.split(".").slice(0,-1).join(".");
+        let target_parent = d.target.split(".").slice(0,-1).join(".");
+        d3.select("#linkSource").text(d.source.split(source_parent).join("").split(".").join(""));
+        d3.select("#linkTarget").text(d.target.split(target_parent).join("").split(".").join(""));
     }
 
     // Static
@@ -87,9 +88,10 @@ function linkTooltip(d){
         d3.select("#staticFields").classed("hidden", true);
 
         // Method called
-        let method = d.message.split(' ').slice(-3); // method.replace(d.target.name, "")method.replace(d.target.name, "")
+        let msg = d.message.split('(')[0].split('.').pop();
+        let methodType = d.message.split('.')[0].split(" ").slice(0,-1).join(" ");
         d3.select("#dynamicMsgTitle").text("Method: ");
-        d3.select("#dynamicMsg").text(method);
+        d3.select("#dynamicMsg").text(methodType + " " + msg + "(..)");
 
         // Method duration
         d3.select("#durationTitle").text("Duration: ");
@@ -120,19 +122,19 @@ function nodeTooltip(d){
     d3.select("#countNode").text(d.count); // no. of occurrences
 
     // Grouped by
-    d3.select("#labelTitle").text("Package: ");
-    d3.select("#label").text(d.root); // no. of occurrences
+    d3.select("#labelTitle").text("Parent: ");
+    d3.select("#label").text(d.parent); // no. of occurrences
 
     // Static
     if(d.dataType === "Static") {
         // Name
         d3.select("#nameTitle").text("Name: ");
-        d3.select("#name").text(d.name.split("/").pop()); // node name
+        d3.select("#name").text(d.name.split(".").pop()); // node name
     }
     //Dynamic
     else {
         // Name
         d3.select("#nameTitle").text("Object: ");
-        d3.select("#name").text(d.name.split("/").pop()); // node name
+        d3.select("#name").text(d.name.split(".").pop()); // node name
     }
 }
