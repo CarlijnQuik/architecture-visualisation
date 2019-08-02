@@ -55,7 +55,6 @@ function refreshTree(){
     treeSVG
         .selectAll('.link')
         .remove();
-
 }
 
 // ----------------------------
@@ -108,7 +107,7 @@ function updateTree(source) {
         .attr("dx", 5.5)
         .attr('class', "text-small")
         .text(function(d) {
-            if(d.data.name.split("/").slice(0, -1).join('/')){
+            if(d.data.name.split(".").slice(0, -1).join('.')){
                 return d.data.name.split(d.parent.data.name).join(" ");
             }
             else{
@@ -169,6 +168,31 @@ function updateTree(source) {
         d.x0 = d.x;
         d.y0 = d.y;
     });
+}
+
+//----------------------------
+// When a node on the tree is clicked
+//----------------------------
+function click(d) {
+    if (d.children) {
+        d._children = d.children;
+        d.children = null;
+    } else {
+        d.children = d._children;
+        d._children = null;
+    }
+
+    updateTree(d);
+
+}
+
+// Collapse the node and all it's children
+function collapse(d) {
+    if (d.children) {
+        d._children = d.children;
+        d._children.forEach(collapse);
+        d.children = null;
+    }
 }
 
 

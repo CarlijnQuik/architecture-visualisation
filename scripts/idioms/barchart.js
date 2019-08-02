@@ -11,6 +11,13 @@ var bMargin = {top: 20, right: 175, bottom: 60, left: 70},
 
 // Options
 var nodeDuration;
+var scenarioDuration;
+var timeParser = d3.timeParse("%H:%M:%S.%f");
+var barchartThresholdDuration;
+var barchartThresholdCount;
+
+// say date/times are local 20160622 15:00
+// var timeFormatter = d3.time.format("%H:%M:%S,%f");
 
 function barchartInit() {
     // Create the bar chart svg
@@ -27,6 +34,11 @@ function barchartInit() {
     // Options init
     nodeDuration = true;
     d3.select("#nodeDuration").property("checked", nodeDuration);
+    barchartThresholdDuration = 0.1;
+    d3.select("#barchartThresholdD").property("checked", barchartThresholdDuration);
+    barchartThresholdCount = 0;
+    d3.select("#barchartThresholdC").property("checked", barchartThresholdCount);
+
 }
 
 // Refresh view
@@ -50,8 +62,12 @@ function refreshBarchart(){
 
 // Get the calls highest in the call hierarchy
 function getHighest(barchartData, n){
-    barchartData = barchartData.filter(msg => Object.values(barchartData[n].sub_calls).indexOf(msg.message) === -1);
-    if(n < barchartData.length - 1){
+    let first_sub_calls_msgs = [];
+    // console.log("before", barchartData, n);
+    barchartData[n].sub_calls.map(sub_call => first_sub_calls_msgs.push(sub_call.message));
+    barchartData = barchartData.filter(msg => !first_sub_calls_msgs.includes(msg.message));
+    // console.log("after", barchartData, n);
+    if(n < barchartData.length - 1 && barchartData.length > 0){
         getHighest(barchartData, n+1)
     }
     else{
@@ -59,13 +75,35 @@ function getHighest(barchartData, n){
     }
 }
 
-// Get messages from link (sublinks)
+// Get messages from link (sub-links)
 function getMessages(links){
     let msgs = [];
     links.map((link) => Array.prototype.push.apply(msgs,link['subLinks']));
     msgs.sort((a,b) => (a.startTime > b.startTime) ? 1 : -1);
-    msgs = msgs.filter(msg => msg.duration > 0.1);
+
+    scenarioDuration = timeParser(msgs[msgs.length-1].endTime) - timeParser(msgs[0].startTime);
     return msgs;
+}
+
+// Get the sub-calls && msg.message !== d.message
+function getSubCalls(call, sub_calls){
+    return sub_calls.filter(sub_call =>
+        sub_call.source === call.target && sub_call.startTime >= call.startTime && sub_call.endTime <= call.endTime && sub_call.message !== call.message
+    );
+}
+
+// Reset view to standard
+function resetBarchart(thisData, nodeDuration){
+    if(nodeDuration === true){
+        updateBarchart(thisData, "null", title = "Call sequence and duration", x_axis_text = "Calls",
+            y_axis_text = "Call duration (s)",
+            category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+    }
+    else {
+        updateBarchart(thisData, "null", "Number of link occurrences", "Links (source + target)",
+            "Link occurrences (log scale)",
+            "thread", "linkID", ["count"]);
+    }
 }
 
 //----------------------------
@@ -73,72 +111,172 @@ function getMessages(links){
 //----------------------------
 function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute) {
 
+    // Check which bar chart view is toggled
+    d3.select("#nodeDuration").on("change", function () {
+        document.getElementById("loader").style.display = "inline";
+        nodeDuration = d3.select("#nodeDuration").property("checked");
+        console.log("node duration", nodeDuration);
+        resetBarchart(inputData, nodeDuration);
+        document.getElementById("loader").style.display = "none";
+    });
+
+    // On reset clicked
+    d3.select("#resetButton").on("click", function () {
+        document.getElementById("loader").style.display = "inline";
+        resetBarchart(inputData, nodeDuration);
+        document.getElementById("loader").style.display = "none";
+    });
+
+    // On threshold change
+    d3.select("#barchartThresholdC").on("change", function () {
+        document.getElementById("loader").style.display = "inline";
+        barchartThresholdCount = d3.select("#barchartThresholdC").property("value");
+        console.log("count changed to", barchartThresholdCount);
+        resetBarchart(inputData, nodeDuration);
+        document.getElementById("loader").style.display = "none";
+    });
+
+    // On threshold change
+    d3.select("#barchartThresholdD").on("change", function () {
+        document.getElementById("loader").style.display = "inline";
+        barchartThresholdDuration = d3.select("#barchartThresholdD").property("value");
+        console.log("duration changed to", barchartThresholdDuration);
+        resetBarchart(inputData, nodeDuration);
+        document.getElementById("loader").style.display = "none";
+    });
+
     // Make a copy of the data
     let barchartData = JSON.parse(JSON.stringify(inputData.links));
-    let messages = getMessages(barchartData); // get messages from link
+    let msgs = getMessages(barchartData); // get messages from link
+
+    // Filter
+    let messages = msgs.filter(msg => msg.duration > barchartThresholdDuration && msg.count > barchartThresholdCount);
+
+    // Map the sub_calls
+    messages.map(msg => msg.sub_calls = getSubCalls(msg, messages)); // assign the sub-calls
+    messages.map(msg => msg.sum_sub_calls = msg.sub_calls.reduce(function(acc,sub_call){
+       return acc + sub_call.duration;
+    },0.0000));
 
     // Standard dynamic view with duration on the y-axes
-    if(nodeDuration && selectedElement === "null"){ 
+    if (nodeDuration === true && selectedElement === "null") {
         barchartData = messages;
-        barchartData.filter(msg => msg.sub_calls.length > 0); 
+        // barchartData = barchartData.filter(msg => msg.duration > 0.1);
 
-        let n = 0; // return current_data;
-        if(getHighest(barchartData, n)){
-            barchartData = getHighest(barchartData, n);
+        // let n = 0; // return current_data;
+        // if(barchartData[n]){
+        //     if(barchartData[n].sub_calls){
+        //         if(getHighest(barchartData, n)){
+        //             if (getHighest(barchartData, n).length > 0) {
+        //                 barchartData = getHighest(barchartData, n);
+        //             }
+        //         }
+        //     }
+        // }
+
+        console.log("standard dynamic view", barchartData, "none selected (duration)", selectedElement);
+        drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs);
+
+    } else if (nodeDuration === true && selectedElement.sub_calls) {
+        barchartData = selectedElement.sub_calls;
+        console.log("selected view", barchartData, "selected bar (duration)", selectedElement);
+        drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs);
+
+    } else if (selectedElement.subLinks) {
+        let selectedData = messages.filter(msg => msg.source === selectedElement.source || msg.target === selectedElement.target, msgs);
+        // barchartData = barchartData.filter(msg => msg.duration > 0);
+        if (selectedData.length > 0) {
+            barchartData = selectedData;
+            drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs);
         }
-        console.log("standard dynamic view", barchartData, "selected element", selectedElement);
-    }
-    else if(nodeDuration && selectedElement !== "null"){
-        barchartData = messages; // get msgs from link
-        barchartData = barchartData.filter(msg => Object.values(selectedElement.sub_calls).indexOf(msg.message) > -1);
-        console.log("selected view", barchartData, "selected element", selectedElement);
-    }
+        console.log(barchartData, "selected link in network diagram");
+        //drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute);
 
+    } else if (selectedElement.name) {
+        console.log(messages, selectedElement.name);
+        console.log(barchartData, "selected node in network diagram");
+        let selectedData = messages.filter(msg => msg.source === selectedElement.name || msg.target === selectedElement.name);
+        if (selectedData.length > 0) {
+            barchartData = selectedData;
+            drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs);
+        }
+    }
+    else if(nodeDuration === false){
+        barchartData = barchartData.filter(link => link.count > barchartThresholdCount);
+        drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs);
+    }
+}
+
+function drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs){
+
+    refreshBarchart(); // Refresh view
     //----------------------------
     // Axes scales and y_values
     //----------------------------
     function y_values(d){
-            return d[y_attribute]; //* d['count']
-    };
+        return d[y_attribute]; //* d['count']
+    }
 
     // Standard axes
     let xScale = d3.scaleBand()
-    .range([0, bWidth])
-    .domain(barchartData.map(d => d[x_values]))
-    .padding([0.2]);
+        .range([0, bWidth])
+        .domain(barchartData.map(d => d[x_values]))
+        .padding([0.2]);
 
     let yScale = d3.scaleLinear()
-    .range([bHeight,0])
-    .domain([0, d3.max(barchartData, d => y_values(d))]);
+        .range([bHeight,0])
+        .domain([0, d3.max(barchartData, d => y_values(d))]);
 
     if(!nodeDuration){
         // logAxes;
         xScale = d3.scaleBand()
             .range([0, bWidth])
-            .domain(barchartData.map(d => d[x_values]));
+            .domain(barchartData.map(d => d[x_values]))
+            .padding([0.03]);
 
         yScale = d3.scaleLog()
-            .domain([1, d3.max(barchartData, d => y_values(d))])         // This is what is written on the Axis: from 0 to 100
+            .domain([0.5, d3.max(barchartData, d => y_values(d))])         // This is what is written on the Axis: from 0 to 100
             .range([bHeight, 0]);       // This is where the axis is placed: from 100 px to 800px
-    } 
-    
+    }
+
     const xAxis = d3.axisBottom(xScale);
+    xAxis
+        //.tickSize(1,1)
+        // .ticks(5)
+        .tickPadding(6)
+        .tickFormat(function(d){return d.slice(3,-3);});//will return 2015 for 0 2016 for 1 etc.;
+
     const yAxis = d3.axisLeft(yScale);
 
+    let bars = barChartSVG.selectAll(".bar")
+        .data(barchartData)
+        .enter().append("g");
+
     //----------------------------
-    // Refresh and draw bar chart
-    //----------------------------
-    refreshBarchart(); // Refresh view
+    // Draw bar chart
+    //---------------------------
+    // if(nodeDuration === true){
+    //     let bar2 = bars.append("rect")
+    //         .attr("class", "bar")
+    //         .attr("id", "bar2")
+    //         .attr("x", d => xScale(d["startTime"]))
+    //         .attr("width", xScale.bandwidth())
+    //         .attr("y", d => yScale(d["avg_duration"]))
+    //         .attr("height", d => (bHeight - (yScale(d["avg_duration"]))))
+    //         .attr("fill", "#c6c6c6")
+    //         .attr("stroke", "black");
+    //
+    // }
 
     // append the rectangles for the bar chart
-    let bar = barChartSVG.selectAll(".bar")
-        .data(barchartData)
-        .enter().append("rect")
+    let bar = bars.append("rect")
         .attr("class", "bar")
-        .attr("x", d => xScale(d[x_values]))
-        .attr("width", xScale.bandwidth())
+        .attr("id", "bar1")
+        .attr("x", d => xScale(d[x_values])) //+2.5
+        .attr("width", xScale.bandwidth()) //-5
         .attr("y", d => yScale(y_values(d)))
         .attr("height", d => (bHeight - (yScale(y_values(d)))))
+        // .attr("opacity", 0.8)
         .attr("fill", d => color(d[category]));
 
     barDefaultStyle(bar); // Styling
@@ -150,37 +288,65 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
         .on("mouseenter", function (d) {
             // Highlight selected bar
             barHighlightStyle(d3.select(this));
-            rerenderNetworkStyle(d);
+            rerenderNetworkStyle(d, msgs);
+
+            barChartSVG
+                .append('line')
+                .attr('id', 'limit')
+                .attr('x1', 0)
+                .attr('y1', yScale(y_values(d)))
+                .attr('x2', bWidth)
+                .attr('y2', yScale(y_values(d)));
 
             // Edit tooltip values and show tooltip
             linkTooltip(d);
             tooltipOnOff("#linkTooltip", false);
         })
         .on("click", function(d){
-            if(nodeDuration){
-                let sub_calls = messages.filter(msg => Object.values(d.sub_calls).indexOf(msg.message) > -1);
-                if(sub_calls.length > 0){
-                    updateBarchart(inputData, d, title = "Sub-calls of " + d.message, x_axis_text = "Messages", 
-                    y_axis_text = "Call duration", 
-                    category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+            console.log("bar clicked", d, d.sub_calls, d.sub_calls.length);
+            tooltipOnOff("#linkTooltip", true);
+            if(nodeDuration === true){
+                if(d.sub_calls.length > 0){
+                    let msg = d.message.split('(')[0].split('.').pop();
+                    let methodType = d.message.split('.')[0].split(" ").slice(0,-1).join(" ");
+                    console.log("update with", barchartData);
+                    updateBarchart(inputData, d, title = "Sub-calls of " + methodType + " " + msg + "(..)", x_axis_text = "Messages",
+                        y_axis_text = "Call duration",
+                        category = "thread", x_values = "startTime", y_attribute = ["duration"]);
                 }
                 else{
-                    updateBarchart(inputData, "null", title = "Call sequence and duration", x_axis_text = "Calls", 
-                    y_axis_text = "Call duration (s)", 
-                    category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+                    d3.select("#tooltip")
+                        .style("top", (d3.event.pageY) - 20 + "px")
+                        .style("left", (d3.event.pageX) + 20 + "px")
+                        .classed("hidden", false);
+                    d3.select("#feedbackTooltip").classed("hidden", false);
                 }
             }
-        
+            else{
+                if(d.subLinks){
+                    updateBarchart(inputData, d, title = "Calls over link " + d.source.name.split(d.source.parent).join("").split(".").join("") + "->" + d.target.name.split(d.target.parent).join("").split(".").join(""), x_axis_text = "Calls",
+                        y_axis_text = "Count of call",
+                        category = "thread", x_values = "message", y_attribute = ["count"]);
+                }
+                else{
+                    resetBarchart(inputData, nodeDuration);
+                }
+            }
+
         })
         .on("mouseout", function (d) {
             // De-highlight selected bar
             barDefaultStyle(bar);
-            rerenderNetworkStyle("null");
+            linkDefaultStyle(links);
+            nodeDefaultStyle(nodes);
             tooltipOnOff("#linkTooltip", true);
+            tooltipOnOff("#feedbackTooltip", true);
+
+            barChartSVG.selectAll('#limit').remove(); // remove the extra line
 
         });
 
-     //----------------------------
+    //----------------------------
     // Draw x-axis title, y-axes title, and grid
     //----------------------------
     d3.select("#barchartTitle").text(title); // title
@@ -209,9 +375,9 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
     // y-axis title
     barChartSVG
         .append('text')
-        .attr('class', 'y axis')
-        .attr('x', -bHeight / 2)
-        .attr('y', -35)
+        .attr('class', 'text-axes')
+        .attr('x', -250)
+        .attr('y', -40)
         .attr('transform', 'rotate(-90)')
         .attr('text-anchor', 'middle')
         .text(y_axis_text);
@@ -269,6 +435,7 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
         .text(function(d) {
             return d;
         });
-
 }
+
+
 

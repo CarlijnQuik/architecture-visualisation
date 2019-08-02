@@ -1,5 +1,4 @@
-import pymongo
-from datetime import datetime, date, time
+import datetime
 import pandas as pd
 import threading
 import time
@@ -17,6 +16,7 @@ list_nodes = []
 def get_nodes(dataset, fr, to, file_name, data_type):
     # merge dependency from and to columns to one list
     nodes = dataset[fr].tolist() + dataset[to].tolist()
+    target_nodes = dataset[to].tolist()
     unique_nodes = list(dict.fromkeys(nodes))
 
     # create a separate dictionary for all unique nodes
@@ -28,7 +28,7 @@ def get_nodes(dataset, fr, to, file_name, data_type):
                      'parent': '.'.join(node.split('.')[:-1]),
                      'dataType': data_type,
                      'root': '.'.join(node.split('.')[:1]),
-                     'count': sum([True for n in nodes if n == name])}
+                     'count': sum([True for n in target_nodes if n == name])}
 
         # append the dictionary to the list of node dictionaries
         list_nodes.append(node_dict)
@@ -59,7 +59,7 @@ def get_links(dataset, dataset_part, fr, to, file_name, data_type, msg):
     # create a separate dictionary for all unique links
     for index, link in dataset_part.iterrows():
         counter = counter+1
-        print(counter/len(dataset_part))
+        print("counter: ", counter, len(dataset_part))
         if link[fr] and link[to]:
             link_id = link['linkID']
             message = link[msg]
@@ -117,24 +117,27 @@ def get_static_specs(link, message_count):
 def get_dynamic_specs(link, message_count, list_thread_m, dataset):
     link_thread_m = link['Thread'] + link['Message']
 
-    sub_calls = []
-    sub_calls = dataset.loc[(dataset['Thread']==link['Thread']) & (dataset['duration'] < link['duration']) & (dataset['Start Time'] >= link['Start Time']) & (dataset['Message'] != link['Message'])]
+    durations = dataset.loc[link['msgID'] == dataset['msgID']]['duration_seconds'].values.tolist()
+    #sub_calls = dataset.loc[(dataset['Callee'] == link['Caller']) & (dataset['End Time'] <= link['End Time']) & (dataset['Start Time'] >= link['Start Time']) & (dataset['Message'] != link['Message'])]['Message'].values.tolist()
 
     link_specs = {'startDate': link['Start Date'],
-                  'startTime': link['Start Time'],
+                  'startTime': str(link['Start Time']).split(" ")[-1],
                   'endDate': link['End Date'],
-                  'endTime': link['End Time'],
+                  'endTime': str(link['End Time']).split(" ")[-1],
                   'source': '.'.join(link['Caller'].split('.')),
                   'target': '.'.join(link['Callee'].split('.')),
-                  'duration': link['duration'].total_seconds(),  # get an integer
+                  'duration': link['duration_seconds'],  # get an integer
                   'thread': link['Thread'],
                   'callerID': link['Caller ID'],
                   'calleeID': link['Callee ID'],
                   'linkID': '.'.join(link['linkID'].split('.')),
                   'message': '.'.join(link['Message'].split('.')),
+                  'msgID': link['msgID'],
+                  # 'sub_calls': sub_calls,
+                  'duration_sum': sum(durations),
+                  'avg_duration': sum(durations)/message_count,
                   'count': message_count,
-                  'msg_on_thread_count': list_thread_m.count(link_thread_m),
-                  'sub_calls': sub_calls['Message'].tolist()}
+                  'msg_on_thread_count': list_thread_m.count(link_thread_m)}
 
     return link_specs
 

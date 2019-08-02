@@ -2,7 +2,7 @@
 import json
 import sys
 import csv_to_json as ctj
-import log_to_csv_fish as ltc  # change for jabref (ajpolog edited since that log was created)
+import log_to_csv_jabref as ltc  # change for jabref (ajpolog edited since that log was created)
 import pandas as pd
 import threading
 from datetime import datetime
@@ -39,9 +39,10 @@ class myThread (threading.Thread):
 def write_to_json(class_dict):
     # write the dictionary to a JSON file
     with open(file_name + "-class.json", 'w') as fp:
-        json.dump(class_dict, fp, indent=4, sort_keys=True, default=str)
+        json.dump(class_dict, fp)
 
     print("class file written")
+
 
 if extension == 'csv':
     dataset = read_and_clean(input_file)  # read input file as pandas data frame
@@ -65,9 +66,11 @@ elif extension == 'log':
     df = pd.DataFrame(dataset)
     df['linkID'] = df['Caller'] + df['Callee']
     df['threadM'] = df['Thread'] + df['Message']
+    df['msgID'] = df['linkID'] + df['Message']
     df['Start Time'] = pd.to_datetime(df['Start Time'], format='%H:%M:%S,%f')
     df['End Time'] = pd.to_datetime(df['End Time'], format='%H:%M:%S,%f')
     df['duration'] = df['End Time'] - df['Start Time']
+    df['duration_seconds'] = df['duration'].dt.total_seconds()
 
     # Run on multiple threads to reduce processing time
     number_of_df_parts = 50
@@ -75,11 +78,10 @@ elif extension == 'log':
     
     threads = []
     for part in range (0,number_of_df_parts):
-        print(part)
         threadName = str("thread") + str(part)
         threadName = myThread(part+1, df_parts[part], df)
         threads.append(threadName)
-    
+
     all_links = []
     for thread in threads:
         start = datetime.now()

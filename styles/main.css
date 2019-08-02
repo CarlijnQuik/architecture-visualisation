@@ -224,7 +224,7 @@ tr:nth-child(even) {
 text {
     fill: #000000;
     font: normal 15px/100% "Andale Mono", AndaleMono, monospace;
-    text-anchor: middle;
+    text-anchor: start;
     font-weight: 900;
 }
 
@@ -233,10 +233,20 @@ text {
     font: bold 10px/100% "Andale Mono", AndaleMono, monospace;
     max-width: fit-content;
     text-anchor: start;
+    fill: #000000;
 }
+
+.text-axes{
+    font: bold 15px/100% "Andale Mono", AndaleMono, monospace;
+    max-width: fit-content;
+    text-anchor: start;
+    fill: #000000;
+}
+
 .text-mini {
     font: bold 8px/100% "Andale Mono", AndaleMono, monospace;
     text-anchor: start;
+    fill: #000000;
 }
 
 .text-white {

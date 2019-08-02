@@ -9,7 +9,7 @@ var nMargin = {top: 20, right: 20, bottom: 20, left: 20},
     nHeight = 600 - nMargin.top - nMargin.bottom;
 
 // Define the standard node radius and link width
-var nodeRadius = d3.scaleLog().range([4, 10]);
+var nodeRadius = d3.scaleLog().range([4, 16]);
 var linkStrength = d3.scaleLog().range([1, 2 * nodeRadius.range()[0]]);
 
 // Define global variables and options
@@ -49,7 +49,7 @@ function networkInit() {
 
     // Initialize force in a box
     groupingForce = forceInABox()
-        .strength(0.1) // Strength to foci
+        .strength(0.2) // Strength to foci
         .template(template) // Either treemap or force
         .groupBy(groupby) // Setting package as the attribute to group by
         .enableGrouping(groupInABox)
@@ -61,11 +61,11 @@ function networkInit() {
     forceSim = d3.forceSimulation()
         .force('link', d3.forceLink() // creating a fixed distance between connected elements
             .id(d => d.name)
-            .distance(5)
+            .distance(100)
             .strength(groupingForce.getLinkStrength)
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
-        .force('center', d3.forceCenter(nWidth / 2, nHeight / 2)) // setting the center of gravity of the system;
+        .force('center', d3.forceCenter(nWidth / 2, nHeight / 2)); // setting the center of gravity of the system;
     // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
     // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
     // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
@@ -112,11 +112,24 @@ function updateNetwork(selectedData) {
     //----------------------------
     // Make sure small nodes are drawn on top of larger nodes
     data.nodes.sort((a, b) => b.count - a.count);
-    // data.links.sort((a, b) => b.count - a.count);
+    data.links.sort((a, b) => b.count - a.count); // make sure the count values are in order of size to calculate the domain next
+
+    data.nodes.map(node => {
+        if(node.count === 0){
+            node.count = 1;
+        }
+    });
 
     // Define the node radius and link strength/color range
-    nodeRadius.domain([data.nodes[data.nodes.length - 1].count, data.nodes[0].count]);
+    nodeRadius.domain([d3.min(data.nodes, d => d.count), d3.max(data.nodes, d => d.count)]);
     linkStrength.domain(d3.extent(data.links, d => d.count));
+
+    // Update the element positions
+    forceSim
+        .nodes(data.nodes)
+        .force(groupby, groupingForce)
+        .force('link')
+        .links(data.links);
 
     //----------------------------
     // Draw network
@@ -129,7 +142,7 @@ function updateNetwork(selectedData) {
         .append("line")
         .attr("class", "link");
 
-    // Define node properties
+    // // Define node properties
     nodes = networkSVG
         .selectAll(".node")
         .data(data.nodes)
@@ -137,11 +150,12 @@ function updateNetwork(selectedData) {
         .append("circle")
         .attr("class", "node")
         .attr("r", d => nodeRadius(d.count))
+        .text("test")
         .call(drag); // Enable dragging behaviour
 
     // Style network
     linkDefaultStyle(links);
-    nodeDefaultStyle(nodes);
+    nodeDefaultStyle(nodes,links);
 
     // Joins the nodes array to elements and updates their positions
     forceSim.on("tick", function () {
@@ -157,13 +171,6 @@ function updateNetwork(selectedData) {
 
     });
 
-    // Update the element positions
-    forceSim
-        .nodes(data.nodes)
-        .force(groupby, groupingForce)
-        .force('link')
-        .links(data.links);
-
     // ----------------------------
     // Define node interaction
     //----------------------------
@@ -175,13 +182,24 @@ function updateNetwork(selectedData) {
         .on("click", function (d) {
             if(d3.select(this).style("fill-opacity") == OPACITY.NODE_HIGHLIGHT){
                 deHighlightConnected(d, links);
-                nodeDefaultStyle(d3.select(this));
-                updateBarchart(data, "null");
+                nodeDefaultStyle(d3.select(this),links);
+
+                // Define bar chart 
+                resetBarchart(data, nodeDuration);
+
             } else {
                 console.log("clicked", d);
-                updateBarchart(data, d);
+                if(nodeDuration === true){
+                    updateBarchart(data, d, title = "Calls to and from " + d.name, x_axis_text = "Calls",
+                        y_axis_text = "Call duration (s)", category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+                }
+                else{
+                    updateBarchart(data, d, title = "Links connected to " + d.name, x_axis_text = "Link source + target",
+                        y_axis_text = "Link count", category = "thread", x_values = "linkID", y_attribute = ["count"]);
+                }
+
                 d3.select(this)
-                    .style("fill", colorNodeInOut(d, links))
+                    .style("fill", d => colorNodeInOut(d, links))
                     .style("stroke", COLOR.NODE_HIGHLIGHT_STROKE)
                     .style("fill-opacity", OPACITY.NODE_HIGHLIGHT);
                 highlightConnected(d, links);  // Highlight connected
@@ -199,7 +217,9 @@ function updateNetwork(selectedData) {
     //----------------------------
     links
         .on("click", function (d) {
-            updateBarchart(data, d)
+            console.log(data);
+            updateBarchart(data, d, title = "Calls over link " + d.source.name.split(".").pop() + " -> " + d.target.name.split(".").pop(), x_axis_text = "Calls",
+            y_axis_text = "Call duration (s)", category = "thread", x_values = "startTime", y_attribute = ["avg_duration"]);
         })
         .on("mouseenter", function (d) {
             if(d3.select(this).style("stroke-opacity") == OPACITY.LINK_DEFAULT ) {
@@ -222,6 +242,8 @@ function updateNetwork(selectedData) {
     checkTemplate();
     defineOnChange(); // Template user controls
 
+    linkDefaultStyle(links);
+    nodeDefaultStyle(nodes,links);
 }
 
 // ----------------------------
@@ -238,6 +260,13 @@ function defineOnChange(){
     d3.select("#checkShowTemplate").on("change", function () {
         drawTemplate = d3.select("#checkShowTemplate").property("checked");
         checkTemplate();
+    });
+
+    // Overlays
+    d3.select("#colorBy").on("change", function () {
+        colorOverlay = d3.select("#colorBy").property("value");
+        linkDefaultStyle(links);
+        nodeDefaultStyle(nodes,links);
     });
 
 }
