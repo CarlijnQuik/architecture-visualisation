@@ -29,34 +29,33 @@ function excludeData(selectedData, filterValue) {
     console.log("after filtering links:", filterValue, selectedData.links.length, selectedData.links);
 }
 
-function filterType(selectedData, filterType){
-    console.log("before filtering type", filterType, selectedData);
-
-    selectedData.map((link) => link['subLinks'] = link['subLinks'].filter(msg => msg.type !== filterType));
-    selectedData = selectedData.filter(link => link.subLinks.length > 0);
-
-    console.log("after filtering type", selectedData);
-
-    return selectedData;
-}
-
-// Filter the data by including values that start with
-function filterData(selectedData, filterValues) {
-    let dataCopy = JSON.parse(JSON.stringify(selectedData));
-    console.log("before filtering:", filterValues, selectedData.nodes.length, selectedData.links.length);
-    let filteredData = {"nodes": [], "links": []};
-    filterValues.map(filterValue =>
-        {
-            filteredData.nodes = Array.prototype.concat(filteredData.nodes, dataCopy.nodes.filter((node) => node.name.toString().startsWith(filterValue)));
-            filteredData.links = Array.prototype.concat(filteredData.links, dataCopy.links.filter((link) => link.source.name.startsWith(filterValue) && link.target.name.startsWith(filterValue)));
-        }
-    );
-    console.log(filteredData);
-    updateIdioms(filteredData);
-
-    console.log("after filtering:", filterValues, selectedData, selectedData.nodes.length, selectedData.links.length);
-}
-
+// function filterType(selectedData, filterType){
+//     console.log("before filtering type", filterType, selectedData);
+//
+//     selectedData.map((link) => link['subLinks'] = link['subLinks'].filter(msg => msg.type !== filterType));
+//     selectedData = selectedData.filter(link => link.subLinks.length > 0);
+//
+//     console.log("after filtering type", selectedData);
+//
+//     return selectedData;
+// }
+//
+// // Filter the data by including values that start with
+// function filterData(selectedData, filterValues) {
+//     let dataCopy = JSON.parse(JSON.stringify(selectedData));
+//     console.log("before filtering:", filterValues, selectedData.nodes.length, selectedData.links.length);
+//     let filteredData = {"nodes": [], "links": []};
+//     filterValues.map(filterValue =>
+//         {
+//             filteredData.nodes = Array.prototype.concat(filteredData.nodes, dataCopy.nodes.filter((node) => node.name.toString().startsWith(filterValue)));
+//             filteredData.links = Array.prototype.concat(filteredData.links, dataCopy.links.filter((link) => link.source.name.startsWith(filterValue) && link.target.name.startsWith(filterValue)));
+//         }
+//     );
+//     console.log(filteredData);
+//     updateIdioms(filteredData);
+//
+//     console.log("after filtering:", filterValues, selectedData, selectedData.nodes.length, selectedData.links.length);
+// }
 
 // Get an array of selected values in filter
 function getSelectedValues() {

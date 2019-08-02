@@ -66,15 +66,6 @@ function mapLCAs(rootChildren, selectedDataset, n){
     });
 }
 
-// Collapse the node and all it's children
-function collapse(d) {
-    if (d.children) {
-        d._children = d.children;
-        d._children.forEach(collapse);
-        d.children = null;
-    }
-}
-
 // Get all nodes for the tree
 function getAllNodes(nodeName, nodeObject) {
     let node = {};

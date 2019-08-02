@@ -66,9 +66,11 @@ elif extension == 'log':
     df = pd.DataFrame(dataset)
     df['linkID'] = df['Caller'] + df['Callee']
     df['threadM'] = df['Thread'] + df['Message']
+    df['msgID'] = df['linkID'] + df['Message']
     df['Start Time'] = pd.to_datetime(df['Start Time'], format='%H:%M:%S,%f')
     df['End Time'] = pd.to_datetime(df['End Time'], format='%H:%M:%S,%f')
     df['duration'] = df['End Time'] - df['Start Time']
+    df['duration_seconds'] = df['duration'].dt.total_seconds()
 
     # Run on multiple threads to reduce processing time
     number_of_df_parts = 50

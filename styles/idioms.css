@@ -88,6 +88,18 @@ circle {
     display: none;
 }
 
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5;
+}
+
+line#limit {
+    stroke: #393939;
+    stroke-width: 3;
+    stroke-dasharray: 3,3;
+}
+
 /* --------------------------- /
 /* Treemap styles
 /* ---------------------------- */

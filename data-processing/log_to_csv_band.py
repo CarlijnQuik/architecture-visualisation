@@ -1,6 +1,5 @@
 import csv
 import re
-from docutils.writers import null
 
 
 def fix_null_callee(callee_class, call):

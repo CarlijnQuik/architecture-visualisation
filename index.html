@@ -42,47 +42,42 @@
     <div id="tooltip" class="hidden">
 
         <div id="linkTooltip" class="hidden">
+
             <!-- Dynamic -->
             <div id="dynamicFields" class="hidden">
                 <p> <span  id="dynamicMsgTitle" class="tooltipTitle"></span> <span class="bold" id="dynamicMsg"></span></p>
                 <p> <span  id="durationTitle" class="tooltipTitle"></span> <span class="bold" id="duration"></span></p>
+                <p> <span  id="subCallsDurationTitle" class="tooltipTitle"></span> <span class="bold" id="subCallsDuration"></span></p>
                 <p> <span  id="threadTitle" class="tooltipTitle"></span> <stpan id="thread"></stpan></p>
                 <p> <span id="dates" class="tooltipTitle"></span></p>
                 <p>  <span id="times" class="tooltipTitle"></span></p>
-                <p> <span  id="linkCountTitle" class="tooltipTitle"></span><span id="countLink" class="bold"></span></p>
 <!--                <br />-->
             </div>
 <!--            <p> <span  id="linkSourceTitle" class="tooltipTitle"></span><span id="linkSource"> </span> </p>-->
 <!--            <p> <span  id="linkTargetTitle" class="tooltipTitle"></span><span id="linkTarget"></span></p>-->
-
-            <p> <span class="tooltipTitle" id="linkSource"></span> <span id="arrow" class="bold"> -> </span> <span class="tooltipTitle" id="linkTarget"> </span></p>
+            <p> <span class="tooltipTitle" id="linkSource"></span> <span id="arrow" class="bold"> -> </span> <span class="bold" id="linkTarget"> </span>
+                <span id="arrow2" class="bold"></span><span class="tooltipTitle" id="subCallTarget"> </span></p>
             <p> <span id="showMessages" class="hidden">(Click)</span></p>
-<!--            <br />-->
+            <p><span  id="linkCountTitle" class="tooltipTitle"></span><span id="countLink" class="bold"></span> </p>
 
-            <!-- Static -->
-            <div id="staticFields" class="hidden">
-                <br />
-                <p> <span  id="staticMsgTitle" class="tooltipTitle"></span> <span class="bold" id="staticMsg"></span></p>
-                <p> <span  id="depTypeTitle" class="tooltipTitle"></span> <span id="depType"> </span> </p>
-                <p> <span  id="depSubTypeTitle" class="tooltipTitle"></span> <span id="depSubtype"> </span> </p>
-                <p> <span  id="isDirectTitle" class="tooltipTitle"></span> <span id="isDirect"> </span> </p>
-                <p> <span  id="isInheritanceTitle" class="tooltipTitle"></span> <span id="isInheritance"></span></p>
-                <p> <span  id="isInnerClassTitle" class="tooltipTitle"></span> <span id="isInnerClass"></span></p>
-                <p> <span  id="codeLineTitle" class="tooltipTitle"></span> <span id="codeLine"></span></p>
-            </div>
+<!--            <br />-->
 
         </div>
 
         <div id="nodeTooltip" class="hidden">
             <p> <span  id="nameTitle" class="tooltipTitle"></span> <span id="name" class="bold"></span></p>
             <p> <span  id="parentTitle" class="tooltipTitle"></span>  <span id="parent"></span></p>
-            <p> <span  id="countNodeTitle" class="tooltipTitle"></span>  <span id="countNode"></span> </p>
+            <p> <span  id="countNodeTitle" class="tooltipTitle"></span>  <span id="countNode" class="bold"></span> </p>
             <p> <span  id="labelTitle" class="tooltipTitle"></span>  <span id="label"></span> </p>
             <p> <span  id="showDetails" class="hidden">(Click)</span></p>
         </div>
 
         <div id="cellTooltip" class="hidden">
             <p><span  id="cellTitle" class="tooltipTitle"></span> <span id="cellName"></span> </p>
+        </div>
+
+        <div id="feedbackTooltip" class="hidden">
+            <p><span  id="feedbackTitle" class="bold">No known sub-calls > 0.1</span> <span id="feedback"></span> </p>
         </div>
 
     </div>
@@ -150,27 +145,6 @@
                     <div id="loader" style="display:none;"></div>
                 </div>
 
-<!--                <div class='vis-options'>-->
-
-<!--                     Package or class level toggle-->
-<!--                    <label class="switch">-->
-<!--                        <input type="checkbox" id="selectAbstraction">-->
-<!--                        <div class="slider round">-->
-<!--                            <span class="on">Packages</span>-->
-<!--                            <span class="off">Classes</span>-->
-<!--                        </div>-->
-<!--                    </label>-->
-
-<!--                     Static or dynamic toggle-->
-<!--                    <label class="switch">-->
-<!--                        <input type="checkbox" id="selectDataType">-->
-<!--                        <div class="slider round">-->
-<!--                            <span class="on">Dynamic</span>-->
-<!--                            <span class="off">Static</span>-->
-<!--                        </div>-->
-<!--                    </label>-->
-<!--                </div>-->
-
                 <div class='vis-options'>
                     <!-- Filter drop down -->
                     <div>
@@ -198,44 +172,6 @@
 
                 <!-- TREE VIS -->
                 <div id='tree' class='vis'></div>
-
-                        <!-- Filter type drop down -->
-<!--                        <div>-->
-<!--                            <dl class="dropdown" id="filterType">-->
-<!--                                <dt>-->
-<!--                                    <a>-->
-<!--                                        <span class="hida">Select data</span>-->
-<!--                                        <p class="multiSel"></p>-->
-<!--                                    </a>-->
-<!--                                </dt>-->
-<!--                                <dd>-->
-<!--                                    <div id="filterTypeSel" class="mutliSelect">-->
-<!--                                        <div class="boxes">-->
-<!--                                            <ul id="filterTypeUl">-->
-
-<!--                                                <input type="checkbox" id="access" value="access" checked>-->
-<!--                                                <label for="access">Access</label>-->
-<!--                                                <input type="checkbox" id="annotation" value="annotation" checked>-->
-<!--                                                <label for="annotation">Annotation</label>-->
-<!--                                                <input type="checkbox" id="call" value="call" checked>-->
-<!--                                                <label for="call">Call</label>-->
-<!--                                                <input type="checkbox" id="declaration" value="declaration" checked>-->
-<!--                                                <label for="declaration">Declaration</label>-->
-<!--                                                <input type="checkbox" id="import" value="import" checked>-->
-<!--                                                <label for="import">Import</label>-->
-<!--                                                <input type="checkbox" id="inheritance" value="inheritance" checked>-->
-<!--                                                <label for="inheritance">Inheritance</label>-->
-<!--                                                <input type="checkbox" id="reference" value="reference" checked>-->
-<!--                                                <label for="reference">Reference</label>-->
-
-<!--                                            </ul>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </dd>-->
-<!--                                <button id="filterTypeButton">Filter</button>-->
-<!--                            </dl>-->
-<!--                        </div>-->
-                        <!-- Filter type drop down -->
 
             </div>
             <!-- VIS for VIS OPTIONS-->
@@ -270,21 +206,22 @@
                     </div>
 
                     <!-- Select cluster depth -->
-<!--                    <div class="column">-->
-<!--                        <select id="clusterDepth">-->
-<!--                            <option value="1">1</option>-->
-<!--                            <option value="2">2</option>-->
-<!--                            <option value="3">3</option>-->
-<!--                            <option value="4">4</option>-->
-<!--                        </select>-->
-<!--                    </div>-->
+                    <div class="column">
+                        <select id="clusterDepth">
+                            <option value="1">Package depth: 1</option>
+                            <option value="2">Package depth: 2</option>
+                            <option value="3">Package depth: 3</option>
+                            <option value="4">Package depth: 4</option>
+                        </select>
+                    </div>
 
                     <div class="column">
                         <select id="colorBy">
                             <option value="colorPackage">Color by package</option>
-<!--                            <option value="2">2</option>-->
-<!--                            <option value="3">3</option>-->
-<!--                            <option value="4">4</option>-->
+                            <option value="colorFan">Color by fan in/out</option>
+                            <option value="colorLibrary">Color by internal/external</option>
+                            <option value="colorTraffic">Color by traffic</option>
+                            <option value="colorNeutral">No color</option>
                         </select>
                     </div>
 
@@ -310,6 +247,28 @@
                                 <span class="off">Number</span>
                             </div>
                         </label>
+                    </div>
+                    <div class="column">
+                        <button id="resetButton">Reset</button>
+                    </div>
+                    <!-- Select threshold -->
+                    <div class="column">
+                        <select id="barchartThresholdD">
+                            <option value="0.1">Duration > 0.1</option>
+                            <option value="0.5">Duration > 0.5</option>
+                            <option value="1">Duration > 1</option>
+                            <option value="2">Duration > 2</option>
+                            <option value="5">Duration > 5</option>
+                        </select>
+                    </div>
+                    <div class="column">
+                        <select id="barchartThresholdC">
+                            <option value="1">Count > 0</option>
+                            <option value="1">Count > 1</option>
+                            <option value="5">Count > 5</option>
+                            <option value="10">Count > 10</option>
+                            <option value="100">Count > 100</option>
+                        </select>
                     </div>
                 </div>
                 <div id='barchart' class='vis'></div>
