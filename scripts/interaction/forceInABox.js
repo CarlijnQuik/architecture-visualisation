@@ -393,8 +393,11 @@
                     if (cell_width > 100) {
                         return "text";
                     }
-                    else{
-                        return "text";
+                    else if(cell_width > 60){
+                        return "text-template-small";
+                    }
+                    else {
+                        return "text-template-mini";
                     }
                 })
                 .text(function(d) {
@@ -402,25 +405,25 @@
                     let title_parts = d.data.id.split('.');
                     let last_part = title_parts[title_parts.length-1];
                     // console.log(last_part, cell_width, last_part.length);
-                    if(last_part.length > 11 && cell_width > 80){
+                    if(last_part.length >= 10 && cell_width > 80){
                         // Do not draw a - sign if there is no second part
-                        if(last_part[12]){
-                            return last_part.slice(0, 10) + "-";
+                        if(last_part.length > 9){
+                            return last_part.slice(0, 9) + "-";
                         }
                         else{
-                            return last_part.slice(0, 10);
+                            return last_part.slice(0, 9);
                         }
                     }
-                    else if(cell_width <= 80){
+                    else if(cell_width <= 80 && cell_width >= 40){
                         // Do not draw a - sign if there is no second part
-                        if(last_part[6]){
-                            return last_part.slice(0,5) + "-";
+                        if(last_part.length > 4){
+                            return last_part.slice(0,4) + "-";
                         }
                         else{
-                            return last_part.slice(0,5);
+                            return last_part.slice(0,4);
                         }
                     }
-                    else {
+                    else if(cell_width >= 40){
                         return last_part;
                     }
                 });
@@ -431,22 +434,38 @@
                 .attr('dy', 25)
                 .attr('class', function(d) {
                     let cell_width = (d.x1 - d.x0);
-                    if (cell_width > 80) {
+                    if (cell_width > 100) {
                         return "text";
                     }
+                    else if(cell_width > 60){
+                        return "text-template-small";
+                    }
                     else{
-                        return "text";
+                        return "text-template-mini";
                     }
                 })
                 .text(function(d) {
                     let cell_width = (d.x1 - d.x0);
+                    let cell_height = (d.y1 - d.y0);
                     let title_parts = d.data.id.split('.');
                     let last_part = title_parts[title_parts.length-1];
-                    if(last_part.length > 11 && cell_width > 80) {
-                        return last_part.slice(10);
+                    if(last_part.length >= 10 && cell_width > 80 && cell_height > 30){
+                        // Do not draw a - sign if there is no second part
+                        if(last_part.length > 18){
+                            return last_part.slice(9,18) + "..";
+                        }
+                        else{
+                            return last_part.slice(9);
+                        }
                     }
-                    else if( cell_width <= 80){
-                        return last_part.slice(5);
+                    else if(cell_width <= 80 && cell_width >= 40 && cell_height > 30){
+                        // Do not draw a - sign if there is no second part
+                        if(last_part.length > 8){
+                            return last_part.slice(4,8) + "..";
+                        }
+                        else{
+                            return last_part.slice(4);
+                        }
                     }
                 });
 

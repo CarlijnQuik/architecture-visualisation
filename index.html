@@ -58,7 +58,9 @@
             <p> <span class="tooltipTitle" id="linkSource"></span> <span id="arrow" class="bold"> -> </span> <span class="bold" id="linkTarget"> </span>
                 <span id="arrow2" class="bold"></span><span class="tooltipTitle" id="subCallTarget"> </span></p>
             <p> <span id="showMessages" class="hidden">(Click)</span></p>
-            <p><span  id="linkCountTitle" class="tooltipTitle"></span><span id="countLink" class="bold"></span> </p>
+            <p> <span  id="linkCountTitle" class="tooltipTitle"></span> <span class="bold" id="countLink"></span></p>
+            <p> <span  id="countMessagesTitle" class="tooltipTitle"></span> <span class="bold" id="countMessages"></span></p>
+            <p><span  id="sumSubLinksTitle" class="tooltipTitle"></span> <span class="bold" id="sumSubLinks"></span></p>
 
 <!--            <br />-->
 
@@ -86,7 +88,7 @@
     <div class='main-container'>
 
         <!-- Slider + title -->
-        <div class='slider-container'>
+        <div class='slider-container' id="slider-container">
             <div class='title'>
                 <p> Architecture Mining</p>
                 <span class="play-button" id="play">Play</span>
@@ -98,181 +100,193 @@
         <!-- Main content -->
         <div class='flex-container'>
 
-            <!-- VIS OPTIONS-->
-            <div class='visualisation'>
-                <div class='visualisation-title'>
-                    <div class='visualisation-title-text'>
-                        Options
+            <div class="large_column" id="optionsColumn"> <!-- Column with tree and network vis -->
+
+                <!-- VIS OPTIONS-->
+                <div class='visualisation'>
+                    <div class='visualisation-title'>
+                        <div class='visualisation-title-text'>
+                            <span  id="optionsTitle">Options</span>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Total numbers -->
-                <div class='info-box'>
-                    <table style="width:100%">
-                        <tr>
-                            <th> </th>
-                            <th>Total</th>
-                            <th>Selected</th>
-                        </tr>
-                        <tr>
-                            <td><span  id="nodeInfo" ></span></td>
-                            <td id='totalNodes' class="bold"></td>
-                            <td id='selectedNodes' class="bold"></td>
-                        </tr>
-                        <tr>
-                            <td><span  id="linkInfo" ></span></td>
-                            <td id='totalLinks' class="bold"></td>
-                            <td id='selectedLinks' class="bold"></td>
-                        </tr>
-                        <tr>
-                            <td><span  id="cellInfo" ></span></td>
-                            <td id='totalCells' class="bold"></td>
-                            <td id='selectedCells' class="bold"></td>
-                        </tr>
-                    </table>
-                </div>
+                    <!-- Total numbers -->
+                    <div class='info-box'>
+                        <table style="width:100%">
+                            <tr>
+                                <th> </th>
+                                <th>Total</th>
+                                <th>Selected</th>
+                            </tr>
+                            <tr>
+                                <td><span  id="nodeInfo" ></span></td>
+                                <td id='totalNodes' class="bold"></td>
+                                <td id='selectedNodes' class="bold"></td>
+                            </tr>
+                            <tr>
+                                <td><span  id="linkInfo" ></span></td>
+                                <td id='totalLinks' class="bold"></td>
+                                <td id='selectedLinks' class="bold"></td>
+                            </tr>
+                            <tr>
+                                <td><span  id="cellInfo" ></span></td>
+                                <td id='totalCells' class="bold"></td>
+                                <td id='selectedCells' class="bold"></td>
+                            </tr>
+                        </table>
+                    </div>
 
-                <div class='vis-options'>
-                        <!-- Select dataset drop down-->
+                    <div class='vis-options'>
+                            <!-- Select dataset drop down-->
+                            <div>
+                                <select id="datasetName">
+                                    <option value="band">BandExample scenario 1</option>
+                                    <option value="jabref">JabRef scenario 1</option>
+                                    <option value="fish">FISH scenario 1</option>
+                                </select>
+                            </div>
+
+                        <div id="loader" style="display:none;"></div>
+
+                        <!-- Filter drop down -->
                         <div>
-                            <select id="datasetName">
-                                <option value="band">Band</option>
-                                <option value="jabref">JabRef</option>
-                                <option value="fish">FISH</option>
+                            <dl class="dropdown" id="filterData">
+                                <dt>
+                                    <a>
+                                        <span class="hida">Select filters</span>
+                                        <p class="multiSel"></p>
+                                    </a>
+                                </dt>
+                                <dd>
+                                    <div class="mutliSelect">
+                                        <div class="boxes">
+                                            <ul id="filterDataUl">
+                                                <!--Checkboxes created in network.js-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </dd>
+                            </dl>
+                            <button id="filterButton">Filter</button>
+                        </div>
+                        <!-- Filter drop down -->
+                    </div>
+                    <!-- end vis options network diagram -->
+                    <div id='optionsVis' class='vis'></div>
+                </div>
+                <!-- OPTIONS VIS -->
+
+                <!-- TREE VIS -->
+                <div class='visualisation'>
+                    <div class='visualisation-title'>
+                        <div class='visualisation-title-text'>
+                            <span  id="treeTitle">Storage structure</span>
+                        </div>
+                    </div>
+                    <div id='tree' class='scroll-vis'></div>
+                </div>
+                <!-- TREE VIS -->
+
+            </div>  <!-- Column with tree and network vis -->
+
+                <!-- NETWORK VIS -->
+                <div class='visualisation'>
+                    <div class='visualisation-title'>
+                        <div class='visualisation-title-text'>
+                            <span  id="networkTitle"></span>
+                        </div>
+                    </div>
+
+                    <!-- The options panel on top of the vis -->
+                    <div class='vis-options'>
+                        <div class="column">
+                            <!-- Treemap or force toggle -->
+                            <label class="switch">
+                                <input type="checkbox" id="selectAlgorithm">
+                                <div class="slider round">
+                                    <span class="on">Treemap</span>
+                                    <span class="off">Force</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Checkbox show template-->
+                        <div class="column">
+                            <div class="boxes">
+                                <input type="checkbox" id="checkShowTemplate" checked>
+                                <label for="checkShowTemplate">Show Template </label>
+                            </div>
+                        </div>
+
+                        <!-- Select cluster depth -->
+                        <div class="column">
+                            <select id="clusterDepth">
+                                <option value="1">Package depth: 1</option>
+                                <option value="2">Package depth: 2</option>
+                                <option value="3">Package depth: 3</option>
+                                <option value="4">Package depth: 4</option>
                             </select>
                         </div>
 
-                    <div id="loader" style="display:none;"></div>
-                </div>
-
-                <div class='vis-options'>
-                    <!-- Filter drop down -->
-                    <div>
-                        <dl class="dropdown" id="filterData">
-                            <dt>
-                                <a>
-                                    <span class="hida">Select filters</span>
-                                    <p class="multiSel"></p>
-                                </a>
-                            </dt>
-                            <dd>
-                                <div class="mutliSelect">
-                                    <div class="boxes">
-                                        <ul id="filterDataUl">
-                                            <!--                                            Checkboxes created in network.js-->
-                                        </ul>
-                                    </div>
-                                </div>
-                            </dd>
-                        </dl>
-                        <button id="filterButton">Filter</button>
-                    </div>
-                    <!-- Filter drop down -->
-                </div>
-
-                <!-- TREE VIS -->
-                <div id='tree' class='vis'></div>
-
-            </div>
-            <!-- VIS for VIS OPTIONS-->
-
-            <!-- NETWORK VIS -->
-            <div class='visualisation'>
-                <div class='visualisation-title'>
-                    <div class='visualisation-title-text'>
-                        <span  id="networkTitle"></span>
-                    </div>
-                </div>
-
-                <!-- The options panel on top of the vis -->
-                <div class='vis-options'>
-                    <div class="column">
-                        <!-- Treemap or force toggle -->
-                        <label class="switch">
-                            <input type="checkbox" id="selectAlgorithm">
-                            <div class="slider round">
-                                <span class="on">Treemap</span>
-                                <span class="off">Force</span>
-                            </div>
-                        </label>
-                    </div>
-
-                    <!-- Checkbox show template-->
-                    <div class="column">
-                        <div class="boxes">
-                            <input type="checkbox" id="checkShowTemplate" checked>
-                            <label for="checkShowTemplate">Show Template </label>
+                        <div class="column">
+                            <select id="colorBy">
+                                <option value="colorPackage">Color by package</option>
+                                <option value="colorFan">Color by fan in/out</option>
+                                <option value="colorLibrary">Color by internal/external</option>
+                                <option value="colorTraffic">Color by traffic</option>
+                                <option value="colorNeutral">No color</option>
+                            </select>
                         </div>
                     </div>
-
-                    <!-- Select cluster depth -->
-                    <div class="column">
-                        <select id="clusterDepth">
-                            <option value="1">Package depth: 1</option>
-                            <option value="2">Package depth: 2</option>
-                            <option value="3">Package depth: 3</option>
-                            <option value="4">Package depth: 4</option>
-                        </select>
-                    </div>
-
-                    <div class="column">
-                        <select id="colorBy">
-                            <option value="colorPackage">Color by package</option>
-                            <option value="colorFan">Color by fan in/out</option>
-                            <option value="colorLibrary">Color by internal/external</option>
-                            <option value="colorTraffic">Color by traffic</option>
-                            <option value="colorNeutral">No color</option>
-                        </select>
-                    </div>
-
+                    <!-- end vis options network diagram -->
+                    <div id='network' class='vis'></div>
                 </div>
+                <!-- NETWORK VIS -->
 
-                <div id='network' class='vis'></div>
-            </div>
-
-            <!-- BARCHART VIS -->
-            <div class='visualisation'>
-                <div class='visualisation-title'>
-                    <div class='visualisation-title-text'>
-                        <span  id="barchartTitle"></span>
+                <!-- BARCHART VIS -->
+                <div class='visualisation'>
+                    <div class='visualisation-title'>
+                        <div class='visualisation-title-text'>
+                            <span  id="barchartTitle"></span>
+                        </div>
                     </div>
+                    <div class='vis-options'>
+                        <div class="column">
+                            <!-- Bar chart toggle -->
+                            <label class="switch">
+                                <input type="checkbox" id="nodeDuration">
+                                <div class="slider round">
+                                    <span class="on">Duration</span>
+                                    <span class="off">Number</span>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="column">
+                            <button id="resetButton">Reset</button>
+                        </div>
+                        <!-- Select threshold -->
+                        <div class="column">
+                            <select id="barchartThresholdD">
+                                <option value="0.1">Duration > 0.1</option>
+                                <option value="0.5">Duration > 0.5</option>
+                                <option value="1">Duration > 1</option>
+                                <option value="2">Duration > 2</option>
+                                <option value="5">Duration > 5</option>
+                            </select>
+                        </div>
+                        <div class="column">
+                            <select id="barchartThresholdC">
+                                <option value="1">Count > 0</option>
+                                <option value="1">Count > 1</option>
+                                <option value="5">Count > 5</option>
+                                <option value="10">Count > 10</option>
+                                <option value="100">Count > 100</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id='barchart' class='vis'></div>
                 </div>
-                <div class='vis-options'>
-                    <div class="column">
-                        <!-- Bar chart toggle -->
-                        <label class="switch">
-                            <input type="checkbox" id="nodeDuration">
-                            <div class="slider round">
-                                <span class="on">Duration</span>
-                                <span class="off">Number</span>
-                            </div>
-                        </label>
-                    </div>
-                    <div class="column">
-                        <button id="resetButton">Reset</button>
-                    </div>
-                    <!-- Select threshold -->
-                    <div class="column">
-                        <select id="barchartThresholdD">
-                            <option value="0.1">Duration > 0.1</option>
-                            <option value="0.5">Duration > 0.5</option>
-                            <option value="1">Duration > 1</option>
-                            <option value="2">Duration > 2</option>
-                            <option value="5">Duration > 5</option>
-                        </select>
-                    </div>
-                    <div class="column">
-                        <select id="barchartThresholdC">
-                            <option value="1">Count > 0</option>
-                            <option value="1">Count > 1</option>
-                            <option value="5">Count > 5</option>
-                            <option value="10">Count > 10</option>
-                            <option value="100">Count > 100</option>
-                        </select>
-                    </div>
-                </div>
-                <div id='barchart' class='vis'></div>
-            </div>
+                <!-- BARCHART VIS -->
 
         </div>
         <!-- Main content -->

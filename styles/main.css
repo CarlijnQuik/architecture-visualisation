@@ -19,7 +19,7 @@ body {
 
 .main-container {
     height: 100%;
-    padding-top: 90px;
+    padding-top: 80px;
     position: relative;
 }
 
@@ -34,11 +34,11 @@ body {
     position: fixed;
     width: 1500px;
     top: 10px;
-    left: 15px;
+    left: 10px;
     right: 10px;
     /*background-color: #16262E;*/
     background-color: #040C0E;
-    z-index: 500;
+    z-index: 1;
     padding-top: 10px;
     -webkit-box-shadow: 0px 2px 26px -6px rgba(0, 0, 0, 0.71);
     -moz-box-shadow: 0px 2px 26px -6px rgba(0, 0, 0, 0.71);
@@ -47,6 +47,13 @@ body {
     display: flex;
     /* width: 100%; */
     user-select: none;
+}
+
+.scroll-vis
+{
+    overflow: scroll;
+    background-color: #fff;
+    border-radius: 5px;
 }
 
 #slider:hover {
@@ -59,6 +66,12 @@ body {
     padding-left: 10px;
     align-content: center;
     background: #484848;
+}
+
+.large_column{
+    width : 300px;
+    float : left;
+    align-content: center;
 }
 
 /* --------------------------- /
@@ -142,18 +155,18 @@ body {
     /*background-color: #040C0E;*/
     /*padding: 5px 5px 5px 5px;*/
     background-color: #fff;
-    border-radius: 0px 0px 10px 10px;
+    border-radius: 5px;
 }
 
 .vis-options{
     background-color: #484848;
-    border-radius: 10px 10px 10px 10px;
+    border-radius: 5px;
     min-height: 40px;
 }
 
 .visualisation {
     position: relative;
-    margin: 10px;
+    margin: 5px;
     /*background: #fefefe;*/
     /*box-shadow: 0 10px 20px rgba(156, 155, 156, 0.19), 0 6px 6px rgba(150, 150, 150, 0.23);*/
 }
@@ -163,7 +176,7 @@ body {
     /*background-color: #16262E;*/
     background-color: #040C0E;
     text-align: center;
-    border-radius: 5px 5px 0px 0px;
+    border-radius: 5px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -183,16 +196,16 @@ body {
     position: relative;
     line-height: 25px;
     /*top: 50%;*/
-    padding: 5px;
+    /*padding: 5px;*/
     color: #bfbfbf;
     background-color: #fafafa;
     border: 1px solid #919191;
 }
 
 table {
-    font: normal 15px/100% "Andale Mono", AndaleMono, monospace;
+    font: normal 12px/100% "Andale Mono", AndaleMono, monospace;
     border-collapse: collapse;
-    width: 100%;
+    width: auto;
 }
 
 td, th {
@@ -236,8 +249,22 @@ text {
     fill: #000000;
 }
 
+.text-template-small{
+    font: bold 13px/100% "Andale Mono", AndaleMono, monospace;
+    max-width: fit-content;
+    text-anchor: start;
+    fill: #000000;
+}
+
+.text-template-mini{
+    font: bold 10px/100% "Andale Mono", AndaleMono, monospace;
+    max-width: fit-content;
+    text-anchor: start;
+    fill: #000000;
+}
+
 .text-axes{
-    font: bold 15px/100% "Andale Mono", AndaleMono, monospace;
+    font: bold 12px/100% "Andale Mono", AndaleMono, monospace;
     max-width: fit-content;
     text-anchor: start;
     fill: #000000;

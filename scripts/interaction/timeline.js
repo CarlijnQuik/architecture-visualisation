@@ -11,12 +11,12 @@ var tlMargin = {
 };
 
 //calculate screen width
-var sliderHeight = 60;
+var sliderHeight = window.innerHeight/22;
 var windowHeight = $(window).height() - sliderHeight - tlMargin.top - tlMargin.bottom;
 var windowWidth = $(window).width() - tlMargin.left - tlMargin.right;
 
 // var tlWidth = windowWidth - 300,
-var tlWidth = 1200;
+var tlWidth = window.innerWidth -window.innerWidth/8 -250,
     tlHeight = sliderHeight;
 
 var currentSliderValue = 0,
@@ -25,15 +25,34 @@ var currentSliderValue = 0,
 var timelineSVG;
 
 function timelineInit() {
-
     // Define timeline SVG
     timelineSVG = d3
         .select("#timeline")
         .append("svg")
-        .attr("width", tlWidth + 200)
-        .attr("height", tlHeight)
+        .attr("width", tlWidth)
+        .attr("height", tlHeight +10)
         .attr("style", "margin: 0 auto; display: block;"); // could be included in stylesheet, centering slider
 
+    d3.select("#slider-container").style("width", tlWidth); // The black box around the slider
+
+}
+
+function refreshTimeLine(slider){
+    timelineSVG
+        .selectAll('g')
+        .remove();
+
+    timelineSVG
+        .selectAll('.line')
+        .remove();
+
+    timelineSVG
+        .selectAll('.text')
+        .remove();
+
+    timelineSVG
+        .selectAll('.circle')
+        .remove();
 }
 
 function updateTimeline(selectedData){
@@ -69,29 +88,14 @@ function updateTimeline(selectedData){
     let xScale = d3
         .scalePoint()
         .domain(startTimes)
-        .range([0, (tlWidth)]);
+        .range([0, (tlWidth-400)]);
+
+    refreshTimeLine();
 
     let slider = timelineSVG
         .append("g")
         .attr("class", "slider")
-        .attr("transform", "translate(" + tlMargin.left + "," + tlHeight / 2 + ")");
-
-    slider
-        .selectAll('g')
-        .remove();
-
-    slider
-        .selectAll('.line')
-        .remove();
-
-    slider
-        .selectAll('.text')
-        .remove();
-
-    slider
-        .selectAll('.circle')
-        .remove();
-
+        .attr("transform", "translate(" + tlMargin.left + "," + tlHeight/4 + ")");
 
     slider
         .append("line")
@@ -138,8 +142,8 @@ function updateTimeline(selectedData){
         .append("text")
         .attr("class", "text-white")
         .attr("text-anchor", "middle")
-        .text(startTime)
-        .attr("transform", "translate(0," + -20 + ")");
+        .text(startTime.slice(0,-3))
+        .attr("transform", "translate(0," +30 + ")");
 
     var handle = slider
         .insert("circle", ".track-overlay")
@@ -167,7 +171,7 @@ function updateTimeline(selectedData){
         if(newTime !== currentTime){
             currentTime = newTime;
         }
-        label.attr("x", xScale(h)).text(h);
+        label.attr("x", xScale(h)).text(h.slice(0,-3));
     }
 
     // play button

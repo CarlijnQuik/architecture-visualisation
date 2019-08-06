@@ -6,13 +6,25 @@
 function tooltipOnOff(tooltip, hidden) {
 
     // Find mouse position and unhide general tooltip
-    // let w = window.innerWidth;
-    // if (w / 3 * 2 < d3.event.pageX) {
-    d3.select("#tooltip")
-        .style("top", (d3.event.pageY) - 200 + "px")
-        .style("left", (d3.event.pageX) + 20 + "px")
-        .classed("hidden", hidden);
-    // }
+    d3.select("#tooltip").classed("hidden", hidden);
+
+    // Define tooltip position
+    if(d3.event.pageY > window.innerHeight-200){
+        d3.select("#tooltip")
+            .style("top", (d3.event.pageY) - 200 + "px")
+            .style("left", (d3.event.pageX) + 20 + "px")
+
+    }
+    else if(d3.event.pageX > window.innerWidth-350){
+        d3.select("#tooltip")
+            .style("top", (d3.event.pageY) + 20 + "px")
+            .style("left", (d3.event.pageX) - 350 + "px")
+    }
+    else{
+        d3.select("#tooltip")
+            .style("top", (d3.event.pageY) + 40 + "px")
+            .style("left", (d3.event.pageX) + 20 + "px")
+    }
 
     // Unhide specific tooltip
     d3.select(tooltip).classed("hidden", hidden);
@@ -45,6 +57,25 @@ function linkTooltip(d){
         d3.select("#linkTarget").text(d.target.split(target_parent).join("").split(".").join(""));
     }
 
+    console.log(d);
+
+    if(d.subLinks){
+        d3.select("#countMessagesTitle").text("No. of messages: ");
+        d3.select("#countMessages").text( d.subLinks.length);
+    }
+    else{
+        d3.select("#countMessagesTitle").text(" ");
+        d3.select("#countMessages").text(" ");
+    }
+    if(d.sum_subLinks){
+        d3.select("#sumSubLinksTitle").text("Total duration: ");
+        d3.select("#sumSubLinks").text(d.sum_subLinks.toFixed(3) + " s");
+    }
+    else{
+        d3.select("#sumSubLinksTitle").text(" ");
+        d3.select("#sumSubLinks").text(" ");
+    }
+
     // if the bar is a message
     if(d.startDate) {
         // Unhide dynamic fields
@@ -59,17 +90,20 @@ function linkTooltip(d){
         d3.select("#durationTitle").text("Average duration: ");
         d3.select("#duration").text(d.avg_duration.toFixed(3) + " s"); //  " / " + (d.duration/1000000 * d.count).toFixed(3) + " s total" )
 
-        if(d.sum_sub_calls === 0){
+        d3.select("#sumDurationTitle").text("Total duration of " + d.count + " call(s): ");
+        d3.select("#sumDuration").text(d.duration_sum.toFixed(3) + " s"); //  " / " + (d.duration/1000000 * d.count).toFixed(3) + " s total" )
+
+        if(!d.sum_sub_calls){
             d3.select("#subCallsDurationTitle").text(" ");
             d3.select("#subCallsDuration").text(" ");
         }
-        else{
+        else if(d.sum_sub_calls){
             d3.select("#subCallsDurationTitle").text("Duration of sub-calls: ");
             d3.select("#subCallsDuration").text(d.sum_sub_calls.toFixed(3) + " s"); //  " / " + (d.duration/1000000 * d.count).toFixed(3) + " s total" )
         }
 
+        d3.select("#arrow2").text(" -> ");
         if(d.sub_calls){
-            d3.select("#arrow2").text(" -> ");
             if(d.sub_calls[0]){
                 let source_parent = d.sub_calls[0].source.split(".").slice(0,-1).join(".");
                 let target_parent = d.sub_calls[0].target.split(".").slice(0,-1).join(".");
