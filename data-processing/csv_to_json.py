@@ -52,6 +52,7 @@ def get_links(dataset, dataset_part, fr, to, file_name, data_type, msg):
 
     # create link ID column and lists to count from
     list_ids = dataset['linkID'].tolist()
+    list_ids_reversed = dataset['reverseID'].tolist()
     list_msgs = dataset[msg].tolist()
     list_thread_m = dataset['threadM'].tolist()
 
@@ -62,6 +63,7 @@ def get_links(dataset, dataset_part, fr, to, file_name, data_type, msg):
         print("counter: ", counter, len(dataset_part))
         if link[fr] and link[to]:
             link_id = link['linkID']
+            reverse_id = link['reverseID']
             message = link[msg]
             if message != "Empty.field":
                 message_count = list_msgs.count(message)
@@ -73,23 +75,34 @@ def get_links(dataset, dataset_part, fr, to, file_name, data_type, msg):
             else:  # dynamic
                 link_specs = get_dynamic_specs(link, message_count, list_thread_m, dataset)
 
-            # if this is the first time we encounter this specific link ID
-            if link_id not in unique_links:
-                unique_links.append(link_id)
-                sub_links = [link_specs]
-                link_dict = {'source': '.'.join(link[fr].split('.')),
-                             'target': '.'.join(link[to].split('.')),
-                             'linkID': '.'.join(link_id.split('.')),
-                             'dataType': data_type,
-                             'origin': file_name,
-                             'count': list_ids.count(link['linkID']),  # the number of times the link id exists
-                             'subLinks': sub_links}
+            sub_links = [link_specs]
+            link_dict = {'source': '.'.join(link[fr].split('.')),
+                         'target': '.'.join(link[to].split('.')),
+                         'linkID': '.'.join(link_id.split('.')),
+                         'dataType': data_type,
+                         'origin': file_name,
+                         'countLinkID': list_ids.count(link['linkID']),  # the number of times the link id exists
+                         'reverseCount': list_ids_reversed.count(link['reverseID']),
+                         'count': list_ids.count(link['linkID']) + list_ids_reversed.count(link['reverseID']),
+                         'subLinks': sub_links}
 
+            # if this is the first time we encounter this specific link ID and reverse ID
+            if link_id not in unique_links and reverse_id not in unique_links:
+                unique_links.append(link_id)
                 dict_links[link_id] = link_dict
 
             # if the link ID has been added to list_links already
-            else:
+            elif link_id in unique_links and reverse_id not in unique_links:
                 dict_links[link_id]["subLinks"].append(link_specs)
+
+            # if the reverse ID has been added to list_links already
+            elif reverse_id in unique_links and link_id not in unique_links:
+                # unique_links.append(reverse_id)
+                dict_links[reverse_id]["subLinks"].append(link_specs)
+                # dict_links[reverse_id] = link_dict
+
+            elif reverse_id in unique_links and link_id in unique_links:
+                print("DOUBLE", reverse_id, link_id)
 
     # insert in mongodb
     # static_links_db.insert_many(list_links)

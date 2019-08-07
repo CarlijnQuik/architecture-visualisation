@@ -150,6 +150,8 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
     let barchartData = JSON.parse(JSON.stringify(inputData.links));
     let msgs = getMessages(barchartData); // get messages from link
 
+    console.log(msgs);
+
     // Filter
     let messages = msgs.filter(msg => msg.duration > barchartThresholdDuration && msg.count > barchartThresholdCount);
 
