@@ -4,11 +4,11 @@
 //----------------------------
 
 // set the dimensions and margins of the tree graph
-var tMargin = {top: 20, right: 20, bottom: 20, left: 20},
-    tWidth = 260 - tMargin.left - tMargin.right,
-    tHeight = 350 - tMargin.top - tMargin.bottom,
+var tMargin = {top: 30, right: 20, bottom: 20, left: 20},
+    tWidth = window.innerWidth/8 -tMargin.left - tMargin.right,
+    tHeight = window.innerHeight/4*2 -tMargin.bottom -tMargin.top -(window.innerHeight/6),
     barHeight = 20,
-    barWidth = (tWidth - tMargin.left - tMargin.right) * 0.8;
+    barWidth = (tWidth) * 0.6;
 
 var treeSVG;
 var treemap;
@@ -20,13 +20,12 @@ var diagonal = d3.linkHorizontal()
     .x(function(d) { return d.y; })
     .y(function(d) { return d.x; });
 
-
 function treeInit() {
     // Create the tree graphic
     treeSVG = d3.select("#tree")
         .append("svg")
-        .attr("width", tWidth + tMargin.right + tMargin.left)
-        .attr("height", tHeight + tMargin.top + tMargin.bottom)
+        .attr("width", tWidth+28)
+        .attr("height", tHeight)
         .call(d3.zoom().on("zoom", function () {
             treeSVG.attr("transform", d3.event.transform)
         }))

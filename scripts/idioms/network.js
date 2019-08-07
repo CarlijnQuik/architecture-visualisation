@@ -5,8 +5,8 @@
 
 // Set the dimensions and margins of the chart
 var nMargin = {top: 20, right: 20, bottom: 20, left: 20},
-    nWidth = 1250 - nMargin.top - nMargin.bottom,
-    nHeight = 600 - nMargin.top - nMargin.bottom;
+    nWidth = (window.innerWidth - nMargin.left - nMargin.right -window.innerWidth/8) - (window.innerWidth/8) +25 -250,
+    nHeight = window.innerHeight/4*2 -nMargin.top - nMargin.bottom;
 
 // Define the standard node radius and link width
 var nodeRadius = d3.scaleLog().range([4, 16]);
@@ -39,8 +39,8 @@ function networkInit() {
     networkSVG = d3
         .select("#network")
         .append('svg')
-        .attr('width', nWidth)
-        .attr('height', nHeight)
+        .attr('width', nWidth +30 -nMargin.left)
+        .attr('height', nHeight + 30 -nMargin.top)
         .call(d3.zoom().on("zoom", function () {
             networkSVG.attr("transform", d3.event.transform) // Enable zooming in and out
         }))
@@ -103,6 +103,7 @@ function refreshNetwork(){
 function updateNetwork(selectedData) {
 
     refreshNetwork();
+    forceSim.alphaTarget(0.5).restart();
     const data = {"nodes": [], "links": []};
     data.nodes = selectedData.nodes;
     data.links = selectedData.links;
@@ -130,6 +131,15 @@ function updateNetwork(selectedData) {
         .force(groupby, groupingForce)
         .force('link')
         .links(data.links);
+
+    // Map traffic
+    data.links.map(link => {
+        link.sum_subLinks = link.subLinks.reduce(function (acc, subLink) {
+            return acc + subLink.duration;
+        }, 0.0000);
+    });
+
+    console.log(data.links);
 
     //----------------------------
     // Draw network
@@ -217,9 +227,9 @@ function updateNetwork(selectedData) {
     //----------------------------
     links
         .on("click", function (d) {
-            console.log(data);
+            console.log("CLICKED", d);
             updateBarchart(data, d, title = "Calls over link " + d.source.name.split(".").pop() + " -> " + d.target.name.split(".").pop(), x_axis_text = "Calls",
-            y_axis_text = "Call duration (s)", category = "thread", x_values = "startTime", y_attribute = ["avg_duration"]);
+            y_axis_text = "Call duration (s)", category = "thread", x_values = "Message", y_attribute = ["duration"]);
         })
         .on("mouseenter", function (d) {
             if(d3.select(this).style("stroke-opacity") == OPACITY.LINK_DEFAULT ) {
@@ -244,6 +254,7 @@ function updateNetwork(selectedData) {
 
     linkDefaultStyle(links);
     nodeDefaultStyle(nodes,links);
+
 }
 
 // ----------------------------
@@ -307,7 +318,7 @@ var drag = d3.drag()
 
 // Use this only for the network diagram (which has the force sim)
 function dragStart(d) {
-    if (!d3.event.active) forceSim.alphaTarget(0.3).restart();
+    if (!d3.event.active) forceSim.alphaTarget(0.1).restart();
     d.fx = d.x;
     d.fy = d.y;
 }

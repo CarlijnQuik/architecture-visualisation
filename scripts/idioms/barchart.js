@@ -5,9 +5,9 @@
 var barChartSVG;
 
 // set the dimensions and margins of the graph
-var bMargin = {top: 20, right: 175, bottom: 60, left: 70},
-    bWidth = 1500 - bMargin.left - bMargin.right,
-    bHeight = 400 - bMargin.top - bMargin.bottom;
+var bMargin = {top: 20, right: 175, bottom: 55, left: 70},
+    bWidth = window.innerWidth - bMargin.left - bMargin.right -window.innerWidth/8 -250,
+    bHeight = window.innerHeight/4 - bMargin.top - bMargin.bottom;
 
 // Options
 var nodeDuration;
@@ -15,6 +15,7 @@ var scenarioDuration;
 var timeParser = d3.timeParse("%H:%M:%S.%f");
 var barchartThresholdDuration;
 var barchartThresholdCount;
+var sub_calls;
 
 // say date/times are local 20160622 15:00
 // var timeFormatter = d3.time.format("%H:%M:%S,%f");
@@ -149,6 +150,8 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
     let barchartData = JSON.parse(JSON.stringify(inputData.links));
     let msgs = getMessages(barchartData); // get messages from link
 
+    console.log(msgs);
+
     // Filter
     let messages = msgs.filter(msg => msg.duration > barchartThresholdDuration && msg.count > barchartThresholdCount);
 
@@ -157,6 +160,11 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
     messages.map(msg => msg.sum_sub_calls = msg.sub_calls.reduce(function(acc,sub_call){
        return acc + sub_call.duration;
     },0.0000));
+
+    sub_calls = [];
+    messages.map(msg => {if(msg.sub_calls.length > 0){
+        msg.sub_calls.map(sub_call => sub_calls.push(sub_call.message));
+    }});
 
     // Standard dynamic view with duration on the y-axes
     if (nodeDuration === true && selectedElement === "null") {
@@ -183,11 +191,10 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
         drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs);
 
     } else if (selectedElement.subLinks) {
-        let selectedData = messages.filter(msg => msg.source === selectedElement.source || msg.target === selectedElement.target, msgs);
+        // let selectedData = messages.filter(msg => msg.source === selectedElement.source || msg.target === selectedElement.target, msgs);
         // barchartData = barchartData.filter(msg => msg.duration > 0);
-        if (selectedData.length > 0) {
-            barchartData = selectedData;
-            drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs);
+        if (selectedElement.subLinks.length > 0) {
+            drawBarchart(inputData, selectedElement.subLinks, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs);
         }
         console.log(barchartData, "selected link in network diagram");
         //drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute);
@@ -255,18 +262,17 @@ function drawBarchart(inputData, barchartData, selectedElement, title, x_axis_te
     //----------------------------
     // Draw bar chart
     //---------------------------
-    // if(nodeDuration === true){
-    //     let bar2 = bars.append("rect")
-    //         .attr("class", "bar")
-    //         .attr("id", "bar2")
-    //         .attr("x", d => xScale(d["startTime"]))
-    //         .attr("width", xScale.bandwidth())
-    //         .attr("y", d => yScale(d["avg_duration"]))
-    //         .attr("height", d => (bHeight - (yScale(d["avg_duration"]))))
-    //         .attr("fill", "#c6c6c6")
-    //         .attr("stroke", "black");
-    //
-    // }
+    bars.append('defs')
+        .append('pattern')
+        .attr('id', 'diagonalHatch')
+        .attr('patternUnits', 'userSpaceOnUse')
+        .attr('width', 4)
+        .attr('height', 4)
+        .append('path')
+        .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
+        .attr('stroke', '#000000')
+        .attr('stroke-width', 1);
+
 
     // append the rectangles for the bar chart
     let bar = bars.append("rect")
@@ -280,71 +286,23 @@ function drawBarchart(inputData, barchartData, selectedElement, title, x_axis_te
         .attr("fill", d => color(d[category]));
 
     barDefaultStyle(bar); // Styling
+    defineBarInteraction(bar, barchartData, inputData, msgs);
 
-    // ----------------------------
-    // Define bar interaction
-    //----------------------------
-    bar
-        .on("mouseenter", function (d) {
-            // Highlight selected bar
-            barHighlightStyle(d3.select(this));
-            rerenderNetworkStyle(d, msgs);
-
-            barChartSVG
-                .append('line')
-                .attr('id', 'limit')
-                .attr('x1', 0)
-                .attr('y1', yScale(y_values(d)))
-                .attr('x2', bWidth)
-                .attr('y2', yScale(y_values(d)));
-
-            // Edit tooltip values and show tooltip
-            linkTooltip(d);
-            tooltipOnOff("#linkTooltip", false);
-        })
-        .on("click", function(d){
-            console.log("bar clicked", d, d.sub_calls, d.sub_calls.length);
-            tooltipOnOff("#linkTooltip", true);
-            if(nodeDuration === true){
-                if(d.sub_calls.length > 0){
-                    let msg = d.message.split('(')[0].split('.').pop();
-                    let methodType = d.message.split('.')[0].split(" ").slice(0,-1).join(" ");
-                    console.log("update with", barchartData);
-                    updateBarchart(inputData, d, title = "Sub-calls of " + methodType + " " + msg + "(..)", x_axis_text = "Messages",
-                        y_axis_text = "Call duration",
-                        category = "thread", x_values = "startTime", y_attribute = ["duration"]);
-                }
-                else{
-                    d3.select("#tooltip")
-                        .style("top", (d3.event.pageY) - 20 + "px")
-                        .style("left", (d3.event.pageX) + 20 + "px")
-                        .classed("hidden", false);
-                    d3.select("#feedbackTooltip").classed("hidden", false);
-                }
+    let barPattern = bars.append("rect")
+        .attr("class", "bar")
+        .attr("id", "bar2")
+        .attr("x", d => xScale(d[x_values])) //+2.5
+        .attr("width", xScale.bandwidth()) //-5
+        .attr("y", d => yScale(y_values(d)))
+        .attr("height", d => (bHeight - (yScale(y_values(d)))))
+        .attr('fill', d => {
+            if(sub_calls.includes(d.message)){
+                return 'url(#diagonalHatch)';
             }
-            else{
-                if(d.subLinks){
-                    updateBarchart(inputData, d, title = "Calls over link " + d.source.name.split(d.source.parent).join("").split(".").join("") + "->" + d.target.name.split(d.target.parent).join("").split(".").join(""), x_axis_text = "Calls",
-                        y_axis_text = "Count of call",
-                        category = "thread", x_values = "message", y_attribute = ["count"]);
-                }
-                else{
-                    resetBarchart(inputData, nodeDuration);
-                }
-            }
-
         })
-        .on("mouseout", function (d) {
-            // De-highlight selected bar
-            barDefaultStyle(bar);
-            linkDefaultStyle(links);
-            nodeDefaultStyle(nodes);
-            tooltipOnOff("#linkTooltip", true);
-            tooltipOnOff("#feedbackTooltip", true);
+        .attr("stroke", "black");
 
-            barChartSVG.selectAll('#limit').remove(); // remove the extra line
-
-        });
+    defineBarInteraction(barPattern, barchartData, inputData, msgs);
 
     //----------------------------
     // Draw x-axis title, y-axes title, and grid
@@ -376,7 +334,7 @@ function drawBarchart(inputData, barchartData, selectedElement, title, x_axis_te
     barChartSVG
         .append('text')
         .attr('class', 'text-axes')
-        .attr('x', -250)
+        .attr('x', -bHeight)
         .attr('y', -40)
         .attr('transform', 'rotate(-90)')
         .attr('text-anchor', 'middle')
@@ -411,7 +369,7 @@ function drawBarchart(inputData, barchartData, selectedElement, title, x_axis_te
         .attr("class", "legend")
         .attr("height", 100)
         .attr("width", 100)
-        .attr('transform', 'translate(-20,50)');
+        .attr('transform', 'translate(-10,10)');
 
     legend.selectAll('rect')
         .data(unique)
@@ -434,6 +392,73 @@ function drawBarchart(inputData, barchartData, selectedElement, title, x_axis_te
         .attr("y", (d,i) => i * 20 + 9)
         .text(function(d) {
             return d;
+        });
+}
+
+// ----------------------------
+// Define bar interaction
+//----------------------------
+function defineBarInteraction(bar, barchartData, inputData, msgs){
+    bar
+        .on("mouseenter", function (d) {
+            // Highlight selected bar
+            barHighlightStyle(d3.select(this));
+            rerenderNetworkStyle(d, msgs);
+
+            // barChartSVG
+            //     .append('line')
+            //     .attr('id', 'limit')
+            //     .attr('x1', 0)
+            //     .attr('y1', yScale(y_values(d)))
+            //     .attr('x2', bWidth)
+            //     .attr('y2', yScale(y_values(d)));
+
+            // Edit tooltip values and show tooltip
+            linkTooltip(d);
+            tooltipOnOff("#linkTooltip", false);
+        })
+        .on("click", function(d){
+            console.log("bar clicked");
+            tooltipOnOff("#linkTooltip", true);
+            if(nodeDuration === true){
+                if(d.sub_calls.length > 0){
+                    let msg = d.message.split('(')[0].split('.').pop();
+                    let methodType = d.message.split('.')[0].split(" ").slice(0,-1).join(" ");
+                    console.log("update with", barchartData);
+                    updateBarchart(inputData, d, "Sub-calls of " + methodType + " " + msg + "(..)", "Messages",
+                        "Call duration",
+                        "thread", "startTime", ["duration"]);
+                }
+                else{
+                    d3.select("#tooltip")
+                        .style("top", (d3.event.pageY) - 20 + "px")
+                        .style("left", (d3.event.pageX) + 20 + "px")
+                        .classed("hidden", false);
+                    d3.select("#feedbackTooltip").classed("hidden", false);
+                }
+            }
+            else{
+                if(d.subLinks){
+                    updateBarchart(inputData, d, "Calls over link " + d.source.name.split(d.source.parent).join("").split(".").join("") + "->" + d.target.name.split(d.target.parent).join("").split(".").join(""), "Calls",
+                        "Count of call",
+                        "thread", "message", ["count"]);
+                }
+                else{
+                    resetBarchart(inputData, nodeDuration);
+                }
+            }
+
+        })
+        .on("mouseout", function (d) {
+            // De-highlight selected bar
+            barDefaultStyle(bar);
+            linkDefaultStyle(links);
+            nodeDefaultStyle(nodes,links);
+            tooltipOnOff("#linkTooltip", true);
+            tooltipOnOff("#feedbackTooltip", true);
+
+            // barChartSVG.selectAll('#limit').remove(); // remove the extra line
+
         });
 }
 

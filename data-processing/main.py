@@ -2,7 +2,7 @@
 import json
 import sys
 import csv_to_json as ctj
-import log_to_csv_jabref as ltc  # change for jabref (ajpolog edited since that log was created)
+import log_to_csv_band as ltc  # change for jabref (ajpolog edited since that log was created)
 import pandas as pd
 import threading
 from datetime import datetime
@@ -65,6 +65,7 @@ elif extension == 'log':
 
     df = pd.DataFrame(dataset)
     df['linkID'] = df['Caller'] + df['Callee']
+    df['reverseID'] = df['Callee'] + df['Caller']
     df['threadM'] = df['Thread'] + df['Message']
     df['msgID'] = df['linkID'] + df['Message']
     df['Start Time'] = pd.to_datetime(df['Start Time'], format='%H:%M:%S,%f')
@@ -92,6 +93,11 @@ elif extension == 'log':
         thread.join()
         print("finished", thread.threadID, "duration: ", (datetime.now() - start))
         all_links = all_links + thread.result
+
+    list_ids = df['linkID'].tolist() + df['reverseID'].tolist()
+    unique_links = list(dict.fromkeys(list_ids))
+    print(len(unique_links))
+    print(len(all_links))
 
     # create a dictionary and put the nodes and links from the dataset in it
     dynamic_dict = {"nodes": ctj.get_nodes(dataset, 'Caller', 'Callee', input_file, "Dynamic"),

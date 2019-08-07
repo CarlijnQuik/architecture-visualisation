@@ -2,14 +2,15 @@
 // ----------------------------
 // Window onload
 // ----------------------------
+
 window.onload = function () {
     optionsInit(); // Initialise the global user controls
 
     // Initialise the idioms
-    barchartInit();
     networkInit();
     treeInit();
     timelineInit();
+    barchartInit();
 };
 
 //----------------------------
@@ -23,13 +24,15 @@ var datasetName,        // the selected dataset's name: jabref, fish etc.
 
 function optionsInit(){
     // Define the initial settings
-    datasetName = "fish";
+    datasetName = "band";
     selectedNodes = [];
-    clusterDepth = 3;
+    clusterDepth = 2;
     colorOverlay = "colorPackage";
     d3.select("#datasetName").property("value", datasetName);
     d3.select("#clusterDepth").property("value", clusterDepth);
     d3.select("#colorBy").property("value", colorOverlay);
+
+    d3.select("#optionsColumn").style("width", window.innerWidth/8);
 
     // ----------------------------
     // Define selected dataset (on change)
@@ -59,9 +62,9 @@ function loadDataset(datasetName){
     // show load icon
     document.getElementById("loader").style.display = "inline";
 
-    d3.select("#networkTitle").text("Interactions between objects in the system");
+    d3.select("#networkTitle").text("Interactions between class objects in the system");
     d3.select("#nodeInfo").text("Calls");
-    d3.select("#linkInfo").text("Objects");
+    d3.select("#linkInfo").text("Links");
     d3.select("#cellInfo").text("Packages");
 
     // Load json data
