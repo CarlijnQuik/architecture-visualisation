@@ -210,8 +210,8 @@ table {
 
 td, th {
     border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
+    text-align: center;
+    padding: 5px;
 }
 
 tr:nth-child(even) {
@@ -285,6 +285,10 @@ text {
 /* tooltips bold text */
 .bold {
     font-weight: 900;
+}
+
+.italic {
+    font: italic 15px/100% "Andale Mono", AndaleMono, monospace;
 }
 
 h1 {

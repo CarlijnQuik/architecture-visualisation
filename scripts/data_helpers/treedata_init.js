@@ -35,37 +35,6 @@ function treeDataInit(treeData) {
     return root;
 }
 
-// Name node['root'] as the LCA of the node
-function mapLCAs(rootChildren, selectedDataset, n){
-    rootChildren.map(child => {
-        if(child._children){
-            if(child._children.length > 1){
-                selectedDataset.nodes.map(node => {
-                    if(node.name.startsWith(child.data.name)) {
-                        node['root'] = node.name.split(".").slice(0,n).join(".").toString();
-                        if(node.parent.length < node.root.length){
-                            node.root = node.parent;
-                        }
-                    }
-                });
-            }
-            else {
-                mapLCAs(child._children, selectedDataset, (n + 1));
-            }
-        }
-        else{
-            selectedDataset.nodes.map(node => {
-                if(node.name.startsWith(child.data.name)) {
-                    node['root'] = node.name.split(".").slice(0,n).join(".").toString();
-                    if(node.parent.length < node.root.length){
-                        node.root =  node.parent;
-                    }
-                }
-            });
-        }
-    });
-}
-
 // Get all nodes for the tree
 function getAllNodes(nodeName, nodeObject) {
     let node = {};

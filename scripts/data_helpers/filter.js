@@ -1,6 +1,25 @@
 // ----------------------------
 // Filter data (on click)
 //----------------------------
+function filterInit(){
+    // Dropdown filter behaviour
+    $(".dropdown dt a").on('click', function () {
+        $(".dropdown dd ul").slideToggle('fast');
+    });
+    $(".dropdown dd ul li a").on('click', function () {
+        $(".dropdown dd ul").hide();
+    });
+}
+
+function updateFilter(selectedDataset){
+    $("ul").empty();  // Remove the checkboxes in the filter
+    createCheckboxes(selectedDataset.nodes);
+    d3.select("#filterButton").on("click", function () {
+        document.getElementById("loader").style.display = "inline";
+        let selectedData = getFilteredData(selectedDataset);
+        updateIdioms(selectedData);
+    });
+}
 
 // Filter selected data and update views accordingly
 function getFilteredData(data) {
@@ -29,34 +48,6 @@ function excludeData(selectedData, filterValue) {
     console.log("after filtering links:", filterValue, selectedData.links.length, selectedData.links);
 }
 
-// function filterType(selectedData, filterType){
-//     console.log("before filtering type", filterType, selectedData);
-//
-//     selectedData.map((link) => link['subLinks'] = link['subLinks'].filter(msg => msg.type !== filterType));
-//     selectedData = selectedData.filter(link => link.subLinks.length > 0);
-//
-//     console.log("after filtering type", selectedData);
-//
-//     return selectedData;
-// }
-//
-// // Filter the data by including values that start with
-// function filterData(selectedData, filterValues) {
-//     let dataCopy = JSON.parse(JSON.stringify(selectedData));
-//     console.log("before filtering:", filterValues, selectedData.nodes.length, selectedData.links.length);
-//     let filteredData = {"nodes": [], "links": []};
-//     filterValues.map(filterValue =>
-//         {
-//             filteredData.nodes = Array.prototype.concat(filteredData.nodes, dataCopy.nodes.filter((node) => node.name.toString().startsWith(filterValue)));
-//             filteredData.links = Array.prototype.concat(filteredData.links, dataCopy.links.filter((link) => link.source.name.startsWith(filterValue) && link.target.name.startsWith(filterValue)));
-//         }
-//     );
-//     console.log(filteredData);
-//     updateIdioms(filteredData);
-//
-//     console.log("after filtering:", filterValues, selectedData, selectedData.nodes.length, selectedData.links.length);
-// }
-
 // Get an array of selected values in filter
 function getSelectedValues() {
     let selected = [];
@@ -71,7 +62,6 @@ function getSelectedValues() {
 // ----------------------------
 // Create filter drop down checkboxes
 //----------------------------
-
 // Create checkboxes
 function createCheckboxes(nodes){
     const nodeNames = [];

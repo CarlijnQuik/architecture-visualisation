@@ -5,7 +5,7 @@
 
 // Set the dimensions and margins of the chart
 var nMargin = {top: 20, right: 20, bottom: 20, left: 20},
-    nWidth = (window.innerWidth - nMargin.left - nMargin.right -window.innerWidth/8) - (window.innerWidth/8) +25 -250,
+    nWidth = (window.innerWidth - nMargin.left - nMargin.right -window.innerWidth/8) - (window.innerWidth/8) +5 -250,
     nHeight = window.innerHeight/4*2 -nMargin.top - nMargin.bottom;
 
 // Define the standard node radius and link width
@@ -26,6 +26,8 @@ var groupInABox = true;
 var drawTemplate;
 var treemapAlgorithm;
 var template;
+var colorOverlay;
+var clusterDepth;
 
 // Boolean to define whether node has been clicked before
 var clicked;
@@ -66,21 +68,22 @@ function networkInit() {
         )
         .force("collide", d3.forceCollide(7)) // preventing elements overlapping
         .force('center', d3.forceCenter(nWidth / 2, nHeight / 2)); // setting the center of gravity of the system;
-    // .force('charge', d3.forceManyBody()) // making elements repel/(attract) one another
-    // .force('x', d3.forceX(width / 2).strength(0.02)) // attracting elements to a given point
-    // .force('y', d3.forceY(height / 2).strength(0.08)); // attracting elements to a given point
 
     clicked = false; // Nothing clicked yet
     networkOptionsInit();
 }
 
+// Change the controls to the initialised values
 function networkOptionsInit(){
-    // Change the controls to the initialised values
     drawTemplate = true;
     treemapAlgorithm = true;
     template = "treemap";
+    colorOverlay = "colorPackage";
+    clusterDepth = 2;
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
     d3.select("#selectAlgorithm").property("checked", treemapAlgorithm);
+    d3.select("#clusterDepth").property("value", clusterDepth);
+    d3.select("#colorBy").property("value", colorOverlay);
 }
 
 //----------------------------
@@ -101,9 +104,7 @@ function refreshNetwork(){
 //----------------------------
 
 function updateNetwork(selectedData) {
-
     refreshNetwork();
-    forceSim.alphaTarget(0.5).restart();
     const data = {"nodes": [], "links": []};
     data.nodes = selectedData.nodes;
     data.links = selectedData.links;
@@ -132,17 +133,6 @@ function updateNetwork(selectedData) {
         .force('link')
         .links(data.links);
 
-    // Map traffic
-    data.links.map(link => {
-        link.sum_subLinks = link.subLinks.reduce(function (acc, subLink) {
-            return acc + subLink.duration;
-        }, 0.0000);
-    });
-
-    console.log(data.links);
-
-    //----------------------------
-    // Draw network
     //----------------------------
     // Define link properties
     links = networkSVG
@@ -183,7 +173,6 @@ function updateNetwork(selectedData) {
 
     // ----------------------------
     // Define node interaction
-    //----------------------------
     nodes
         .on("mouseenter", function (d) {
             nodeTooltip(d);  // Edit tooltip values
@@ -200,12 +189,12 @@ function updateNetwork(selectedData) {
             } else {
                 console.log("clicked", d);
                 if(nodeDuration === true){
-                    updateBarchart(data, d, title = "Calls to and from " + d.name, x_axis_text = "Calls",
-                        y_axis_text = "Call duration (s)", category = "thread", x_values = "startTime", y_attribute = ["duration"]);
+                    updateBarchart(data, d, "Calls to and from " + d.name, "Calls",
+                        "Call duration (s)", "thread", "message", ["duration"]);
                 }
                 else{
-                    updateBarchart(data, d, title = "Links connected to " + d.name, x_axis_text = "Link source + target",
-                        y_axis_text = "Link count", category = "thread", x_values = "linkID", y_attribute = ["count"]);
+                    updateBarchart(data, d, "Links connected to " + d.name, "Link source + target",
+                        "Link count", "thread", "linkID", ["count"]);
                 }
 
                 d3.select(this)
@@ -224,7 +213,6 @@ function updateNetwork(selectedData) {
 
     // ----------------------------
     // Define link interaction
-    //----------------------------
     links
         .on("click", function (d) {
             console.log("CLICKED", d);
@@ -247,13 +235,15 @@ function updateNetwork(selectedData) {
 
     // ----------------------------
     // Template and group-in-a-box
-    //----------------------------
     refreshTemplate();
     checkTemplate();
     defineOnChange(); // Template user controls
 
     linkDefaultStyle(links);
     nodeDefaultStyle(nodes,links);
+
+    forceSim.stop();
+    forceSim.alphaTarget(0.5).restart();
 
 }
 
@@ -310,7 +300,6 @@ function refreshTemplate(){
 // ----------------------------
 // Define dragging behaviour
 //----------------------------
-
 var drag = d3.drag()
     .on('start', dragStart)
     .on('drag', dragging);
