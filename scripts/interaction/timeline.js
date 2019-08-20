@@ -16,7 +16,7 @@ var windowHeight = $(window).height() - sliderHeight - tlMargin.top - tlMargin.b
 var windowWidth = $(window).width() - tlMargin.left - tlMargin.right;
 
 // var tlWidth = windowWidth - 300,
-var tlWidth = window.innerWidth -window.innerWidth/8 -250,
+var tlWidth = window.innerWidth -window.innerWidth/9 -250,
     tlHeight = sliderHeight;
 
 var currentSliderValue = 0,

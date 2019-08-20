@@ -96,7 +96,7 @@ circle {
 
 line#limit {
     stroke: #393939;
-    stroke-width: 3;
+    stroke-width: 1;
     stroke-dasharray: 3,3;
 }
 

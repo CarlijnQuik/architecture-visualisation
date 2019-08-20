@@ -31,6 +31,7 @@
     <script type="text/javascript" src="scripts/idioms/network.js"></script>
     <script type="text/javascript" src="scripts/idioms/barchart.js"></script>
     <script type="text/javascript" src="scripts/idioms/tree.js"></script>
+    <script type="text/javascript" src="scripts/idioms/optionsMenu.js"></script>
 
     <script type="text/javascript" src="scripts/main.js"></script>
 
@@ -55,12 +56,12 @@
             </div>
 <!--            <p> <span  id="linkSourceTitle" class="tooltipTitle"></span><span id="linkSource"> </span> </p>-->
 <!--            <p> <span  id="linkTargetTitle" class="tooltipTitle"></span><span id="linkTarget"></span></p>-->
-            <p> <span class="tooltipTitle" id="linkSource"></span> <span id="arrow" class="bold"> <-> </span> <span id="linkTarget"> </span>
+            <p> <span class="tooltipTitle" id="linkSource"></span> <span id="arrow" class="bold"> </span> <span id="linkTarget"> </span>
                 <span id="arrow2" class="bold"></span><span class="tooltipTitle" id="subCallTarget"> </span></p>
             <p> <span id="showMessages" class="hidden">(Click)</span></p>
             <p> <span  id="linkCountTitle" class="tooltipTitle"></span> <span class="bold" id="countLink"></span></p>
-            <p> <span  id="countMessagesTitle" class="tooltipTitle"></span> <span class="bold" id="countMessages"></span></p>
             <p><span  id="sumSubLinksTitle" class="tooltipTitle"></span> <span class="bold" id="sumSubLinks"></span></p>
+            <p> <span  id="linkFeedback" class="tooltipTitle"></span> </p>
 
 <!--            <br />-->
 
@@ -119,19 +120,23 @@
                                 <th>Selected</th>
                             </tr>
                             <tr>
-                                <td><span  id="nodeInfo" ></span></td>
+                                <td><span  id="callInfo" >Calls</span></td>
+                                <td id='totalCalls' class="bold"></td>
+                                <td id='selectedCalls' class="bold"></td>
+                            </tr>
+                            <tr>
+                                <td><span  id="linkInfo" >Links</span></td>
+                                <td id='totalLinks' class="bold"></td>
+                                <td id='selectedLinks' class="bold"></td>
+                            </tr>
+                            <td><span  id="nodeInfo" >Nodes</span></td>
                                 <td id='totalNodes' class="bold"></td>
                                 <td id='selectedNodes' class="bold"></td>
                             </tr>
                             <tr>
-                                <td><span  id="linkInfo" ></span></td>
-                                <td id='totalLinks' class="bold"></td>
-                                <td id='selectedLinks' class="bold"></td>
-                            </tr>
-                            <tr>
-                                <td><span  id="cellInfo" ></span></td>
-                                <td id='totalCells' class="bold"></td>
-                                <td id='selectedCells' class="bold"></td>
+                                <td><span  id="packageInfo" >Packages</span></td>
+                                <td id='totalPackages' class="bold"></td>
+                                <td id='selectedPackages' class="bold"></td>
                             </tr>
                         </table>
                     </div>
@@ -193,23 +198,12 @@
                 <div class='visualisation'>
                     <div class='visualisation-title'>
                         <div class='visualisation-title-text'>
-                            <span  id="networkTitle"></span>
+                            <span  id="networkTitle">Interactions between class objects in the system</span>
                         </div>
                     </div>
 
                     <!-- The options panel on top of the vis -->
                     <div class='vis-options'>
-                        <div class="column">
-                            <!-- Treemap or force toggle -->
-                            <label class="switch">
-                                <input type="checkbox" id="selectAlgorithm">
-                                <div class="slider round">
-                                    <span class="on">Treemap</span>
-                                    <span class="off">Force</span>
-                                </div>
-                            </label>
-                        </div>
-
                         <!-- Checkbox show template-->
                         <div class="column">
                             <div class="boxes">
@@ -221,10 +215,10 @@
                         <!-- Select cluster depth -->
                         <div class="column">
                             <select id="clusterDepth">
-                                <option value="1">Package depth: 1</option>
-                                <option value="2">Package depth: 2</option>
-                                <option value="3">Package depth: 3</option>
-                                <option value="4">Package depth: 4</option>
+                                <option value="1">Package depth 1</option>
+                                <option value="2">Package depth 2</option>
+                                <option value="3">Package depth 3</option>
+                                <option value="4">Package depth 4</option>
                             </select>
                         </div>
 
@@ -237,6 +231,18 @@
                                 <option value="colorNeutral">No color</option>
                             </select>
                         </div>
+
+                        <div class="column">
+                            <!-- Treemap or force toggle slider round -->
+                            <label class="switch">
+                                <input type="checkbox" id="selectAlgorithm">
+                                <div class="hidden">
+                                    <span class="on">Treemap</span>
+                                    <span class="off">Force</span>
+                                </div>
+                            </label>
+                        </div>
+
                     </div>
                     <!-- end vis options network diagram -->
                     <div id='network' class='vis'></div>

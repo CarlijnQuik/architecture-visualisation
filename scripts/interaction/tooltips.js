@@ -46,6 +46,8 @@ function linkTooltip(d){
     d3.select("#linkSourceTitle").text("Source: ");
     d3.select("#linkTargetTitle").text("Target: ");
 
+    d3.select("#arrow").text(" <-> ");
+
     if(d.source.name){ // dynamic view
         d3.select("#linkSource").text(d.source.name.split(d.source.parent).join("").split(".").join(""));
         d3.select("#linkTarget").text(d.target.name.split(d.target.parent).join("").split(".").join(""));
@@ -57,15 +59,11 @@ function linkTooltip(d){
         d3.select("#linkTarget").text(d.target.split(target_parent).join("").split(".").join(""));
     }
 
-    console.log(d);
-
-    if(d.subLinks){
-        d3.select("#countMessagesTitle").text("No. of messages: ");
-        d3.select("#countMessages").text( d.subLinks.length);
+    if(d.sum_subLinks > 0){
+        d3.select("#linkFeedback").text("(Click for info in bar chart)");
     }
     else{
-        d3.select("#countMessagesTitle").text(" ");
-        d3.select("#countMessages").text(" ");
+        d3.select("#linkFeedback").text(" ");
     }
     if(d.sum_subLinks){
         d3.select("#sumSubLinksTitle").text("Total duration: ");
@@ -102,6 +100,7 @@ function linkTooltip(d){
             d3.select("#subCallsDuration").text(d.sum_sub_calls.toFixed(3) + " s"); //  " / " + (d.duration/1000000 * d.count).toFixed(3) + " s total" )
         }
 
+        d3.select("#arrow").text(" -> ");
         d3.select("#arrow2").text(" -> ");
         if(d.sub_calls){
             if(d.sub_calls[0]){

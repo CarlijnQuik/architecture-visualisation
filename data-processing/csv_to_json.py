@@ -1,14 +1,3 @@
-import datetime
-import pandas as pd
-import threading
-import time
-import numpy as np
-
-# client = pymongo.MongoClient('mongodb://localhost:27017/')
-# db = client["archvis"]
-# nodes_db = db['nodes']
-# static_links_db = db['static_links']
-# dynamic_links_db = db['dynamic_links']
 list_node_names = []
 list_nodes = []
 
@@ -33,8 +22,6 @@ def get_nodes(dataset, fr, to, file_name, data_type):
         # append the dictionary to the list of node dictionaries
         list_nodes.append(node_dict)
 
-    # insert in mongodb
-    # nodes_db.insert_many(list_nodes)
     return list_nodes
 
 
@@ -46,118 +33,49 @@ def get_all_nodes(node_name):
             get_all_nodes(node_parent)
 
 
-def get_links(dataset, dataset_part, fr, to, file_name, data_type, msg):
-    dict_links = {}
-    unique_links = []
-
-    # create link ID column and lists to count from
-    list_ids = dataset['linkID'].tolist()
-    list_ids_reversed = dataset['reverseID'].tolist()
-    list_msgs = dataset[msg].tolist()
-    list_thread_m = dataset['threadM'].tolist()
-
+def get_messages(dataset, dataset_part, fr, to, msg):
+    dict_messages = {}
+    list_msgs = dataset['msgID'].tolist()
     counter = 0
     # create a separate dictionary for all unique links
-    for index, link in dataset_part.iterrows():
-        counter = counter+1
-        print("counter: ", counter, len(dataset_part))
-        if link[fr] and link[to]:
-            link_id = link['linkID']
-            reverse_id = link['reverseID']
-            message = link[msg]
-            if message != "Empty.field":
-                message_count = list_msgs.count(message)
+    for index, message in dataset_part.iterrows():
+        counter = counter + 1
+        if message[fr] and message[to]:
+            if message[msg] != "Empty.field":
+                message_count = list_msgs.count(message['msgID'])
             else:
                 message_count = 1
 
-            if data_type == 'Static':
-                link_specs = get_static_specs(link, message_count)
-            else:  # dynamic
-                link_specs = get_dynamic_specs(link, message_count, list_thread_m, dataset)
+            message_id = message['linkID'] + "//" + message[msg] + "//" + str(index)
+            print("counter: ", counter, len(dataset_part))
+            message_specs = get_dynamic_specs(message, message_count, dataset)
+            dict_messages[message_id] = message_specs
 
-            sub_links = [link_specs]
-            link_dict = {'source': '.'.join(link[fr].split('.')),
-                         'target': '.'.join(link[to].split('.')),
-                         'linkID': '.'.join(link_id.split('.')),
-                         'dataType': data_type,
-                         'origin': file_name,
-                         'countLinkID': list_ids.count(link['linkID']),  # the number of times the link id exists
-                         'reverseCount': list_ids_reversed.count(link['reverseID']),
-                         'count': list_ids.count(link['linkID']) + list_ids_reversed.count(link['reverseID']),
-                         'subLinks': sub_links}
-
-            # if this is the first time we encounter this specific link ID and reverse ID
-            if link_id not in unique_links and reverse_id not in unique_links:
-                unique_links.append(link_id)
-                dict_links[link_id] = link_dict
-
-            # if the link ID has been added to list_links already
-            elif link_id in unique_links and reverse_id not in unique_links:
-                dict_links[link_id]["subLinks"].append(link_specs)
-
-            # if the reverse ID has been added to list_links already
-            elif reverse_id in unique_links and link_id not in unique_links:
-                # unique_links.append(reverse_id)
-                dict_links[reverse_id]["subLinks"].append(link_specs)
-                # dict_links[reverse_id] = link_dict
-
-            elif reverse_id in unique_links and link_id in unique_links:
-                print("DOUBLE", reverse_id, link_id)
-
-    # insert in mongodb
-    # static_links_db.insert_many(list_links)
-    list_links = list(dict_links.values())
-    return list_links
+    return dict_messages
 
 
-def get_static_specs(link, message_count):
-    link_specs = {
-        'message': '.'.join(link['Used Entity (variable or method)'].split('.')),
-        'type': link['Dependency type'],
-        'subtype': link['Sub type'],
-        'line': link['Line'],
-        'direct': link['Direct/Indirect'],
-        'inheritance': link['Inheritance Related'],
-        'innerclass': link['Inner Class Related'],
-        'source': '.'.join(link['Dependency from'].split('.')),
-        'target': '.'.join(link['Dependency to'].split('.')),
-        'linkID': '.'.join(link['linkID'].split('.')),
-        'count': message_count}  # the number of times the message exists in the dataset
+def get_dynamic_specs(message, message_count, dataset):
 
-    return link_specs
+    durations = dataset.loc[message['msgID'] == dataset['msgID']]['duration_seconds'].values.tolist()
+    # sub_calls = dataset.loc[(dataset['Callee'] == link['Caller']) & (dataset['End Time'] <= link['End Time']) & (dataset['Start Time'] >= link['Start Time']) & (dataset['Message'] != link['Message'])]['Message'].values.tolist()
 
+    message_specs = {'startDate': message['Start Date'],
+                     'startTime': str(message['Start Time']).split(" ")[-1],
+                     'endDate': message['End Date'],
+                     'endTime': str(message['End Time']).split(" ")[-1],
+                     'source': '.'.join(message['Caller'].split('.')),
+                     'target': '.'.join(message['Callee'].split('.')),
+                     'duration': message['duration_seconds'],  # get an integer
+                     'thread': message['Thread'],
+                     'callerID': message['Caller ID'],
+                     'calleeID': message['Callee ID'],
+                     'message': '.'.join(message['Message'].split('.')),
+                     'linkID': message['linkID'],
+                     'duration_sum': sum(durations),
+                     'avg_duration': sum(durations) / message_count,
+                     'count': message_count}
 
-def get_dynamic_specs(link, message_count, list_thread_m, dataset):
-    link_thread_m = link['Thread'] + link['Message']
-
-    durations = dataset.loc[link['msgID'] == dataset['msgID']]['duration_seconds'].values.tolist()
-    #sub_calls = dataset.loc[(dataset['Callee'] == link['Caller']) & (dataset['End Time'] <= link['End Time']) & (dataset['Start Time'] >= link['Start Time']) & (dataset['Message'] != link['Message'])]['Message'].values.tolist()
-
-    link_specs = {'startDate': link['Start Date'],
-                  'startTime': str(link['Start Time']).split(" ")[-1],
-                  'endDate': link['End Date'],
-                  'endTime': str(link['End Time']).split(" ")[-1],
-                  'source': '.'.join(link['Caller'].split('.')),
-                  'target': '.'.join(link['Callee'].split('.')),
-                  'duration': link['duration_seconds'],  # get an integer
-                  'thread': link['Thread'],
-                  'callerID': link['Caller ID'],
-                  'calleeID': link['Callee ID'],
-                  'linkID': '.'.join(link['linkID'].split('.')),
-                  'message': '.'.join(link['Message'].split('.')),
-                  'msgID': link['msgID'],
-                  # 'sub_calls': sub_calls,
-                  'duration_sum': sum(durations),
-                  'avg_duration': sum(durations)/message_count,
-                  'count': message_count,
-                  'msg_on_thread_count': list_thread_m.count(link_thread_m)}
-
-    return link_specs
-
-
-
-
-
+    return message_specs
 
 
 
