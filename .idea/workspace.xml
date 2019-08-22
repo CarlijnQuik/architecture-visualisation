@@ -2,18 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c844d46a-6410-41bc-98e8-f4341ff607fc" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-processing/log_to_csv_fish.py" beforeDir="false" afterPath="$PROJECT_DIR$/data-processing/log_to_csv.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-processing/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/data-processing/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/idioms/barchart.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/idioms/barchart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/idioms/network.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/idioms/network.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/idioms/optionsMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/idioms/optionsMenu.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/idioms/tree.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/idioms/tree.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/interaction/colors.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/interaction/colors.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/interaction/tooltips.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/interaction/tooltips.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles/main.css" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -107,11 +96,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="48" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="48" />
+            <state relative-caret-position="340">
+              <caret line="20" column="81" lean-forward="true" selection-start-line="20" selection-start-column="81" selection-end-line="20" selection-end-column="81" />
               <folding>
                 <element signature="n#style#0;n#table#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -120,11 +109,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/idioms/optionsMenu.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="22" column="38" selection-start-line="22" selection-start-column="38" selection-end-line="22" selection-end-column="38" />
+            <state relative-caret-position="85">
+              <caret line="5" column="41" selection-start-line="5" selection-start-column="41" selection-end-line="5" selection-end-column="41" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -240,11 +229,11 @@
         <option value="$PROJECT_DIR$/scripts/idioms/tree.js" />
         <option value="$PROJECT_DIR$/scripts/main.js" />
         <option value="$PROJECT_DIR$/data-processing/main.py" />
-        <option value="$PROJECT_DIR$/scripts/idioms/optionsMenu.js" />
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/scripts/idioms/network.js" />
         <option value="$PROJECT_DIR$/scripts/idioms/barchart.js" />
         <option value="$PROJECT_DIR$/scripts/interaction/tooltips.js" />
+        <option value="$PROJECT_DIR$/scripts/idioms/optionsMenu.js" />
       </list>
     </option>
   </component>
@@ -418,15 +407,16 @@
       <workItem from="1565601237832" duration="18805000" />
       <workItem from="1565773180923" duration="6771000" />
       <workItem from="1565854134668" duration="21605000" />
-      <workItem from="1566486962160" duration="273000" />
+      <workItem from="1566486962160" duration="490000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="883789000" />
+    <option name="totallyTimeSpent" value="884006000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Designer" order="0" />
       <window_info id="Image Layers" order="1" />
@@ -752,16 +742,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/idioms/optionsMenu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="22" column="38" selection-start-line="22" selection-start-column="38" selection-end-line="22" selection-end-column="38" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/idioms/network.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
@@ -775,11 +755,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="48" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="48" />
+        <state relative-caret-position="340">
+          <caret line="20" column="81" lean-forward="true" selection-start-line="20" selection-start-column="81" selection-end-line="20" selection-end-column="81" />
           <folding>
             <element signature="n#style#0;n#table#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/idioms/optionsMenu.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="41" selection-start-line="5" selection-start-column="41" selection-end-line="5" selection-end-column="41" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
