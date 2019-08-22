@@ -21,11 +21,11 @@ var COLOR = {
 
 // Define opacity
 var OPACITY = {
-    NODE_DEFAULT: 1,
-    NODE_FADED: 1,
+    NODE_DEFAULT: 0.9,
+    NODE_FADED: 0.5,
     NODE_HIGHLIGHT: 1,
-    LINK_DEFAULT: 1,
-    LINK_FADED: 1,
+    LINK_DEFAULT: 0.9,
+    LINK_FADED: 0.5,
     LINK_HIGHLIGHT: 1,
 };
 
@@ -81,25 +81,25 @@ function linkDefaultStyle(links) {
         links.style("stroke", d => {
             if(d.source.name){
                 if((!d.source.name.startsWith("nl.abz") || !d.target.name.startsWith("nl.abz")) && ((!d.source.name.startsWith("net.sf") || !d.target.name.startsWith("net.sf")) && (!d.source.name.startsWith("org.architecturemining") || !d.target.name.startsWith("org.architecturemining")))){
-                    return "#6770dd";
+                    return "#32327e";
                 }
                 else{
-                    return "#6f6f6f";
+                    return "#cacaca";
                 }
             }
             else if(d.source){
                 if((!d.source.startsWith("nl.abz") || !d.target.startsWith("nl.abz"))&& (!d.source.startsWith("net.sf") || !d.target.startsWith("net.sf")) && (!d.source.startsWith("org.architecturemining") || !d.target.startsWith("org.architecturemining"))){
-                    return "#6770dd";
+                    return "#32327e";
                 }
                 else{
-                    return "#6f6f6f";
+                    return "#cacaca";
                 }
             }
         });
     }
 
     if(colorOverlay === "colorTraffic") {
-        links.style("stroke", d => reds(d.sum_subLinks));
+        links.style("stroke", d => reds(d.sum_subLinks/d.subLinks.length));
     }
 }
 
@@ -133,10 +133,10 @@ function nodeDefaultStyle(nodes,links){
         forceSim.stop();
         nodes.style("fill", d => {
             if(!d.name.startsWith("nl.abz") && !d.name.startsWith("net.sf") && !d.name.startsWith("org.architecturemining")){
-                return "#6770dd";
+                return "#32327e";
             }
             else{
-                return "#6f6f6f";
+                return "#cacaca";
             }
         });
     }
@@ -188,18 +188,20 @@ function animateLinks(links){
 
 // Highlight the links connected to the nodes (instead of using default)
 function highlightConnected(selectedNode, links) {
+    forceSim.stop();
+
     let outgoingLinks = links.filter(d => d.source === selectedNode);
     outgoingLinks
-        .style("stroke", COLOR.OUTGOING)
+        .style("stroke", COLOR.NODE_HIGHLIGHT_STROKE)
         .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
-        .style("stroke-width", "3px");
+        .style("stroke-width", "5px");
 
     let incomingLinks = links.filter(d => d.target === selectedNode);
     incomingLinks
-        .style("stroke", COLOR.INCOMING)
+        .style("stroke", COLOR.NODE_HIGHLIGHT_STROKE)
         .style("stroke-opacity", OPACITY.LINK_HIGHLIGHT)
-        .style("stroke-width", "3px");
-        // .style("stroke-dasharray", ("10,10"));
+        .style("stroke-width", "5px")
+        .style("stroke-dasharray", ("10,10"));
 
     // animateLinks(incomingLinks);
     // animateLinks(outgoingLinks);

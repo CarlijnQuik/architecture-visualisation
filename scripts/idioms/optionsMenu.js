@@ -4,7 +4,7 @@
 function optionsInit(){
     // Define the initial settings
     let datasetName = "band";
-    let clusterDepth = 2;
+    let clusterDepth = 3;
     d3.select("#datasetName").property("value", datasetName);
     d3.select("#optionsColumn").style("width", window.innerWidth/6 -20);
 

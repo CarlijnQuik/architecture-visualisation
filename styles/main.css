@@ -19,7 +19,7 @@ body {
 
 .main-container {
     height: 100%;
-    padding-top: 80px;
+    padding-top: 90px;
     position: relative;
 }
 
@@ -288,7 +288,7 @@ text {
 }
 
 .italic {
-    font: italic 15px/100% "Andale Mono", AndaleMono, monospace;
+    font: italic 20px/100% "Andale Mono", AndaleMono, monospace;
 }
 
 h1 {

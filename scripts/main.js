@@ -20,7 +20,7 @@ function loadDataset(datasetName, clusterDepth){
     document.getElementById("loader").style.display = "inline";
 
     // Load json data
-    d3.json(`datasets/dynamic/dynamic-${datasetName}-class.json`, function (error, jsonData) {
+    d3.json(`datasets/${datasetName}.json`, function (error, jsonData) {
         console.log("selected file:", `datasets/dynamic/dynamic-${datasetName}-class.json`);
 
         console.log("SELECTED DATASET", jsonData, parseInt(clusterDepth));

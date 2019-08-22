@@ -93,7 +93,7 @@ function getMessages(links){
 // Get the sub-calls && msg.message !== d.message
 function getSubCalls(call, sub_calls){
     return sub_calls.filter(sub_call =>
-        sub_call.source === call.target && sub_call.startTime >= call.startTime && sub_call.endTime <= call.endTime && sub_call.message !== call.message
+        sub_call.source === call.target && sub_call.startTime >= call.startTime && sub_call.endTime <= call.endTime && sub_call.message !== call.message && sub_call.thread === call.thread
     );
 }
 
@@ -173,15 +173,29 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
     messages.map(msg => msg.sum_sub_calls = msg.sub_calls.reduce(function(acc,sub_call){
        return acc + sub_call.duration;
     },0.0000));
+    messages.map((msg,index) => {
+        if(msg.sub_calls[0]){
+            msg.nextMethod = msg.sub_calls[0].message;
+            msg.nextClass = msg.sub_calls[0].target;
+        }
+        else if(messages[index+1]){
+            msg.nextMethod = messages[index+1].message;
+            msg.nextClass = messages[index+1].target;
+        }
+        else{
+            msg.nextMethod = "end";
+            msg.nextClass = "end";
+        }
+    });
 
-    let sortedLinks = linksData.sort((a,b) => (a.sum_subLinks > b.sum_subLinks) ? 1 : -1);
-    let max_duration = sortedLinks[sortedLinks.length-1].sum_subLinks;
+    console.log(messages);
 
-    console.log(max_duration);
-    console.log(sortedLinks);
+    let sortedLinks = linksData.sort((a,b) => (a.sum_subLinks/a.subLinks.length > b.sum_subLinks/b.subLinks.length) ? 1 : -1);
+    let max_duration_link = sortedLinks[sortedLinks.length-1];
+    let max_duration = max_duration_link.sum_subLinks/max_duration_link.subLinks.length;
 
     reds = d3.scaleSequential(d3.interpolateReds)
-        .domain([0, max_duration]);
+        .domain([0, Math.log(max_duration)]);
 
     sub_calls = [];
     messages.map(msg => {if(msg.sub_calls.length > 0){
@@ -216,7 +230,7 @@ function updateBarchart(inputData, selectedElement, title, x_axis_text, y_axis_t
         // let selectedData = messages.filter(msg => msg.source === selectedElement.source || msg.target === selectedElement.target, msgs);
         // barchartData = barchartData.filter(msg => msg.duration > 0);
         if (selectedElement.sum_subLinks > 0) {
-            drawBarchart(inputData, selectedElement.subLinks, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs);
+            drawBarchart(inputData, selectedElement.subLinks.filter(msg => msg.duration > 0), selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute, msgs);
         }
         console.log("selected link in network diagram");
         //drawBarchart(inputData, barchartData, selectedElement, title, x_axis_text, y_axis_text, category, x_values, y_attribute);
@@ -329,6 +343,29 @@ function drawBarchart(inputData, barchartData, selectedElement, title, x_axis_te
 
 function defineBarInteraction(bar, barchartData, inputData, msgs, yScale, y_attribute){
     bar
+        .on("contextmenu", function (d, i) {
+            d3.event.preventDefault();
+            let url;
+            if(d.target.startsWith("nl.abz.fish")){
+                url = "https://bitbucket.org/amisservices/fish/src/master/fish2006-core/src/main/java/" + d.target.split(".").join("/") + ".java";
+                // react on right-clicking
+                window.open(
+                    url,
+                    '_blank' // <- This is what makes it open in a new window.
+                );
+            }
+            else if(d.target.startsWith("nl.abz.compliancycheck")){
+                url = "https://bitbucket.org/amisservices/compliancy-check/src/master/compliancy-check-core/src/main/java/" + d.target.split(".").join("/") + ".java";
+                // react on right-clicking
+                window.open(
+                    url,
+                    '_blank' // <- This is what makes it open in a new window.
+                );
+            }
+            else {
+                d3.select("#feedbackTooltip2").classed("hidden", false);
+            }
+        })
         .on("mouseenter", function (d) {
             // Highlight selected bar
             barHighlightStyle(d3.select(this));
@@ -386,6 +423,7 @@ function defineBarInteraction(bar, barchartData, inputData, msgs, yScale, y_attr
             nodeDefaultStyle(nodes,links);
             tooltipOnOff("#linkTooltip", true);
             tooltipOnOff("#feedbackTooltip", true);
+            d3.select("#feedbackTooltip2").classed("hidden", true);
             barChartSVG.selectAll('#limit').remove(); // remove the extra line
 
         });
