@@ -6,7 +6,7 @@
 // set the dimensions and margins of the tree graph
 var tMargin = {top: 30, right: 20, bottom: 20, left: 20},
     tWidth = window.innerWidth/8,
-    tHeight = window.innerHeight/4*2 -(window.innerHeight/4) +28,
+    tHeight = window.innerHeight/4*2 -(window.innerHeight/4) +25,
     barHeight = 20,
     barWidth = (tWidth) * 0.6;
 

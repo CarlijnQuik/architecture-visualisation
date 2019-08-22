@@ -5,7 +5,7 @@
 
 // Set the dimensions and margins of the chart
 var nMargin = {top: 20, right: 20, bottom: 20, left: 20},
-    nWidth = (window.innerWidth - nMargin.left - nMargin.right -window.innerWidth/8) - (window.innerWidth/8) +5 -250,
+    nWidth = (window.innerWidth - nMargin.left - nMargin.right -window.innerWidth/8) - (window.innerWidth/8) -260 ,
     nHeight = window.innerHeight/4*2 -nMargin.top - nMargin.bottom;
 
 // Define the standard node radius and link width
@@ -51,7 +51,7 @@ function networkInit() {
 
     // Initialize force in a box
     groupingForce = forceInABox()
-        .strength(0.2) // Strength to foci
+        .strength(0.1) // Strength to foci
         .template(template) // Either treemap or force
         .groupBy(groupby) // Setting package as the attribute to group by
         .enableGrouping(groupInABox)
@@ -66,7 +66,7 @@ function networkInit() {
             .distance(100)
             .strength(groupingForce.getLinkStrength)
         )
-        .force("collide", d3.forceCollide(7)) // preventing elements overlapping
+        .force("collide", d3.forceCollide(9)) // preventing elements overlapping
         .force('center', d3.forceCenter(nWidth / 2, nHeight / 2)); // setting the center of gravity of the system;
 
     clicked = false; // Nothing clicked yet
@@ -79,7 +79,7 @@ function networkOptionsInit(){
     treemapAlgorithm = true;
     template = "treemap";
     colorOverlay = "colorPackage";
-    clusterDepth = 2;
+    clusterDepth = 3;
     d3.select("#checkShowTemplate").property("checked", drawTemplate);
     d3.select("#selectAlgorithm").property("checked", treemapAlgorithm);
     d3.select("#clusterDepth").property("value", clusterDepth);
@@ -217,7 +217,7 @@ function updateNetwork(selectedData) {
         .on("click", function (d) {
             console.log("CLICKED", d);
             updateBarchart(data, d, title = "Calls over link " + d.source.name.split(".").pop() + " -> " + d.target.name.split(".").pop(), x_axis_text = "Calls",
-            y_axis_text = "Call duration (s)", category = "thread", x_values = "Message", y_attribute = ["duration"]);
+            y_axis_text = "Call duration (s)", category = "thread", x_values = "startTime", y_attribute = ["duration"]);
         })
         .on("mouseenter", function (d) {
             if(d3.select(this).style("stroke-opacity") == OPACITY.LINK_DEFAULT ) {

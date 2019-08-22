@@ -46,8 +46,8 @@
 
             <!-- Dynamic -->
             <div id="dynamicFields" class="hidden">
-                <p> <span  id="dynamicMsgTitle" class="tooltipTitle"></span> <span class="bold" id="dynamicMsg"></span></p>
-                <p> <span  id="durationTitle" class="tooltipTitle"></span> <span class="bold" id="duration"></span></p>
+                <p> <span  id="dynamicMsgTitle" class="tooltipTitle"></span><span class="italic" id="dynamicMsgPre"></span><span class="bold" id="dynamicMsg"></span></p>
+                <p> <span  id="durationTitle" class="tooltipTitle"></span> <span class="bold" id="duration"></span> <span class="italic" id="avgDuration"></span></p>
                 <p> <span  id="subCallsDurationTitle" class="tooltipTitle"></span> <span class="bold" id="subCallsDuration"></span></p>
                 <p> <span  id="threadTitle" class="tooltipTitle"></span> <stpan id="thread"></stpan></p>
                 <p> <span id="dates" class="tooltipTitle"></span></p>
@@ -56,12 +56,14 @@
             </div>
 <!--            <p> <span  id="linkSourceTitle" class="tooltipTitle"></span><span id="linkSource"> </span> </p>-->
 <!--            <p> <span  id="linkTargetTitle" class="tooltipTitle"></span><span id="linkTarget"></span></p>-->
-            <p> <span class="tooltipTitle" id="linkSource"></span> <span id="arrow" class="bold"> </span> <span id="linkTarget"> </span>
-                <span id="arrow2" class="bold"></span><span class="tooltipTitle" id="subCallTarget"> </span></p>
-            <p> <span id="showMessages" class="hidden">(Click)</span></p>
             <p> <span  id="linkCountTitle" class="tooltipTitle"></span> <span class="bold" id="countLink"></span></p>
+            <p> <span class="tooltipTitle" id="linkSource"></span> <span id="arrow" class="bold"> </span> <span id="linkTarget"></span>
+                <span id="arrow2" class="bold"></span><span class="tooltipTitle" id="subCallTarget"> </span>
+                <span  id="methodClassTitle" class="italic"></span> <span class="italic" id="methodClass"></span></p>
+            <p> <span id="showMessages" class="hidden">(Click)</span></p>
             <p><span  id="sumSubLinksTitle" class="tooltipTitle"></span> <span class="bold" id="sumSubLinks"></span></p>
             <p> <span  id="linkFeedback" class="tooltipTitle"></span> </p>
+<!--            <p> </p>-->
 
 <!--            <br />-->
 
@@ -81,6 +83,9 @@
 
         <div id="feedbackTooltip" class="hidden">
             <p><span  id="feedbackTitle" class="bold">No known sub-calls > 0.1</span> <span id="feedback"></span> </p>
+        </div>
+        <div id="feedbackTooltip2" class="hidden">
+            <p><span  id="feedbackTitle2" class="bold">No URL to this code</span> <span id="feedback2"></span> </p>
         </div>
 
     </div>
@@ -147,7 +152,13 @@
                                 <select id="datasetName">
                                     <option value="band">BandExample scenario 1</option>
                                     <option value="jabref">JabRef scenario 1</option>
-                                    <option value="fish">FISH scenario 1</option>
+                                    <option value="fish">FISH zoek persoon</option>
+                                    <option value="fish-persoon-bevraging">FISH persoon bevraging</option>
+                                    <option value="fish-rechtspersoon-bevraging">FISH rechtspersoon bevraging</option>
+                                    <option value="fish-upload-nacontrole">FISH upload nacontrole</option>
+                                    <option value="cc-batch-jobs">CC batch jobs</option>
+                                    <option value="cc-batch-web">CC batch web</option>
+                                    <option value="cc-bevraging-mugabe">CC bevraging Mugabe</option>
                                 </select>
                             </div>
 
@@ -219,16 +230,18 @@
                                 <option value="2">Package depth 2</option>
                                 <option value="3">Package depth 3</option>
                                 <option value="4">Package depth 4</option>
+                                <option value="4">Package depth 5</option>
+                                <option value="4">Package depth 6</option>
                             </select>
                         </div>
 
                         <div class="column">
                             <select id="colorBy">
-                                <option value="colorPackage">Color by package</option>
-                                <option value="colorFan">Color by fan in/out</option>
-                                <option value="colorLibrary">Color by internal/external</option>
-                                <option value="colorTraffic">Color by traffic</option>
-                                <option value="colorNeutral">No color</option>
+                                <option value="colorPackage">Colour by package</option>
+                                <option value="colorFan">Colour by fan in/out</option>
+                                <option value="colorLibrary">Colour by internal/external</option>
+                                <option value="colorTraffic">Colour by traffic</option>
+                                <option value="colorNeutral">No colour</option>
                             </select>
                         </div>
 
@@ -263,7 +276,7 @@
                                 <input type="checkbox" id="nodeDuration">
                                 <div class="slider round">
                                     <span class="on">Duration</span>
-                                    <span class="off">Number</span>
+                                    <span class="off">Inst.</span>
                                 </div>
                             </label>
                         </div>
@@ -273,20 +286,20 @@
                         <!-- Select threshold -->
                         <div class="column">
                             <select id="barchartThresholdD">
-                                <option value="0.1">Duration > 0.1</option>
-                                <option value="0.5">Duration > 0.5</option>
-                                <option value="1">Duration > 1</option>
-                                <option value="2">Duration > 2</option>
-                                <option value="5">Duration > 5</option>
+                                <option value="0.1">Duration > 0.1s</option>
+                                <option value="0.5">Duration > 0.5s</option>
+                                <option value="1">Duration > 1s</option>
+                                <option value="2">Duration > 2s</option>
+                                <option value="5">Duration > 5s</option>
                             </select>
                         </div>
                         <div class="column">
                             <select id="barchartThresholdC">
-                                <option value="1">Count > 0</option>
-                                <option value="1">Count > 1</option>
-                                <option value="5">Count > 5</option>
-                                <option value="10">Count > 10</option>
-                                <option value="100">Count > 100</option>
+                                <option value="1">Instances > 0</option>
+                                <option value="1">Instances > 1</option>
+                                <option value="5">Instances > 5</option>
+                                <option value="10">Instances > 10</option>
+                                <option value="100">Instances > 100</option>
                             </select>
                         </div>
                     </div>

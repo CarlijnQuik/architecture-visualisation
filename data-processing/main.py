@@ -2,7 +2,7 @@
 import json
 import sys
 import csv_to_json as ctj
-import log_to_csv_fish as ltc  # change for jabref (ajpolog edited since that log was created)
+import log_to_csv as ltc  # change for jabref (ajpolog edited since that log was created)
 import pandas as pd
 import threading
 from datetime import datetime
@@ -40,14 +40,14 @@ class myThread(threading.Thread):
 
 def write_to_json(class_dict):
     # write the dictionary to a JSON file
-    with open(file_name + "-class.json", 'w') as fp:
+    with open(file_name + ".json", 'w') as fp:
         json.dump(class_dict, fp)
 
     print("class file written")
 
 
 if extension == 'log':
-    dynamic_csv = ltc.get_csv(input_file, file_name + "-class.csv")  # convert ajpolog log to csv with required data
+    dynamic_csv = ltc.get_csv(input_file, file_name + ".csv")  # convert ajpolog log to csv with required data
     dataset = read_and_clean(dynamic_csv)  # read input file as pandas data frames
 
     print("csv obtained")

@@ -2,21 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c844d46a-6410-41bc-98e8-f4341ff607fc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/scripts/idioms/optionsMenu.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-processing/csv_to_json.py" beforeDir="false" afterPath="$PROJECT_DIR$/data-processing/csv_to_json.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data-processing/log_to_csv_fish.py" beforeDir="false" afterPath="$PROJECT_DIR$/data-processing/log_to_csv.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data-processing/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/data-processing/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/data_helpers/filter.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/data_helpers/filter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/data_helpers/treedata_init.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/data_helpers/treedata_init.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/idioms/barchart.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/idioms/barchart.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/idioms/network.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/idioms/network.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/idioms/optionsMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/idioms/optionsMenu.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/idioms/tree.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/idioms/tree.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/interaction/colors.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/interaction/colors.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/interaction/timeline.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/interaction/timeline.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/interaction/tooltips.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/interaction/tooltips.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/idioms.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles/idioms.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styles/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles/main.css" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -45,10 +41,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/interaction/colors.js">
+        <entry file="file://$PROJECT_DIR$/scripts/idioms/barchart.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="143" column="24" lean-forward="true" selection-start-line="143" selection-start-column="7" selection-end-line="143" selection-end-column="24" />
+            <state relative-caret-position="353">
+              <caret line="182" column="53" lean-forward="true" selection-start-line="182" selection-start-column="53" selection-end-line="182" selection-end-column="53" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -57,13 +53,56 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/interaction/timeline.js">
+        <entry file="file://$PROJECT_DIR$/scripts/interaction/tooltips.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="52" selection-start-line="18" selection-start-column="52" selection-end-line="18" selection-end-column="52" />
+            <state relative-caret-position="166">
+              <caret line="143" column="50" selection-start-line="143" selection-start-column="50" selection-end-line="143" selection-end-column="50" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/scripts/idioms/network.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="166">
+              <caret line="10" column="34" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="34" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <marker date="1566372760558" expanded="true" signature="5366:5445" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scripts/main.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="22" column="22" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data-processing/main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
+              <folding>
+                <marker date="1566298134820" expanded="true" signature="4509:4528" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data-processing/csv_to_json.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="612">
+              <caret line="72" column="49" selection-start-line="72" selection-start-column="49" selection-end-line="72" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -71,8 +110,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="224" column="44" selection-start-line="224" selection-start-column="44" selection-end-line="224" selection-end-column="44" />
+            <state relative-caret-position="168">
+              <caret line="291" column="72" lean-forward="true" selection-start-line="291" selection-start-column="72" selection-end-line="291" selection-end-column="72" />
               <folding>
                 <element signature="n#style#0;n#table#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -82,79 +121,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/idioms/barchart.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3481">
-              <caret line="353" column="41" selection-start-line="353" selection-start-column="41" selection-end-line="353" selection-end-column="41" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/idioms/network.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="81" column="20" selection-start-line="81" selection-start-column="20" selection-end-line="81" selection-end-column="20" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-                <marker date="1565270267342" expanded="true" signature="5368:5447" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/data_helpers/filter.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="1" lean-forward="true" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/main.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1105">
-              <caret line="65" column="25" lean-forward="true" selection-start-line="65" selection-start-column="25" selection-end-line="65" selection-end-column="25" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data-processing/csv_to_json.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="438">
-              <caret line="72" column="49" lean-forward="true" selection-start-line="72" selection-start-column="49" selection-end-line="72" selection-end-column="49" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/idioms/optionsMenu.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
+            <state relative-caret-position="374">
+              <caret line="22" column="38" selection-start-line="22" selection-start-column="38" selection-end-line="22" selection-end-column="38" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/data-processing/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
-              <folding>
-                <marker date="1565270315232" expanded="true" signature="4526:4545" ph="..." />
               </folding>
             </state>
           </provider>
@@ -173,36 +145,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>sub_links</find>
-      <find>arrow</find>
-      <find>link_id</find>
-      <find>subLinks</find>
-      <find>clus</find>
-      <find>colorOver</find>
-      <find>colorover</find>
-      <find>network</find>
-      <find>get_links</find>
-      <find>msgIDunique</find>
-      <find>Traffi</find>
-      <find>msgIDuni</find>
-      <find>sub_calls</find>
-      <find>sum_sub</find>
-      <find>nodeRad</find>
-      <find>sum_dur</find>
-      <find>sub_sub</find>
-      <find>sum_subL</find>
-      <find>nl.abz.fish.reference.impl.CodelijstFilteraarObv</find>
-      <find>/</find>
-      <find>X</find>
-      <find>sum_d</find>
-      <find>sum_s</find>
-      <find>feedback</find>
       <find>tooltip</find>
       <find>info</find>
       <find>package depth</find>
       <find>java</find>
       <find>msgID</find>
       <find>drawAx</find>
+      <find>colo</find>
+      <find>dura</find>
+      <find>subcall</find>
+      <find>fish</find>
+      <find>italic</find>
+      <find>jabref</find>
+      <find>duration</find>
+      <find>dynamicFiel</find>
+      <find>d3.max</find>
+      <find>bar</find>
+      <find>&gt;</find>
+      <find>No known</find>
+      <find>feedback</find>
+      <find>Count</find>
+      <find>NaN</find>
+      <find>cc</find>
+      <find>play</find>
+      <find>sub_calls</find>
+      <find>depth</find>
+      <find>count</find>
+      <find>calls over</find>
+      <find>next</find>
+      <find>getSub</find>
+      <find>radius</find>
     </findStrings>
     <replaceStrings>
       <replace>dl.</replace>
@@ -260,33 +232,34 @@
         <option value="$PROJECT_DIR$/scripts/interaction/forceInABox.js" />
         <option value="$PROJECT_DIR$/scripts/data_helpers/treedata_init.js" />
         <option value="$PROJECT_DIR$/styles/idioms.css" />
-        <option value="$PROJECT_DIR$/scripts/interaction/tooltips.js" />
         <option value="$PROJECT_DIR$/scripts/data_helpers/filter.js" />
-        <option value="$PROJECT_DIR$/scripts/main.js" />
         <option value="$PROJECT_DIR$/scripts/interaction/timeline.js" />
-        <option value="$PROJECT_DIR$/styles/main.css" />
-        <option value="$PROJECT_DIR$/scripts/idioms/tree.js" />
-        <option value="$PROJECT_DIR$/index.html" />
-        <option value="$PROJECT_DIR$/scripts/interaction/colors.js" />
         <option value="$PROJECT_DIR$/data-processing/csv_to_json.py" />
-        <option value="$PROJECT_DIR$/scripts/idioms/barchart.js" />
-        <option value="$PROJECT_DIR$/scripts/idioms/network.js" />
-        <option value="$PROJECT_DIR$/scripts/idioms/optionsMenu.js" />
+        <option value="$PROJECT_DIR$/styles/main.css" />
+        <option value="$PROJECT_DIR$/scripts/interaction/colors.js" />
+        <option value="$PROJECT_DIR$/scripts/idioms/tree.js" />
+        <option value="$PROJECT_DIR$/scripts/main.js" />
         <option value="$PROJECT_DIR$/data-processing/main.py" />
+        <option value="$PROJECT_DIR$/scripts/idioms/optionsMenu.js" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/scripts/idioms/network.js" />
+        <option value="$PROJECT_DIR$/scripts/idioms/barchart.js" />
+        <option value="$PROJECT_DIR$/scripts/interaction/tooltips.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-12" />
-    <option name="y" value="-12" />
-    <option name="width" value="1552" />
-    <option name="height" value="840" />
+    <option name="x" value="-10" />
+    <option name="y" value="-10" />
+    <option name="width" value="1243" />
+    <option name="height" value="673" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -303,12 +276,6 @@
               <item name="architecture-visualisation" type="b2602c69:ProjectViewProjectNode" />
               <item name="architecture-visualisation" type="462c0819:PsiDirectoryNode" />
               <item name="datasets" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="architecture-visualisation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="architecture-visualisation" type="462c0819:PsiDirectoryNode" />
-              <item name="datasets" type="462c0819:PsiDirectoryNode" />
-              <item name="dynamic" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="architecture-visualisation" type="b2602c69:ProjectViewProjectNode" />
@@ -333,17 +300,11 @@
               <item name="scripts" type="462c0819:PsiDirectoryNode" />
               <item name="interaction" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="architecture-visualisation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="architecture-visualisation" type="462c0819:PsiDirectoryNode" />
-              <item name="styles" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -367,13 +328,13 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\CQUIK95\OneDrive - Conclusion\Documenten\architecture-visualisation\data-processing" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\CQUIK95\OneDrive - Conclusion\Documenten\architecture-visualisation\scripts\interaction" />
       <recent name="C:\Users\CQUIK95\OneDrive - Conclusion\Documenten\architecture-visualisation\scripts\data_helpers" />
       <recent name="C:\Users\CQUIK95\OneDrive - Conclusion\Documenten\architecture-visualisation\scripts\idioms" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\CQUIK95\OneDrive - Conclusion\Documenten\architecture-visualisation\data-processing" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -453,16 +414,18 @@
       <workItem from="1563533278099" duration="1367000" />
       <workItem from="1563545933481" duration="9728000" />
       <workItem from="1563961581076" duration="18111000" />
-      <workItem from="1564397497125" duration="166591000" />
+      <workItem from="1564397497125" duration="178171000" />
+      <workItem from="1565601237832" duration="18805000" />
+      <workItem from="1565773180923" duration="6771000" />
+      <workItem from="1565854134668" duration="21605000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="824755000" />
+    <option name="totallyTimeSpent" value="883516000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Designer" order="0" />
       <window_info id="Image Layers" order="1" />
@@ -470,9 +433,9 @@
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Capture Tool" order="4" />
       <window_info id="Learn" order="5" />
-      <window_info content_ui="combo" id="Project" order="6" visible="true" weight="0.1130064" />
+      <window_info active="true" content_ui="combo" id="Project" order="6" visible="true" weight="0.15245202" />
       <window_info anchor="bottom" id="JProfiler" order="0" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="1" sideWeight="0.49733475" visible="true" weight="0.18201517" />
+      <window_info anchor="bottom" id="Terminal" order="1" sideWeight="0.49733475" visible="true" weight="0.13867822" />
       <window_info anchor="bottom" id="ConsoleMavenPlugin" order="2" />
       <window_info anchor="bottom" id="Event Log" order="3" sideWeight="0.5026652" side_tool="true" weight="0.18201517" />
       <window_info anchor="bottom" id="Database Changes" order="4" />
@@ -547,32 +510,6 @@
     <SUITE FILE_PATH="coverage/architecture_visualisation$tree.coverage" NAME="tree Coverage Results" MODIFIED="1561978263829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data-processing" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/datasets/static/static-jabref-class.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data-processing/tree.py" />
-    <entry file="file://$PROJECT_DIR$/scripts/idioms/network.js___jb_tmp___" />
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-jabref-class.json">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="1921">
-          <caret column="23650" selection-start-column="23644" selection-end-column="23650" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-fish-package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret column="13796694" selection-start-column="13796667" selection-end-column="13796694" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-jabref-package.json">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="748">
-          <caret column="7143" selection-start-column="7117" selection-end-column="7143" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/plugins/jquery.3.3.1.min.js">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -582,20 +519,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-band-package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="3332" selection-start-column="3332" selection-end-column="3332" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-jabref.log">
-      <provider selected="true" editor-type-id="LogFileEditorProvider">
-        <state relative-caret-position="11356">
-          <caret line="668" column="247" selection-start-line="668" selection-start-column="228" selection-end-line="668" selection-end-column="247" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-band-package.json" />
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-jabref.log" />
     <entry file="file://$PROJECT_DIR$/scripts/data_helpers/data_helper.js" />
     <entry file="file://$PROJECT_DIR$/styles/timeline.css" />
     <entry file="file://$PROJECT_DIR$/styles/main.css___jb_tmp___" />
@@ -634,13 +559,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data-processing/log_to_csv.py" />
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-fish-class.json">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="139383">
-          <caret column="1120831" selection-start-column="1120831" selection-end-column="1120831" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-fish-class.json" />
     <entry file="file://$PROJECT_DIR$/data-processing/log_to_csv.js" />
     <entry file="file://$PROJECT_DIR$/data-processing/csv_to_json.js" />
     <entry file="file://$PROJECT_DIR$/data-processing/init.js" />
@@ -665,16 +584,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data-processing/log_to_csv_fish.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="9" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/styles/tooltips.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-102">
@@ -689,13 +598,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-band-class.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="1947" selection-start-column="1944" selection-end-column="1947" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-band-class.json" />
     <entry file="file://$PROJECT_DIR$/scripts/data_helpers/treedata_init.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-75">
@@ -706,25 +609,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-fish.log">
-      <provider selected="true" editor-type-id="LogFileEditorProvider">
-        <state relative-caret-position="357">
-          <caret line="21" column="212" selection-start-line="21" selection-start-column="212" selection-end-line="21" selection-end-column="212" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-fish-class.csv">
-      <provider editor-type-id="csv-text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="150" selection-start-line="3" selection-start-column="150" selection-end-line="3" selection-end-column="150" />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="233">
-          <caret line="154" column="146" selection-start-line="154" selection-start-column="98" selection-end-line="154" selection-end-column="146" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-fish.log" />
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-fish-class.csv" />
     <entry file="file://$PROJECT_DIR$/scripts/interaction/forceInABox.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2975">
@@ -732,21 +618,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-jabref-class.csv">
-      <provider editor-type-id="csv-text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="165" selection-start-line="2" selection-start-column="165" selection-end-line="2" selection-end-column="165" />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="51">
-          <caret line="3" column="87" lean-forward="true" selection-start-line="3" selection-start-column="74" selection-end-line="3" selection-end-column="87" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-jabref-class.csv" />
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-band.log" />
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-band-class.csv" />
     <entry file="file://$PROJECT_DIR$/styles/idioms.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="214">
+        <state relative-caret-position="736">
           <caret line="98" column="18" selection-start-line="98" selection-start-column="18" selection-end-line="98" selection-end-column="18" />
           <folding>
             <marker date="1565248657732" expanded="true" signature="1869:1912" ph="..." />
@@ -754,27 +631,124 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/interaction/tooltips.js">
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/cc-batch-jobs.csv">
+      <provider selected="true" editor-type-id="csv-text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/styles/main.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="65" column="32" selection-start-line="65" selection-start-column="32" selection-end-line="65" selection-end-column="32" />
+        <state relative-caret-position="255">
+          <caret line="290" column="19" selection-start-line="290" selection-start-column="19" selection-end-line="290" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/interaction/colors.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1428">
+          <caret line="86" column="35" selection-start-line="86" selection-start-column="35" selection-end-line="86" selection-end-column="35" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/styles/main.css">
+    <entry file="file://$PROJECT_DIR$/scripts/data_helpers/filter.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="211" column="30" selection-start-line="211" selection-start-column="30" selection-end-line="211" selection-end-column="30" />
+        <state relative-caret-position="289">
+          <caret line="19" column="35" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/cc-bevraging-mugabe.csv">
+      <provider selected="true" editor-type-id="csv-text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="175" selection-start-line="13" selection-start-column="175" selection-end-line="13" selection-end-column="175" />
+        </state>
+      </provider>
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/dynamic/cc-bevraging-mugabe.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/idioms/tree.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="29" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
+        <state relative-caret-position="85">
+          <caret line="8" column="64" selection-start-line="8" selection-start-column="64" selection-end-line="8" selection-end-column="64" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/interaction/timeline.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3162">
+          <caret line="188" column="40" selection-start-line="188" selection-start-column="40" selection-end-line="188" selection-end-column="40" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data-processing/log_to_csv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="9" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data-processing/csv_to_json.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="72" column="49" selection-start-line="72" selection-start-column="49" selection-end-line="72" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data-processing/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
+          <folding>
+            <marker date="1566298134820" expanded="true" signature="4509:4528" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/band.log">
+      <provider selected="true" editor-type-id="LogFileEditorProvider">
+        <state>
+          <caret column="204" lean-forward="true" selection-end-column="204" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/fish.log">
+      <provider selected="true" editor-type-id="LogFileEditorProvider">
+        <state>
+          <caret column="229" lean-forward="true" selection-end-column="229" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/fish.csv">
+      <provider selected="true" editor-type-id="LargeFileEditor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="22" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/idioms/optionsMenu.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="38" selection-start-line="22" selection-start-column="38" selection-end-line="22" selection-end-column="38" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -783,8 +757,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="224" column="44" selection-start-line="224" selection-start-column="44" selection-end-line="224" selection-end-column="44" />
+        <state relative-caret-position="168">
+          <caret line="291" column="72" lean-forward="true" selection-start-line="291" selection-start-column="72" selection-end-line="291" selection-end-column="72" />
           <folding>
             <element signature="n#style#0;n#table#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -792,71 +766,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-band.log">
-      <provider selected="true" editor-type-id="LogFileEditorProvider">
-        <state relative-caret-position="17">
-          <caret line="1" column="203" selection-start-line="1" selection-start-column="203" selection-end-line="1" selection-end-column="203" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/dynamic/dynamic-band-class.csv">
-      <provider selected="true" editor-type-id="csv-text-editor">
-        <state relative-caret-position="351">
-          <caret line="25" column="216" selection-start-line="25" selection-start-column="212" selection-end-line="25" selection-end-column="216" />
-        </state>
-      </provider>
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/interaction/timeline.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="52" selection-start-line="18" selection-start-column="52" selection-end-line="18" selection-end-column="52" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data-processing/csv_to_json.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="438">
-          <caret line="72" column="49" lean-forward="true" selection-start-line="72" selection-start-column="49" selection-end-line="72" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/interaction/colors.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="143" column="24" lean-forward="true" selection-start-line="143" selection-start-column="7" selection-end-line="143" selection-end-column="24" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/idioms/barchart.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3481">
-          <caret line="353" column="41" selection-start-line="353" selection-start-column="41" selection-end-line="353" selection-end-column="41" />
+        <state relative-caret-position="353">
+          <caret line="182" column="53" lean-forward="true" selection-start-line="182" selection-start-column="53" selection-end-line="182" selection-end-column="53" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/main.js">
+    <entry file="file://$PROJECT_DIR$/scripts/interaction/tooltips.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
-          <caret line="65" column="25" lean-forward="true" selection-start-line="65" selection-start-column="25" selection-end-line="65" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/data_helpers/filter.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="1" lean-forward="true" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
+        <state relative-caret-position="166">
+          <caret line="143" column="50" selection-start-line="143" selection-start-column="50" selection-end-line="143" selection-end-column="50" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -865,31 +788,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/idioms/network.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="81" column="20" selection-start-line="81" selection-start-column="20" selection-end-line="81" selection-end-column="20" />
+        <state relative-caret-position="166">
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="34" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1565270267342" expanded="true" signature="5368:5447" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/idioms/optionsMenu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data-processing/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
-          <folding>
-            <marker date="1565270315232" expanded="true" signature="4526:4545" ph="..." />
+            <marker date="1566372760558" expanded="true" signature="5366:5445" ph="..." />
           </folding>
         </state>
       </provider>
